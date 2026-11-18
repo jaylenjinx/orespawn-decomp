@@ -64,37 +64,37 @@ public class NightmareDungeon {
             }
         }
 
-        for (int var12 = 0; var12 < width; var12++) {
+        for (int i = 0; i < width; i++) {
             int j = 0;
 
             for (int k = 0; k < width; k++) {
-                this.FastSetBlock(world, cposx + var12, cposy + j, cposz + k, OreSpawnMain.MyRTPBlock);
+                this.FastSetBlock(world, cposx + i, cposy + j, cposz + k, OreSpawnMain.MyRTPBlock);
             }
         }
 
-        for (int var13 = 0; var13 < width; var13++) {
+        for (int i = 0; i < width; i++) {
             int j = height - 1;
 
             for (int k = 0; k < width; k++) {
-                this.FastSetBlock(world, cposx + var13, cposy + j, cposz + k, Blocks.bedrock);
+                this.FastSetBlock(world, cposx + i, cposy + j, cposz + k, Blocks.bedrock);
             }
         }
 
-        for (int var14 = 0; var14 < width; var14++) {
+        for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 int k = 0;
-                this.setThisBlock(world, cposx + var14, cposy + j, cposz + k);
+                this.setThisBlock(world, cposx + i, cposy + j, cposz + k);
                 k = width - 1;
-                this.setThisBlock(world, cposx + var14, cposy + j, cposz + k);
+                this.setThisBlock(world, cposx + i, cposy + j, cposz + k);
             }
         }
 
         for (int k = 0; k < width; k++) {
             for (int j = 0; j < height; j++) {
-                int var15 = 0;
-                this.setThisBlock(world, cposx + var15, cposy + j, cposz + k);
-                var15 = width - 1;
-                this.setThisBlock(world, cposx + var15, cposy + j, cposz + k);
+                int n = 0;
+                this.setThisBlock(world, cposx + n, cposy + j, cposz + k);
+                n = width - 1;
+                this.setThisBlock(world, cposx + n, cposy + j, cposz + k);
             }
         }
 

@@ -20,70 +20,70 @@ import danger.orespawn.OreSpawnMain;
 
 public class MyBlockFlower extends Block implements IPlantable {
 
-    public MyBlockFlower(int par1, Material par2Material) {
-        super(par2Material);
+    public MyBlockFlower(int n, Material material) {
+        super(material);
         this.setTickRandomly(true);
         float f = 0.2F;
         this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, f * 3.0F, 0.5F + f);
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
 
-    public MyBlockFlower(int par1) {
-        this(par1, Material.plants);
+    public MyBlockFlower(int n) {
+        this(n, Material.plants);
     }
 
-    public boolean canPlaceBlockAt(World par1World, int par2, int par3, int par4) {
-        return super.canPlaceBlockAt(par1World, par2, par3, par4) && this.canBlockStay(par1World, par2, par3, par4);
+    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+        return super.canPlaceBlockAt(world, x, y, z) && this.canBlockStay(world, x, y, z);
     }
 
-    protected boolean canPlaceBlockOn(Block par1) {
-        return par1 == Blocks.grass || par1 == Blocks.dirt
-            || par1 == Blocks.farmland
-            || par1 == OreSpawnMain.CrystalGrass;
+    protected boolean canPlaceBlockOn(Block block) {
+        return block == Blocks.grass || block == Blocks.dirt
+            || block == Blocks.farmland
+            || block == OreSpawnMain.CrystalGrass;
     }
 
-    public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, Block par5) {
-        super.onNeighborBlockChange(par1World, par2, par3, par4, par5);
-        this.checkFlowerChange(par1World, par2, par3, par4);
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block neighbor) {
+        super.onNeighborBlockChange(world, x, y, z, neighbor);
+        this.checkFlowerChange(world, x, y, z);
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        this.checkFlowerChange(par1World, par2, par3, par4);
+    public void updateTick(World world, int x, int y, int z, Random rand) {
+        this.checkFlowerChange(world, x, y, z);
     }
 
-    protected final void checkFlowerChange(World par1World, int par2, int par3, int par4) {
-        if (!this.canBlockStay(par1World, par2, par3, par4)) {
-            this.dropBlockAsItem(par1World, par2, par3, par4, par1World.getBlockMetadata(par2, par3, par4), 0);
-            par1World.setBlock(par2, par3, par4, Blocks.air, 0, 2);
+    protected final void checkFlowerChange(World world, int x, int y, int z) {
+        if (!this.canBlockStay(world, x, y, z)) {
+            this.dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+            world.setBlock(x, y, z, Blocks.air, 0, 2);
         } else {
-            long t = par1World.getWorldTime();
+            long t = world.getWorldTime();
             t %= 24000L;
             if (t > 12000L) {
                 if (this == OreSpawnMain.MyFlowerPinkBlock) {
-                    par1World.setBlock(par2, par3, par4, OreSpawnMain.MyFlowerBlackBlock);
+                    world.setBlock(x, y, z, OreSpawnMain.MyFlowerBlackBlock);
                 }
 
                 if (this == OreSpawnMain.MyFlowerBlueBlock) {
-                    par1World.setBlock(par2, par3, par4, OreSpawnMain.MyFlowerScaryBlock);
+                    world.setBlock(x, y, z, OreSpawnMain.MyFlowerScaryBlock);
                 }
             } else {
                 if (this == OreSpawnMain.MyFlowerBlackBlock) {
-                    par1World.setBlock(par2, par3, par4, OreSpawnMain.MyFlowerPinkBlock);
+                    world.setBlock(x, y, z, OreSpawnMain.MyFlowerPinkBlock);
                 }
 
                 if (this == OreSpawnMain.MyFlowerScaryBlock) {
-                    par1World.setBlock(par2, par3, par4, OreSpawnMain.MyFlowerBlueBlock);
+                    world.setBlock(x, y, z, OreSpawnMain.MyFlowerBlueBlock);
                 }
             }
         }
     }
 
-    public boolean canBlockStay(World p_149718_1_, int p_149718_2_, int p_149718_3_, int p_149718_4_) {
-        return p_149718_1_.getBlock(p_149718_2_, p_149718_3_ - 1, p_149718_4_)
-            .canSustainPlant(p_149718_1_, p_149718_2_, p_149718_3_ - 1, p_149718_4_, ForgeDirection.UP, this);
+    public boolean canBlockStay(World world, int x, int y, int z) {
+        return world.getBlock(x, y - 1, z)
+            .canSustainPlant(world, x, y - 1, z, ForgeDirection.UP, this);
     }
 
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
         return null;
     }
 

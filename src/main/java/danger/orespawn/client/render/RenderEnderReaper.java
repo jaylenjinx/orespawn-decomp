@@ -17,31 +17,31 @@ public class RenderEnderReaper extends RenderLiving {
     private float scale = 1.0F;
     private static final ResourceLocation texture = new ResourceLocation("orespawn", "EnderReapertexture.png");
 
-    public RenderEnderReaper(ModelEnderReaper par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderEnderReaper(ModelEnderReaper modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelEnderReaper) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderEnderReaper(EnderReaper par1EntityEnderReaper, double par2, double par4, double par6, float par8,
-        float par9) {
-        super.doRender(par1EntityEnderReaper, par2, par4, par6, par8, par9);
+    public void renderEnderReaper(EnderReaper entityEnderReaper, double x, double y, double z, float yaw,
+        float partialTicks) {
+        super.doRender(entityEnderReaper, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderEnderReaper((EnderReaper) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderEnderReaper((EnderReaper) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderEnderReaper((EnderReaper) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderEnderReaper((EnderReaper) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(EnderReaper par1Entity, float par2) {
+    protected void preRenderScale(EnderReaper entity, float f) {
         GL11.glScalef(this.scale, this.scale, this.scale);
     }
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
-        this.preRenderScale((EnderReaper) par1EntityLiving, par2);
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((EnderReaper) entity, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

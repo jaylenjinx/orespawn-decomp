@@ -19,8 +19,8 @@ public class InstantGarden extends Item {
         this.setCreativeTab(CreativeTabs.tabRedstone);
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer Player, World world, int cposx, int cposy, int cposz,
-        int par7, float par8, float par9, float par10) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer Player, World world, int cposx, int cposy, int cposz,
+        int side, float hitX, float hitY, float hitZ) {
         int deltax = 0;
         int deltaz = 0;
         int bid = 0;
@@ -95,10 +95,10 @@ public class InstantGarden extends Item {
                     }
 
                     for (int k = 1; k < length - 1; k++) {
-                        int var28 = 0;
+                        int n = 0;
 
                         for (int jx = -width; jx <= width; jx++) {
-                            if (var28 == 1) {
+                            if (n == 1) {
                                 world.setBlock(
                                     x + k * deltax + jx * deltaz,
                                     y - 1,
@@ -115,7 +115,7 @@ public class InstantGarden extends Item {
                                     2);
                             }
 
-                            if (var28 == 2) {
+                            if (n == 2) {
                                 world.setBlock(
                                     x + k * deltax + jx * deltaz,
                                     y - 1,
@@ -132,7 +132,7 @@ public class InstantGarden extends Item {
                                     2);
                             }
 
-                            if (var28 == 3) {
+                            if (n == 3) {
                                 world.setBlock(
                                     x + k * deltax + jx * deltaz,
                                     y - 1,
@@ -149,7 +149,7 @@ public class InstantGarden extends Item {
                                     2);
                             }
 
-                            if (var28 == 4) {
+                            if (n == 4) {
                                 world.setBlock(
                                     x + k * deltax + jx * deltaz,
                                     y - 1,
@@ -166,7 +166,7 @@ public class InstantGarden extends Item {
                                     2);
                             }
 
-                            if (var28 == 5) {
+                            if (n == 5) {
                                 world.setBlock(
                                     x + k * deltax + jx * deltaz,
                                     y - 1,
@@ -183,7 +183,7 @@ public class InstantGarden extends Item {
                                     2);
                             }
 
-                            if (var28 == 6) {
+                            if (n == 6) {
                                 world.setBlock(
                                     x + k * deltax + jx * deltaz,
                                     y - 1,
@@ -200,7 +200,7 @@ public class InstantGarden extends Item {
                                     2);
                             }
 
-                            if (var28 == 7) {
+                            if (n == 7) {
                                 world.setBlock(
                                     x + k * deltax + jx * deltaz,
                                     y - 1,
@@ -217,7 +217,7 @@ public class InstantGarden extends Item {
                                     2);
                             }
 
-                            if (var28 == 8) {
+                            if (n == 8) {
                                 world.setBlock(
                                     x + k * deltax + jx * deltaz,
                                     y - 1,
@@ -234,7 +234,7 @@ public class InstantGarden extends Item {
                                     2);
                             }
 
-                            if (var28 == 9) {
+                            if (n == 9) {
                                 world.setBlock(
                                     x + k * deltax + jx * deltaz,
                                     y - 1,
@@ -251,7 +251,7 @@ public class InstantGarden extends Item {
                                     2);
                             }
 
-                            if (var28 == 10) {
+                            if (n == 10) {
                                 world.setBlock(
                                     x + k * deltax + jx * deltaz,
                                     y - 1,
@@ -268,7 +268,7 @@ public class InstantGarden extends Item {
                                     2);
                             }
 
-                            if (var28 == 11) {
+                            if (n == 11) {
                                 world.setBlock(
                                     x + k * deltax + jx * deltaz,
                                     y - 2,
@@ -292,7 +292,7 @@ public class InstantGarden extends Item {
                                     2);
                             }
 
-                            if (var28 == 12) {
+                            if (n == 12) {
                                 world.setBlock(
                                     x + k * deltax + jx * deltaz,
                                     y - 1,
@@ -309,7 +309,7 @@ public class InstantGarden extends Item {
                                     2);
                             }
 
-                            if (var28 == 13) {
+                            if (n == 13) {
                                 world.setBlock(
                                     x + k * deltax + jx * deltaz,
                                     y - 1,
@@ -326,12 +326,12 @@ public class InstantGarden extends Item {
                                     2);
                             }
 
-                            var28++;
+                            n++;
                         }
                     }
 
                     if (!Player.capabilities.isCreativeMode) {
-                        par1ItemStack.stackSize--;
+                        stack.stackSize--;
                     }
 
                     return true;

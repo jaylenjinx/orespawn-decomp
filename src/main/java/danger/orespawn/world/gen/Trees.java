@@ -225,9 +225,9 @@ public class Trees {
                     return;
                 }
 
-                int var18 = y - 3;
+                int y2 = y - 3;
             } else {
-                int var17 = y - 2;
+                int y2 = y - 2;
             }
         } else {
             int realy = y - 1;
@@ -270,17 +270,17 @@ public class Trees {
 
                             for (int tries = 0; tries < 20
                                 && (bidm == Blocks.air || bidm == OreSpawnMain.MyDT); tries++) {
-                                int var13 = world.rand.nextInt(5) - 2;
+                                int n = world.rand.nextInt(5) - 2;
                                 int jx = world.rand.nextInt(5) - 2;
-                                bidm = world.getBlock(x + var13, realy + 1, z + jx);
-                                int meta = world.getBlockMetadata(x + var13, realy + 1, z + jx);
+                                bidm = world.getBlock(x + n, realy + 1, z + jx);
+                                int meta = world.getBlockMetadata(x + n, realy + 1, z + jx);
                                 if (bidm != Blocks.air && bidm != OreSpawnMain.MyDT) {
                                     for (int k = 0; k < 20; k++) {
-                                        var13 = world.rand.nextInt(5) - 2;
+                                        n = world.rand.nextInt(5) - 2;
                                         jx = world.rand.nextInt(5) - 2;
-                                        bid = world.getBlock(x + var13, realy + 1, z + jx);
+                                        bid = world.getBlock(x + n, realy + 1, z + jx);
                                         if (bid == Blocks.air) {
-                                            world.setBlock(x + var13, realy + 1, z + jx, bidm, meta, 2);
+                                            world.setBlock(x + n, realy + 1, z + jx, bidm, meta, 2);
                                             return;
                                         }
                                     }
@@ -327,7 +327,7 @@ public class Trees {
 
         grow = 4 + world.rand.nextInt(3);
 
-        for (int var22 = 0; var22 < grow; var22++) {
+        for (int i3 = 0; i3 < grow; i3++) {
             OreSpawnMain.setBlockFast(world, i, j, k, Blocks.log, 0, 2);
             this.make_leaves(world, i, j, k);
             i += xdir;
@@ -336,7 +336,7 @@ public class Trees {
 
         grow = 4 + world.rand.nextInt(3);
 
-        for (int var23 = 0; var23 < grow; var23++) {
+        for (int i3 = 0; i3 < grow; i3++) {
             OreSpawnMain.setBlockFast(world, i2, j, k2, Blocks.log, 0, 2);
             this.make_leaves(world, i2, j, k2);
             i2 += xxdir;
@@ -346,7 +346,7 @@ public class Trees {
         j2 = --j;
         grow = 3 + world.rand.nextInt(3);
 
-        for (int var24 = 0; var24 < grow; var24++) {
+        for (int i3 = 0; i3 < grow; i3++) {
             OreSpawnMain.setBlockFast(world, i, j, k, Blocks.log, 0, 2);
             this.make_leaves(world, i, j, k);
             i += xdir;
@@ -356,7 +356,7 @@ public class Trees {
 
         grow = 3 + world.rand.nextInt(3);
 
-        for (int var25 = 0; var25 < grow; var25++) {
+        for (int i3 = 0; i3 < grow; i3++) {
             OreSpawnMain.setBlockFast(world, i2, j2, k2, Blocks.log, 0, 2);
             this.make_leaves(world, i2, j2, k2);
             i2 += xxdir;
@@ -386,7 +386,7 @@ public class Trees {
 
         grow = 6 + world.rand.nextInt(5);
 
-        for (int var22 = 0; var22 < grow; var22++) {
+        for (int i3 = 0; i3 < grow; i3++) {
             OreSpawnMain.setBlockFast(world, i, j, k, Blocks.log, 0, 2);
             this.make_leaves(world, i, j, k);
             i += xdir;
@@ -395,7 +395,7 @@ public class Trees {
 
         grow = 6 + world.rand.nextInt(5);
 
-        for (int var23 = 0; var23 < grow; var23++) {
+        for (int i3 = 0; i3 < grow; i3++) {
             OreSpawnMain.setBlockFast(world, i2, j, k2, Blocks.log, 0, 2);
             this.make_leaves(world, i2, j, k2);
             i2 += xxdir;
@@ -405,7 +405,7 @@ public class Trees {
         j2 = --j;
         grow = 4 + world.rand.nextInt(4);
 
-        for (int var24 = 0; var24 < grow; var24++) {
+        for (int i3 = 0; i3 < grow; i3++) {
             OreSpawnMain.setBlockFast(world, i, j, k, Blocks.log, 0, 2);
             this.make_leaves(world, i, j, k);
             i += xdir;
@@ -415,7 +415,7 @@ public class Trees {
 
         grow = 4 + world.rand.nextInt(4);
 
-        for (int var25 = 0; var25 < grow; var25++) {
+        for (int i3 = 0; i3 < grow; i3++) {
             OreSpawnMain.setBlockFast(world, i2, j2, k2, Blocks.log, 0, 2);
             this.make_leaves(world, i2, j2, k2);
             i2 += xxdir;
@@ -440,10 +440,10 @@ public class Trees {
             this.grow_branch(world, x, y + 6, z + 1, -1, 0, -1, 1);
             this.grow_branch(world, x + 1, y + 6, z + 1, 0, -1, -1, -1);
 
-            for (int var12 = 7; var12 < 19; var12++) {
+            for (int i2 = 7; i2 < 19; i2++) {
                 for (int i = 0; i < 2; i++) {
                     for (int k = 0; k < 2; k++) {
-                        OreSpawnMain.setBlockFast(world, x + i, y + var12, z + k, Blocks.log, 0, 2);
+                        OreSpawnMain.setBlockFast(world, x + i, y + i2, z + k, Blocks.log, 0, 2);
                     }
                 }
             }
@@ -454,11 +454,11 @@ public class Trees {
             this.grow_small_branch(world, x + 1, y + 19, z + 1, 0, -1, 1, -1);
             int grow = 5 + world.rand.nextInt(6);
 
-            for (int var13 = 19; var13 < 19 + grow; var13++) {
+            for (int i2 = 19; i2 < 19 + grow; i2++) {
                 for (int i = 0; i < 2; i++) {
                     for (int k = 0; k < 2; k++) {
-                        OreSpawnMain.setBlockFast(world, x + i, y + var13, z + k, Blocks.log, 0, 2);
-                        this.make_leaves(world, x + i, y + var13, z + k);
+                        OreSpawnMain.setBlockFast(world, x + i, y + i2, z + k, Blocks.log, 0, 2);
+                        this.make_leaves(world, x + i, y + i2, z + k);
                     }
                 }
             }
@@ -476,9 +476,9 @@ public class Trees {
                     return;
                 }
 
-                int var14 = y - 3;
+                int y2 = y - 3;
             } else {
-                int var13 = y - 2;
+                int y2 = y - 2;
             }
         } else {
             int realy = y - 1;
@@ -587,7 +587,7 @@ public class Trees {
 
         y += i - 1;
 
-        for (int var15 = i; var15 < j; var15++) {
+        for (int i2 = i; i2 < j; i2++) {
             int ix = world.rand.nextInt(2) - world.rand.nextInt(2);
             int iz = world.rand.nextInt(2) - world.rand.nextInt(2);
             int iy = world.rand.nextInt(4) > 0 ? 1 : 0;
@@ -606,7 +606,7 @@ public class Trees {
                     x,
                     y,
                     z,
-                    world.rand.nextInt(1 + j - var15),
+                    world.rand.nextInt(1 + j - i2),
                     world.rand.nextInt(2) - world.rand.nextInt(2),
                     world.rand.nextInt(2) - world.rand.nextInt(2));
             }
@@ -650,11 +650,11 @@ public class Trees {
         this.grow_crystal_branch(world, x + 1, y + 6, z + 1, 0, -1, 1, -1, -1);
         int grow = 5 + world.rand.nextInt(5);
 
-        for (int var13 = 6; var13 < 6 + grow; var13++) {
+        for (int i2 = 6; i2 < 6 + grow; i2++) {
             for (int i = 0; i < 2; i++) {
                 for (int k = 0; k < 2; k++) {
-                    OreSpawnMain.setBlockFast(world, x + i, y + var13, z + k, OreSpawnMain.MyCrystalTreeLog, 0, 2);
-                    this.make_crystal_leaves(world, x + i, y + var13, z + k);
+                    OreSpawnMain.setBlockFast(world, x + i, y + i2, z + k, OreSpawnMain.MyCrystalTreeLog, 0, 2);
+                    this.make_crystal_leaves(world, x + i, y + i2, z + k);
                 }
             }
         }
@@ -742,7 +742,7 @@ public class Trees {
             grow -= 2;
         }
 
-        for (int var20 = 0; var20 < grow; var20++) {
+        for (int i3 = 0; i3 < grow; i3++) {
             OreSpawnMain.setBlockFast(world, i, j, k, OreSpawnMain.MyCrystalTreeLog, 0, 2);
             this.make_crystal_leaves(world, i, j, k);
             i += xdir;
@@ -758,7 +758,7 @@ public class Trees {
             grow -= 2;
         }
 
-        for (int var21 = 0; var21 < grow; var21++) {
+        for (int i3 = 0; i3 < grow; i3++) {
             OreSpawnMain.setBlockFast(world, i2, j, k2, OreSpawnMain.MyCrystalTreeLog, 0, 2);
             this.make_crystal_leaves(world, i2, j, k2);
             i2 += xxdir;
@@ -775,7 +775,7 @@ public class Trees {
             grow -= 2;
         }
 
-        for (int var22 = 0; var22 < grow; var22++) {
+        for (int i3 = 0; i3 < grow; i3++) {
             OreSpawnMain.setBlockFast(world, i, j, k, OreSpawnMain.MyCrystalTreeLog, 0, 2);
             this.make_crystal_leaves(world, i, j, k);
             i += xdir;
@@ -792,7 +792,7 @@ public class Trees {
             grow -= 2;
         }
 
-        for (int var23 = 0; var23 < grow; var23++) {
+        for (int i3 = 0; i3 < grow; i3++) {
             OreSpawnMain.setBlockFast(world, i2, j2, k2, OreSpawnMain.MyCrystalTreeLog, 0, 2);
             this.make_crystal_leaves(world, i2, j2, k2);
             i2 += xxdir;
@@ -880,28 +880,28 @@ public class Trees {
                 width = 1 + world.rand.nextInt(3 + iter);
                 randy = world.rand.nextInt(3) - 1;
 
-                for (int var14 = -width; var14 <= width; var14++) {
+                for (int j2 = -width; j2 <= width; j2++) {
                     for (int k = -width; k <= width; k++) {
                         OreSpawnMain.setBlockFast(
                             world,
-                            x + var14 - spread,
+                            x + j2 - spread,
                             y + j + randy,
                             z + k,
                             OreSpawnMain.MyCrystalTreeLog,
                             0,
                             2);
-                        if (var14 == -width || var14 == width || k == -width || k == width) {
-                            this.make_crystal_castle_leaves(world, x + var14 - spread, y + j + randy, z + k);
+                        if (j2 == -width || j2 == width || k == -width || k == width) {
+                            this.make_crystal_castle_leaves(world, x + j2 - spread, y + j + randy, z + k);
                         }
 
-                        if (var14 == 0 && k == 0) {
-                            this.addSomething(world, x + var14 - spread, y + j + randy, z + k);
+                        if (j2 == 0 && k == 0) {
+                            this.addSomething(world, x + j2 - spread, y + j + randy, z + k);
                         }
 
-                        if (var14 == -width && (k == -width || k == width)) {
+                        if (j2 == -width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var14 - spread,
+                                x + j2 - spread,
                                 y + j + randy + 1,
                                 z + k,
                                 OreSpawnMain.CrystalTorch,
@@ -909,10 +909,10 @@ public class Trees {
                                 2);
                         }
 
-                        if (var14 == width && (k == -width || k == width)) {
+                        if (j2 == width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var14 - spread,
+                                x + j2 - spread,
                                 y + j + randy + 1,
                                 z + k,
                                 OreSpawnMain.CrystalTorch,
@@ -925,28 +925,28 @@ public class Trees {
                 width = 1 + world.rand.nextInt(3 + iter);
                 randy = world.rand.nextInt(3) - 1;
 
-                for (int var15 = -width; var15 <= width; var15++) {
+                for (int j2 = -width; j2 <= width; j2++) {
                     for (int k = -width; k <= width; k++) {
                         OreSpawnMain.setBlockFast(
                             world,
-                            x + var15,
+                            x + j2,
                             y + j + randy,
                             z + k + spread,
                             OreSpawnMain.MyCrystalTreeLog,
                             0,
                             2);
-                        if (var15 == -width || var15 == width || k == -width || k == width) {
-                            this.make_crystal_castle_leaves(world, x + var15, y + j + randy, z + k + spread);
+                        if (j2 == -width || j2 == width || k == -width || k == width) {
+                            this.make_crystal_castle_leaves(world, x + j2, y + j + randy, z + k + spread);
                         }
 
-                        if (var15 == 0 && k == 0) {
-                            this.addSomething(world, x + var15, y + j + randy, z + k + spread);
+                        if (j2 == 0 && k == 0) {
+                            this.addSomething(world, x + j2, y + j + randy, z + k + spread);
                         }
 
-                        if (var15 == -width && (k == -width || k == width)) {
+                        if (j2 == -width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var15,
+                                x + j2,
                                 y + j + randy + 1,
                                 z + k + spread,
                                 OreSpawnMain.CrystalTorch,
@@ -954,10 +954,10 @@ public class Trees {
                                 2);
                         }
 
-                        if (var15 == width && (k == -width || k == width)) {
+                        if (j2 == width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var15,
+                                x + j2,
                                 y + j + randy + 1,
                                 z + k + spread,
                                 OreSpawnMain.CrystalTorch,
@@ -970,28 +970,28 @@ public class Trees {
                 width = 1 + world.rand.nextInt(3 + iter);
                 randy = world.rand.nextInt(3) - 1;
 
-                for (int var16 = -width; var16 <= width; var16++) {
+                for (int j2 = -width; j2 <= width; j2++) {
                     for (int k = -width; k <= width; k++) {
                         OreSpawnMain.setBlockFast(
                             world,
-                            x + var16,
+                            x + j2,
                             y + j + randy,
                             z + k - spread,
                             OreSpawnMain.MyCrystalTreeLog,
                             0,
                             2);
-                        if (var16 == -width || var16 == width || k == -width || k == width) {
-                            this.make_crystal_castle_leaves(world, x + var16, y + j + randy, z + k - spread);
+                        if (j2 == -width || j2 == width || k == -width || k == width) {
+                            this.make_crystal_castle_leaves(world, x + j2, y + j + randy, z + k - spread);
                         }
 
-                        if (var16 == 0 && k == 0) {
-                            this.addSomething(world, x + var16, y + j + randy, z + k - spread);
+                        if (j2 == 0 && k == 0) {
+                            this.addSomething(world, x + j2, y + j + randy, z + k - spread);
                         }
 
-                        if (var16 == -width && (k == -width || k == width)) {
+                        if (j2 == -width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var16,
+                                x + j2,
                                 y + j + randy + 1,
                                 z + k - spread,
                                 OreSpawnMain.CrystalTorch,
@@ -999,10 +999,10 @@ public class Trees {
                                 2);
                         }
 
-                        if (var16 == width && (k == -width || k == width)) {
+                        if (j2 == width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var16,
+                                x + j2,
                                 y + j + randy + 1,
                                 z + k - spread,
                                 OreSpawnMain.CrystalTorch,
@@ -1017,28 +1017,28 @@ public class Trees {
                 width = 1 + world.rand.nextInt(3 + iter);
                 randy = world.rand.nextInt(3) - 1;
 
-                for (int var17 = -width; var17 <= width; var17++) {
+                for (int j2 = -width; j2 <= width; j2++) {
                     for (int k = -width; k <= width; k++) {
                         OreSpawnMain.setBlockFast(
                             world,
-                            x + var17 + spread,
+                            x + j2 + spread,
                             y + j + randy,
                             z + k + spread,
                             OreSpawnMain.MyCrystalTreeLog,
                             0,
                             2);
-                        if (var17 == -width || var17 == width || k == -width || k == width) {
-                            this.make_crystal_castle_leaves(world, x + var17 + spread, y + j + randy, z + k + spread);
+                        if (j2 == -width || j2 == width || k == -width || k == width) {
+                            this.make_crystal_castle_leaves(world, x + j2 + spread, y + j + randy, z + k + spread);
                         }
 
-                        if (var17 == 0 && k == 0) {
-                            this.addSomething(world, x + var17 + spread, y + j + randy, z + k + spread);
+                        if (j2 == 0 && k == 0) {
+                            this.addSomething(world, x + j2 + spread, y + j + randy, z + k + spread);
                         }
 
-                        if (var17 == -width && (k == -width || k == width)) {
+                        if (j2 == -width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var17 + spread,
+                                x + j2 + spread,
                                 y + j + randy + 1,
                                 z + k + spread,
                                 OreSpawnMain.CrystalTorch,
@@ -1046,10 +1046,10 @@ public class Trees {
                                 2);
                         }
 
-                        if (var17 == width && (k == -width || k == width)) {
+                        if (j2 == width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var17 + spread,
+                                x + j2 + spread,
                                 y + j + randy + 1,
                                 z + k + spread,
                                 OreSpawnMain.CrystalTorch,
@@ -1062,28 +1062,28 @@ public class Trees {
                 width = 1 + world.rand.nextInt(3 + iter);
                 randy = world.rand.nextInt(3) - 1;
 
-                for (int var18 = -width; var18 <= width; var18++) {
+                for (int j2 = -width; j2 <= width; j2++) {
                     for (int k = -width; k <= width; k++) {
                         OreSpawnMain.setBlockFast(
                             world,
-                            x + var18 - spread,
+                            x + j2 - spread,
                             y + j + randy,
                             z + k - spread,
                             OreSpawnMain.MyCrystalTreeLog,
                             0,
                             2);
-                        if (var18 == -width || var18 == width || k == -width || k == width) {
-                            this.make_crystal_castle_leaves(world, x + var18 - spread, y + j + randy, z + k - spread);
+                        if (j2 == -width || j2 == width || k == -width || k == width) {
+                            this.make_crystal_castle_leaves(world, x + j2 - spread, y + j + randy, z + k - spread);
                         }
 
-                        if (var18 == 0 && k == 0) {
-                            this.addSomething(world, x + var18 - spread, y + j + randy, z + k - spread);
+                        if (j2 == 0 && k == 0) {
+                            this.addSomething(world, x + j2 - spread, y + j + randy, z + k - spread);
                         }
 
-                        if (var18 == -width && (k == -width || k == width)) {
+                        if (j2 == -width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var18 - spread,
+                                x + j2 - spread,
                                 y + j + randy + 1,
                                 z + k - spread,
                                 OreSpawnMain.CrystalTorch,
@@ -1091,10 +1091,10 @@ public class Trees {
                                 2);
                         }
 
-                        if (var18 == width && (k == -width || k == width)) {
+                        if (j2 == width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var18 - spread,
+                                x + j2 - spread,
                                 y + j + randy + 1,
                                 z + k - spread,
                                 OreSpawnMain.CrystalTorch,
@@ -1107,28 +1107,28 @@ public class Trees {
                 width = 1 + world.rand.nextInt(3 + iter);
                 randy = world.rand.nextInt(3) - 1;
 
-                for (int var19 = -width; var19 <= width; var19++) {
+                for (int j2 = -width; j2 <= width; j2++) {
                     for (int k = -width; k <= width; k++) {
                         OreSpawnMain.setBlockFast(
                             world,
-                            x + var19 - spread,
+                            x + j2 - spread,
                             y + j + randy,
                             z + k + spread,
                             OreSpawnMain.MyCrystalTreeLog,
                             0,
                             2);
-                        if (var19 == -width || var19 == width || k == -width || k == width) {
-                            this.make_crystal_castle_leaves(world, x + var19 - spread, y + j + randy, z + k + spread);
+                        if (j2 == -width || j2 == width || k == -width || k == width) {
+                            this.make_crystal_castle_leaves(world, x + j2 - spread, y + j + randy, z + k + spread);
                         }
 
-                        if (var19 == 0 && k == 0) {
-                            this.addSomething(world, x + var19 - spread, y + j + randy, z + k + spread);
+                        if (j2 == 0 && k == 0) {
+                            this.addSomething(world, x + j2 - spread, y + j + randy, z + k + spread);
                         }
 
-                        if (var19 == -width && (k == -width || k == width)) {
+                        if (j2 == -width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var19 - spread,
+                                x + j2 - spread,
                                 y + j + randy + 1,
                                 z + k + spread,
                                 OreSpawnMain.CrystalTorch,
@@ -1136,10 +1136,10 @@ public class Trees {
                                 2);
                         }
 
-                        if (var19 == width && (k == -width || k == width)) {
+                        if (j2 == width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var19 - spread,
+                                x + j2 - spread,
                                 y + j + randy + 1,
                                 z + k + spread,
                                 OreSpawnMain.CrystalTorch,
@@ -1152,28 +1152,28 @@ public class Trees {
                 width = 1 + world.rand.nextInt(3 + iter);
                 randy = world.rand.nextInt(3) - 1;
 
-                for (int var20 = -width; var20 <= width; var20++) {
+                for (int j2 = -width; j2 <= width; j2++) {
                     for (int k = -width; k <= width; k++) {
                         OreSpawnMain.setBlockFast(
                             world,
-                            x + var20 + spread,
+                            x + j2 + spread,
                             y + j + randy,
                             z + k - spread,
                             OreSpawnMain.MyCrystalTreeLog,
                             0,
                             2);
-                        if (var20 == -width || var20 == width || k == -width || k == width) {
-                            this.make_crystal_castle_leaves(world, x + var20 + spread, y + j + randy, z + k - spread);
+                        if (j2 == -width || j2 == width || k == -width || k == width) {
+                            this.make_crystal_castle_leaves(world, x + j2 + spread, y + j + randy, z + k - spread);
                         }
 
-                        if (var20 == 0 && k == 0) {
-                            this.addSomething(world, x + var20 + spread, y + j + randy, z + k - spread);
+                        if (j2 == 0 && k == 0) {
+                            this.addSomething(world, x + j2 + spread, y + j + randy, z + k - spread);
                         }
 
-                        if (var20 == -width && (k == -width || k == width)) {
+                        if (j2 == -width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var20 + spread,
+                                x + j2 + spread,
                                 y + j + randy + 1,
                                 z + k - spread,
                                 OreSpawnMain.CrystalTorch,
@@ -1181,10 +1181,10 @@ public class Trees {
                                 2);
                         }
 
-                        if (var20 == width && (k == -width || k == width)) {
+                        if (j2 == width && (k == -width || k == width)) {
                             OreSpawnMain.setBlockFast(
                                 world,
-                                x + var20 + spread,
+                                x + j2 + spread,
                                 y + j + randy + 1,
                                 z + k - spread,
                                 OreSpawnMain.CrystalTorch,

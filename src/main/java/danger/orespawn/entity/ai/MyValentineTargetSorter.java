@@ -9,19 +9,19 @@ public class MyValentineTargetSorter implements Comparator {
     private Entity theEntity;
     final MyValentineTarget parent;
 
-    public MyValentineTargetSorter(MyValentineTarget par1EntityAINearestAttackableTarget, Entity par2Entity) {
-        this.parent = par1EntityAINearestAttackableTarget;
-        this.theEntity = par2Entity;
+    public MyValentineTargetSorter(MyValentineTarget entityAINearestAttackableTarget, Entity entity) {
+        this.parent = entityAINearestAttackableTarget;
+        this.theEntity = entity;
     }
 
-    public int compareDistanceSq(Entity par1Entity, Entity par2Entity) {
-        double var3 = this.theEntity.getDistanceSqToEntity(par1Entity);
-        double var5 = this.theEntity.getDistanceSqToEntity(par2Entity);
-        return var3 < var5 ? -1 : (var3 > var5 ? 1 : 0);
+    public int compareDistanceSq(Entity entity2, Entity entity) {
+        double distanceSq = this.theEntity.getDistanceSqToEntity(entity2);
+        double distanceSq2 = this.theEntity.getDistanceSqToEntity(entity);
+        return distanceSq < distanceSq2 ? -1 : (distanceSq > distanceSq2 ? 1 : 0);
     }
 
     @Override
-    public int compare(Object par1Obj, Object par2Obj) {
-        return this.compareDistanceSq((Entity) par1Obj, (Entity) par2Obj);
+    public int compare(Object a, Object b) {
+        return this.compareDistanceSq((Entity) a, (Entity) b);
     }
 }

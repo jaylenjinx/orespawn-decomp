@@ -19,16 +19,16 @@ import danger.orespawn.OreSpawnMain;
 
 public class BlockSkyTreeLog extends Block {
 
-    public BlockSkyTreeLog(int par1, int par2) {
+    public BlockSkyTreeLog(int n, int n2) {
         super(Material.wood);
         this.setCreativeTab(CreativeTabs.tabBlock);
     }
 
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        par3List.add(new ItemStack(Item.getItemFromBlock(this), 1, 0));
+    public void getSubBlocks(Item item, CreativeTabs tab, List list) {
+        list.add(new ItemStack(Item.getItemFromBlock(this), 1, 0));
     }
 
-    protected ItemStack createStackedBlock(int par1) {
+    protected ItemStack createStackedBlock(int n) {
         return new ItemStack(Item.getItemFromBlock(this), 1, 0);
     }
 
@@ -40,29 +40,28 @@ public class BlockSkyTreeLog extends Block {
         return true;
     }
 
-    public Item getItemDropped(int par1, Random par2Random, int par3) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         return Item.getItemFromBlock(OreSpawnMain.MySkyTreeLog);
     }
 
     public void breakRecursor(World world, int x, int y, int z, int xf, int yf, int zf, int recursion) {
-        int var7x = 1;
+        int n = 1;
         if (recursion <= 1000) {
-            for (int var9 = -var7x; var9 <= var7x; var9++) {
-                for (int var10 = -var7x; var10 <= var7x; var10++) {
-                    for (int var11 = -var7x; var11 <= var7x; var11++) {
-                        if ((var9 != 0 || var10 != 0 || var11 != 0)
-                            && (x + var9 != xf || y + var10 != yf || z + var11 != zf)
-                            && (recursion <= 0 || x + var9 < xf - var7x
-                                || x + var9 > xf + var7x
-                                || y + var10 < yf - var7x
-                                || y + var10 > yf + var7x
-                                || z + var11 < zf - var7x
-                                || z + var11 > zf + var7x)) {
-                            Block var12 = world.getBlock(x + var9, y + var10, z + var11);
-                            if (var12 == this) {
-                                world.setBlock(x + var9, y + var10, z + var11, Blocks.air, 0, 2);
-                                this.dropBlockAsItem(world, x + var9, y + var10, z + var11, 0, 0);
-                                this.breakRecursor(world, x + var9, y + var10, z + var11, x, y, z, recursion + 1);
+            for (int i = -n; i <= n; i++) {
+                for (int j = -n; j <= n; j++) {
+                    for (int k = -n; k <= n; k++) {
+                        if ((i != 0 || j != 0 || k != 0) && (x + i != xf || y + j != yf || z + k != zf)
+                            && (recursion <= 0 || x + i < xf - n
+                                || x + i > xf + n
+                                || y + j < yf - n
+                                || y + j > yf + n
+                                || z + k < zf - n
+                                || z + k > zf + n)) {
+                            Block block = world.getBlock(x + i, y + j, z + k);
+                            if (block == this) {
+                                world.setBlock(x + i, y + j, z + k, Blocks.air, 0, 2);
+                                this.dropBlockAsItem(world, x + i, y + j, z + k, 0, 0);
+                                this.breakRecursor(world, x + i, y + j, z + k, x, y, z, recursion + 1);
                             }
                         }
                     }
@@ -71,10 +70,10 @@ public class BlockSkyTreeLog extends Block {
         }
     }
 
-    public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {
-        par1World.setBlock(par2, par3, par4, Blocks.air, 0, 2);
-        this.breakRecursor(par1World, par2, par3, par4, par2, par3, par4, 0);
-        this.dropBlockAsItem(par1World, par2, par3, par4, 0, 0);
+    public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta) {
+        world.setBlock(x, y, z, Blocks.air, 0, 2);
+        this.breakRecursor(world, x, y, z, x, y, z, 0);
+        this.dropBlockAsItem(world, x, y, z, 0, 0);
     }
 
     @SideOnly(Side.CLIENT)

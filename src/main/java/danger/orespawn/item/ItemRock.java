@@ -23,67 +23,67 @@ public class ItemRock extends Item {
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            par1ItemStack.stackSize--;
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (!player.capabilities.isCreativeMode) {
+            stack.stackSize--;
         }
 
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-        if (!par2World.isRemote) {
+        world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        if (!world.isRemote) {
             if (this == OreSpawnMain.MySmallRock) {
-                par2World.spawnEntityInWorld(new EntityThrownRock(par2World, par3EntityPlayer, 1));
+                world.spawnEntityInWorld(new EntityThrownRock(world, player, 1));
             }
 
             if (this == OreSpawnMain.MyRock) {
-                par2World.spawnEntityInWorld(new EntityThrownRock(par2World, par3EntityPlayer, 2));
+                world.spawnEntityInWorld(new EntityThrownRock(world, player, 2));
             }
 
             if (this == OreSpawnMain.MyRedRock) {
-                par2World.spawnEntityInWorld(new EntityThrownRock(par2World, par3EntityPlayer, 3));
+                world.spawnEntityInWorld(new EntityThrownRock(world, player, 3));
             }
 
             if (this == OreSpawnMain.MyGreenRock) {
-                par2World.spawnEntityInWorld(new EntityThrownRock(par2World, par3EntityPlayer, 4));
+                world.spawnEntityInWorld(new EntityThrownRock(world, player, 4));
             }
 
             if (this == OreSpawnMain.MyBlueRock) {
-                par2World.spawnEntityInWorld(new EntityThrownRock(par2World, par3EntityPlayer, 5));
+                world.spawnEntityInWorld(new EntityThrownRock(world, player, 5));
             }
 
             if (this == OreSpawnMain.MyPurpleRock) {
-                par2World.spawnEntityInWorld(new EntityThrownRock(par2World, par3EntityPlayer, 6));
+                world.spawnEntityInWorld(new EntityThrownRock(world, player, 6));
             }
 
             if (this == OreSpawnMain.MySpikeyRock) {
-                par2World.spawnEntityInWorld(new EntityThrownRock(par2World, par3EntityPlayer, 7));
+                world.spawnEntityInWorld(new EntityThrownRock(world, player, 7));
             }
 
             if (this == OreSpawnMain.MyTNTRock) {
-                par2World.spawnEntityInWorld(new EntityThrownRock(par2World, par3EntityPlayer, 8));
+                world.spawnEntityInWorld(new EntityThrownRock(world, player, 8));
             }
 
             if (this == OreSpawnMain.MyCrystalRedRock) {
-                par2World.spawnEntityInWorld(new EntityThrownRock(par2World, par3EntityPlayer, 9));
+                world.spawnEntityInWorld(new EntityThrownRock(world, player, 9));
             }
 
             if (this == OreSpawnMain.MyCrystalGreenRock) {
-                par2World.spawnEntityInWorld(new EntityThrownRock(par2World, par3EntityPlayer, 10));
+                world.spawnEntityInWorld(new EntityThrownRock(world, player, 10));
             }
 
             if (this == OreSpawnMain.MyCrystalBlueRock) {
-                par2World.spawnEntityInWorld(new EntityThrownRock(par2World, par3EntityPlayer, 11));
+                world.spawnEntityInWorld(new EntityThrownRock(world, player, 11));
             }
 
             if (this == OreSpawnMain.MyCrystalTNTRock) {
-                par2World.spawnEntityInWorld(new EntityThrownRock(par2World, par3EntityPlayer, 12));
+                world.spawnEntityInWorld(new EntityThrownRock(world, player, 12));
             }
         }
 
-        return par1ItemStack;
+        return stack;
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World world, int x, int y, int z,
-        int par7, float par8, float par9, float par10) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+        float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
             if (x < 0) {
                 x++;
@@ -146,39 +146,39 @@ public class ItemRock extends Item {
             }
         }
 
-        if (!par2EntityPlayer.capabilities.isCreativeMode) {
-            par1ItemStack.stackSize--;
+        if (!player.capabilities.isCreativeMode) {
+            stack.stackSize--;
         }
 
         return true;
     }
 
-    private Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            if (par2 > 0.0) {
-                par2 += 0.5;
+    private Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            if (x > 0.0) {
+                x += 0.5;
             }
 
-            if (par2 < 0.0) {
-                par2 -= 0.5;
+            if (x < 0.0) {
+                x -= 0.5;
             }
 
-            if (par6 > 0.0) {
-                par6 += 0.5;
+            if (z > 0.0) {
+                z += 0.5;
             }
 
-            if (par6 < 0.0) {
-                par6 -= 0.5;
+            if (z < 0.0) {
+                z -= 0.5;
             }
 
-            var8.setLocationAndAngles(par2, par4 + 0.01, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+            entity.setLocationAndAngles(x, y + 0.01, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
     @SideOnly(Side.CLIENT)

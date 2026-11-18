@@ -21,17 +21,17 @@ public class PoisonSword extends ItemSword {
     private int weaponDamage;
     private final ToolMaterial toolMaterial;
 
-    public PoisonSword(int par1, ToolMaterial par2EnumToolMaterial) {
-        super(par2EnumToolMaterial);
-        this.toolMaterial = par2EnumToolMaterial;
+    public PoisonSword(int n, ToolMaterial enumToolMaterial) {
+        super(enumToolMaterial);
+        this.toolMaterial = enumToolMaterial;
         this.weaponDamage = 15;
         this.maxStackSize = 1;
         this.setMaxDamage(1300);
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        par1ItemStack.addEnchantment(Enchantment.sharpness, 1);
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+        stack.addEnchantment(Enchantment.sharpness, 1);
     }
 
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
@@ -45,23 +45,22 @@ public class PoisonSword extends ItemSword {
         return "Emerald";
     }
 
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLiving,
-        EntityLivingBase par3EntityLiving) {
-        int var2x = 5;
-        if (par2EntityLiving != null) {
-            var2x = 10 + par2EntityLiving.worldObj.rand.nextInt(10);
-            par2EntityLiving.addPotionEffect(new PotionEffect(Potion.poison.id, var2x * 20, 0));
-            var2x = 10 + par2EntityLiving.worldObj.rand.nextInt(10);
-            par2EntityLiving.addPotionEffect(new PotionEffect(Potion.wither.id, var2x * 20, 0));
-            var2x = 10 + par2EntityLiving.worldObj.rand.nextInt(10);
-            par2EntityLiving.addPotionEffect(new PotionEffect(Potion.weakness.id, var2x * 20, 0));
+    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+        int n = 5;
+        if (target != null) {
+            n = 10 + target.worldObj.rand.nextInt(10);
+            target.addPotionEffect(new PotionEffect(Potion.poison.id, n * 20, 0));
+            n = 10 + target.worldObj.rand.nextInt(10);
+            target.addPotionEffect(new PotionEffect(Potion.wither.id, n * 20, 0));
+            n = 10 + target.worldObj.rand.nextInt(10);
+            target.addPotionEffect(new PotionEffect(Potion.weakness.id, n * 20, 0));
         }
 
-        par1ItemStack.damageItem(1, par3EntityLiving);
+        stack.damageItem(1, attacker);
         return true;
     }
 
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 3000;
     }
 

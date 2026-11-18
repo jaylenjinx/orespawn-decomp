@@ -19,24 +19,24 @@ public class RenderPurplePower extends RenderLiving {
     private static final ResourceLocation texture4 = new ResourceLocation("orespawn", "PurplePowertexture4.png");
     private static final ResourceLocation texture10 = new ResourceLocation("orespawn", "PurplePowertexture10.png");
 
-    public RenderPurplePower(ModelPurplePower par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderPurplePower(ModelPurplePower modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelPurplePower) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderPurplePower(PurplePower par1EntityPurplePower, double par2, double par4, double par6, float par8,
-        float par9) {
-        super.doRender(par1EntityPurplePower, par2, par4, par6, par8, par9);
+    public void renderPurplePower(PurplePower entityPurplePower, double x, double y, double z, float yaw,
+        float partialTicks) {
+        super.doRender(entityPurplePower, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderPurplePower((PurplePower) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderPurplePower((PurplePower) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(PurplePower par1Entity, float par2) {
+    protected void preRenderScale(PurplePower entity, float f) {
         float localscale = this.scale;
-        if (par1Entity.getPurpleType() != 0) {
+        if (entity.getPurpleType() != 0) {
             localscale = 0.55F;
         }
 

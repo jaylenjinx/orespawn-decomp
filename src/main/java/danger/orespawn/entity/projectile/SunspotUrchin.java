@@ -14,49 +14,48 @@ public class SunspotUrchin extends EntityThrowable {
     private float my_rotation = 0.0F;
     private int my_index = 50;
 
-    public SunspotUrchin(World par1World) {
-        super(par1World);
+    public SunspotUrchin(World world) {
+        super(world);
     }
 
-    public SunspotUrchin(World par1World, int par2) {
-        super(par1World);
+    public SunspotUrchin(World world, int n) {
+        super(world);
     }
 
-    public SunspotUrchin(World par1World, EntityLivingBase par2EntityLiving) {
-        super(par1World, par2EntityLiving);
+    public SunspotUrchin(World world, EntityLivingBase living) {
+        super(world, living);
     }
 
-    public SunspotUrchin(World par1World, EntityLivingBase par2EntityLiving, int par3) {
-        super(par1World, par2EntityLiving);
+    public SunspotUrchin(World world, EntityLivingBase living, int n) {
+        super(world, living);
     }
 
-    public SunspotUrchin(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public SunspotUrchin(World world, double x, double y, double z) {
+        super(world, x, y, z);
     }
 
     public int getUrchinIndex() {
         return this.my_index;
     }
 
-    protected void onImpact(MovingObjectPosition par1MovingObjectPosition) {
-        if (par1MovingObjectPosition.entityHit != null) {
-            float var2 = 3.0F;
-            if (par1MovingObjectPosition.entityHit instanceof EntityCreeper) {
-                var2 = 6.0F;
+    protected void onImpact(MovingObjectPosition hit) {
+        if (hit.entityHit != null) {
+            float amount = 3.0F;
+            if (hit.entityHit instanceof EntityCreeper) {
+                amount = 6.0F;
             }
 
-            if (!(par1MovingObjectPosition.entityHit instanceof EntityPlayer)) {
-                par1MovingObjectPosition.entityHit
-                    .attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), var2);
-                if (!par1MovingObjectPosition.entityHit.isImmuneToFire()) {
-                    par1MovingObjectPosition.entityHit.setFire(5);
+            if (!(hit.entityHit instanceof EntityPlayer)) {
+                hit.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), amount);
+                if (!hit.entityHit.isImmuneToFire()) {
+                    hit.entityHit.setFire(5);
                 }
             }
         } else {
-            int i = par1MovingObjectPosition.blockX;
-            int j = par1MovingObjectPosition.blockY;
-            int k = par1MovingObjectPosition.blockZ;
-            switch (par1MovingObjectPosition.sideHit) {
+            int i = hit.blockX;
+            int j = hit.blockY;
+            int k = hit.blockZ;
+            switch (hit.sideHit) {
                 case 0:
                     j--;
                     break;
@@ -81,7 +80,7 @@ public class SunspotUrchin extends EntityThrowable {
             }
         }
 
-        for (int var3 = 0; var3 < 5; var3++) {
+        for (int i = 0; i < 5; i++) {
             this.worldObj.spawnParticle(
                 "smoke",
                 this.posX,

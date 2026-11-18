@@ -20,33 +20,33 @@ public class RTPBlock extends Block {
         this.setCreativeTab(CreativeTabs.tabBlock);
     }
 
-    public void onEntityWalking(World world, int par2, int par3, int par4, Entity par5Entity) {
-        if (par5Entity instanceof EntityPlayer) {
-            EntityPlayer p = (EntityPlayer) par5Entity;
+    public void onEntityWalking(World world, int x2, int y2, int z2, Entity entity) {
+        if (entity instanceof EntityPlayer) {
+            EntityPlayer p = (EntityPlayer) entity;
             EntityPlayerMP mp = null;
-            if (par5Entity instanceof EntityPlayerMP) {
-                mp = (EntityPlayerMP) par5Entity;
+            if (entity instanceof EntityPlayerMP) {
+                mp = (EntityPlayerMP) entity;
             }
 
-            int x = par2;
-            int y = par3;
-            int z = par4;
+            int x = x2;
+            int y = y2;
+            int z = z2;
             int found = 0;
 
             for (int tries = 0; tries < 1000 && found == 0; tries++) {
                 if (world.rand.nextInt(2) == 0) {
-                    x = par2 + 16 + world.rand.nextInt(8) - world.rand.nextInt(8);
+                    x = x2 + 16 + world.rand.nextInt(8) - world.rand.nextInt(8);
                 } else {
-                    x = par2 - 16 + world.rand.nextInt(8) - world.rand.nextInt(8);
+                    x = x2 - 16 + world.rand.nextInt(8) - world.rand.nextInt(8);
                 }
 
                 if (world.rand.nextInt(2) == 0) {
-                    z = par4 + 16 + world.rand.nextInt(8) - world.rand.nextInt(8);
+                    z = z2 + 16 + world.rand.nextInt(8) - world.rand.nextInt(8);
                 } else {
-                    z = par4 - 16 + world.rand.nextInt(8) - world.rand.nextInt(8);
+                    z = z2 - 16 + world.rand.nextInt(8) - world.rand.nextInt(8);
                 }
 
-                for (y = par3 - 4; y <= par3 + 4; y++) {
+                for (y = y2 - 4; y <= y2 + 4; y++) {
                     if (world.getBlock(x, y - 1, z)
                         .getMaterial()
                         .isSolid() && world.getBlock(x, y, z) == Blocks.air
@@ -64,7 +64,7 @@ public class RTPBlock extends Block {
                     p.setLocationAndAngles(x + 0.5F, y, z + 0.5F, p.rotationYaw, 0.0F);
                 }
 
-                for (int var3x = 0; var3x < 6; var3x++) {
+                for (int i = 0; i < 6; i++) {
                     world.spawnParticle("smoke", x + 0.5F, y + 2.25F, z + 0.5F, 0.0, 0.0, 0.0);
                     world.spawnParticle("explode", x + 0.5F, y + 2.25F, z + 0.5F, 0.0, 0.0, 0.0);
                     world.spawnParticle("reddust", x + 0.5F, y + 2.25F, z + 0.5F, 0.0, 0.0, 0.0);

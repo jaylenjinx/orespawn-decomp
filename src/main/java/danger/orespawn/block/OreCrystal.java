@@ -14,7 +14,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class OreCrystal extends Block {
 
-    public OreCrystal(int par1, float lv, float f1, float f2) {
+    public OreCrystal(int n, float lv, float f1, float f2) {
         super(Material.rock);
         this.setHardness(f1);
         this.setResistance(f2);
@@ -24,51 +24,51 @@ public class OreCrystal extends Block {
     }
 
     @SideOnly(Side.CLIENT)
-    public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        if (par1World.rand.nextInt(5) == 0) {
-            this.sparkle(par1World, par2, par3, par4);
+    public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
+        if (world.rand.nextInt(5) == 0) {
+            this.sparkle(world, x, y, z);
         }
     }
 
-    private void sparkle(World par1World, int par2, int par3, int par4) {
+    private void sparkle(World world, int x, int y, int z) {
         int which = 0;
         float dx = 0.5F;
         float dz = 0.5F;
         float dy = 0.5F;
 
         for (int j1 = 0; j1 < 5; j1++) {
-            which = par1World.rand.nextInt(3);
+            which = world.rand.nextInt(3);
             if (which == 0) {
-                par1World.spawnParticle(
+                world.spawnParticle(
                     "flame",
-                    par2 + dx,
-                    (double) par3 + dy,
-                    par4 + dz,
-                    (par1World.rand.nextFloat() - par1World.rand.nextFloat()) / 4.0F,
-                    (par1World.rand.nextFloat() - par1World.rand.nextFloat()) / 4.0F,
-                    (par1World.rand.nextFloat() - par1World.rand.nextFloat()) / 4.0F);
+                    x + dx,
+                    (double) y + dy,
+                    z + dz,
+                    (world.rand.nextFloat() - world.rand.nextFloat()) / 4.0F,
+                    (world.rand.nextFloat() - world.rand.nextFloat()) / 4.0F,
+                    (world.rand.nextFloat() - world.rand.nextFloat()) / 4.0F);
             }
 
             if (which == 1) {
-                par1World.spawnParticle(
+                world.spawnParticle(
                     "smoke",
-                    par2 + dx,
-                    (double) par3 + dy,
-                    par4 + dz,
-                    (par1World.rand.nextFloat() - par1World.rand.nextFloat()) / 4.0F,
-                    (par1World.rand.nextFloat() - par1World.rand.nextFloat()) / 4.0F,
-                    (par1World.rand.nextFloat() - par1World.rand.nextFloat()) / 4.0F);
+                    x + dx,
+                    (double) y + dy,
+                    z + dz,
+                    (world.rand.nextFloat() - world.rand.nextFloat()) / 4.0F,
+                    (world.rand.nextFloat() - world.rand.nextFloat()) / 4.0F,
+                    (world.rand.nextFloat() - world.rand.nextFloat()) / 4.0F);
             }
 
             if (which == 2) {
-                par1World.spawnParticle(
+                world.spawnParticle(
                     "reddust",
-                    par2 + dx,
-                    (double) par3 + dy,
-                    par4 + dz,
-                    (par1World.rand.nextFloat() - par1World.rand.nextFloat()) / 4.0F,
-                    (par1World.rand.nextFloat() - par1World.rand.nextFloat()) / 4.0F,
-                    (par1World.rand.nextFloat() - par1World.rand.nextFloat()) / 4.0F);
+                    x + dx,
+                    (double) y + dy,
+                    z + dz,
+                    (world.rand.nextFloat() - world.rand.nextFloat()) / 4.0F,
+                    (world.rand.nextFloat() - world.rand.nextFloat()) / 4.0F,
+                    (world.rand.nextFloat() - world.rand.nextFloat()) / 4.0F);
             }
         }
     }
@@ -85,28 +85,27 @@ public class OreCrystal extends Block {
         return false;
     }
 
-    public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {
-        if (!par1World.isRemote && par1World.rand.nextInt(3) == 1) {
-            par1World.newExplosion(
+    public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta) {
+        if (!world.isRemote && world.rand.nextInt(3) == 1) {
+            world.newExplosion(
                 (Entity) null,
-                par2 + 0.5F,
-                par3 + 0.5F,
-                par4 + 0.5F,
+                x + 0.5F,
+                y + 0.5F,
+                z + 0.5F,
                 1.5F,
                 true,
-                par1World.getGameRules()
+                world.getGameRules()
                     .getGameRuleBooleanValue("mobGriefing"));
         }
 
-        super.onBlockDestroyedByPlayer(par1World, par2, par3, par4, par5);
+        super.onBlockDestroyedByPlayer(world, x, y, z, meta);
     }
 
-    public void dropBlockAsItemWithChance(World par1World, int par2, int par3, int par4, int par5, float par6,
-        int par7) {
-        super.dropBlockAsItemWithChance(par1World, par2, par3, par4, par5, par6, par7);
-        int j1 = 5 + par1World.rand.nextInt(5) + par1World.rand.nextInt(10);
-        if (par3 < 40) {
-            this.dropXpOnBlockBreak(par1World, par2, par3, par4, j1);
+    public void dropBlockAsItemWithChance(World world, int x, int y, int z, int meta, float chance, int fortune) {
+        super.dropBlockAsItemWithChance(world, x, y, z, meta, chance, fortune);
+        int j1 = 5 + world.rand.nextInt(5) + world.rand.nextInt(10);
+        if (y < 40) {
+            this.dropXpOnBlockBreak(world, x, y, z, j1);
         }
     }
 

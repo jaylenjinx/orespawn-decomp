@@ -33,8 +33,8 @@ public class Chipmunk extends EntityCannonFodder {
 
     private float moveSpeed = 0.38F;
 
-    public Chipmunk(World par1World) {
-        super(par1World);
+    public Chipmunk(World world) {
+        super(world);
         this.setSize(0.35F, 0.35F);
         this.moveSpeed = 0.38F;
         this.fireResistance = 100;
@@ -82,8 +82,8 @@ public class Chipmunk extends EntityCannonFodder {
         super.onUpdate();
     }
 
-    protected void fall(float par1) {
-        float i = MathHelper.ceiling_float_int(par1 - 3.0F);
+    protected void fall(float distance) {
+        float i = MathHelper.ceiling_float_int(distance - 3.0F);
         if (i > 0.0F) {
             if (i > 3.0F) {
                 this.playSound("damage.fallbig", 1.0F, 1.0F);
@@ -138,24 +138,23 @@ public class Chipmunk extends EntityCannonFodder {
     }
 
     @Override
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (super.interact(par1EntityPlayer)) {
+        if (super.interact(player)) {
             return true;
-        } else
-            if (var2 != null && var2.getItem() == Items.apple && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+        } else if (currentItem != null && currentItem.getItem() == Items.apple
+            && player.getDistanceSqToEntity(this) < 16.0) {
                 if (!this.isTamed()) {
                     if (!this.worldObj.isRemote) {
                         if (this.rand.nextInt(2) == 0) {
                             this.setTamed(true);
                             this.func_152115_b(
-                                par1EntityPlayer.getUniqueID()
+                                player.getUniqueID()
                                     .toString());
                             this.playTameEffect(true);
                             this.worldObj.setEntityState(this, (byte) 7);
@@ -165,7 +164,7 @@ public class Chipmunk extends EntityCannonFodder {
                             this.worldObj.setEntityState(this, (byte) 6);
                         }
                     }
-                } else if (this.func_152114_e(par1EntityPlayer)) {
+                } else if (this.func_152114_e(player)) {
                     if (this.worldObj.isRemote) {
                         this.playTameEffect(true);
                         this.worldObj.setEntityState(this, (byte) 7);
@@ -176,19 +175,18 @@ public class Chipmunk extends EntityCannonFodder {
                     }
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
-            } else if (this.isTamed() && var2 != null
-                && var2.getItem() == Item.getItemFromBlock(Blocks.deadbush)
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                && this.func_152114_e(par1EntityPlayer)) {
+            } else if (this.isTamed() && currentItem != null
+                && currentItem.getItem() == Item.getItemFromBlock(Blocks.deadbush)
+                && player.getDistanceSqToEntity(this) < 16.0
+                && this.func_152114_e(player)) {
                     if (!this.worldObj.isRemote) {
                         this.setTamed(false);
                         this.func_152115_b("");
@@ -196,41 +194,40 @@ public class Chipmunk extends EntityCannonFodder {
                         this.worldObj.setEntityState(this, (byte) 6);
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
-                } else if (this.isTamed() && var2 != null
-                    && var2.getItem() == Items.name_tag
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                    && this.func_152114_e(par1EntityPlayer)) {
-                        this.setCustomNameTag(var2.getDisplayName());
-                        if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                            var2.stackSize--;
-                            if (var2.stackSize <= 0) {
-                                par1EntityPlayer.inventory
-                                    .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                } else if (this.isTamed() && currentItem != null
+                    && currentItem.getItem() == Items.name_tag
+                    && player.getDistanceSqToEntity(this) < 16.0
+                    && this.func_152114_e(player)) {
+                        this.setCustomNameTag(currentItem.getDisplayName());
+                        if (!player.capabilities.isCreativeMode) {
+                            currentItem.stackSize--;
+                            if (currentItem.stackSize <= 0) {
+                                player.inventory
+                                    .setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                             }
                         }
 
                         return true;
-                    } else if (this.isTamed() && this.func_152114_e(par1EntityPlayer)
-                        && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
-                            if (!this.isSitting()) {
-                                this.setSitting(true);
-                            } else {
-                                this.setSitting(false);
-                            }
-
-                            return true;
+                    } else
+                    if (this.isTamed() && this.func_152114_e(player) && player.getDistanceSqToEntity(this) < 16.0) {
+                        if (!this.isSitting()) {
+                            this.setSitting(true);
                         } else {
-                            return false;
+                            this.setSitting(false);
                         }
+
+                        return true;
+                    } else {
+                        return false;
+                    }
     }
 
     protected String getLivingSound() {
@@ -253,17 +250,17 @@ public class Chipmunk extends EntityCannonFodder {
         return Items.wheat;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
-        int var3 = 0;
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int roll = 0;
         if (this.isTamed()) {
-            var3 = this.rand.nextInt(5);
-            var3 += 2;
+            roll = this.rand.nextInt(5);
+            roll += 2;
 
-            for (int var4 = 0; var4 < var3; var4++) {
+            for (int i = 0; i < roll; i++) {
                 this.dropItem(Item.getItemFromBlock(Blocks.red_flower), 1);
             }
         } else {
-            super.dropFewItems(par1, par2);
+            super.dropFewItems(wasRecentlyHit, lootingLevel);
         }
     }
 
@@ -277,8 +274,8 @@ public class Chipmunk extends EntityCannonFodder {
     }
 
     private int findBuddies() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(Chipmunk.class, this.boundingBox.expand(20.0, 10.0, 20.0));
-        return var5.size();
+        List entities = this.worldObj.getEntitiesWithinAABB(Chipmunk.class, this.boundingBox.expand(20.0, 10.0, 20.0));
+        return entities.size();
     }
 
     protected boolean canDespawn() {
@@ -295,15 +292,15 @@ public class Chipmunk extends EntityCannonFodder {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public Chipmunk spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public Chipmunk spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new Chipmunk(this.worldObj);
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.apple;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.apple;
     }
 
-    public boolean isBreedingItem(ItemStack par1ItemStack) {
-        return par1ItemStack.getItem() == OreSpawnMain.MyCrystalApple;
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
     }
 }

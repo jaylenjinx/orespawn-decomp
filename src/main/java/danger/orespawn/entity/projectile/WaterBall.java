@@ -18,12 +18,12 @@ public class WaterBall extends EntityThrowable {
     private float my_rotation = 0.0F;
     private int my_index = 49;
 
-    public WaterBall(World par1World) {
-        super(par1World);
+    public WaterBall(World world) {
+        super(world);
     }
 
-    public WaterBall(World par1World, EntityLivingBase par2EntityLiving) {
-        super(par1World, par2EntityLiving);
+    public WaterBall(World world, EntityLivingBase living) {
+        super(world, living);
     }
 
     public WaterBall(World worldObj, double d, double e, double f) {
@@ -34,45 +34,44 @@ public class WaterBall extends EntityThrowable {
         return this.my_index;
     }
 
-    protected void onImpact(MovingObjectPosition par1MovingObjectPosition) {
-        if (par1MovingObjectPosition.entityHit != null) {
-            float var2 = 2.0F;
-            if (par1MovingObjectPosition.entityHit instanceof EntityCreeper) {
-                var2 = 5.0F;
+    protected void onImpact(MovingObjectPosition hit) {
+        if (hit.entityHit != null) {
+            float amount = 2.0F;
+            if (hit.entityHit instanceof EntityCreeper) {
+                amount = 5.0F;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof WaterDragon) {
+            if (hit.entityHit instanceof WaterDragon) {
                 return;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof AttackSquid) {
+            if (hit.entityHit instanceof AttackSquid) {
                 return;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Dragon) {
-                Dragon d = (Dragon) par1MovingObjectPosition.entityHit;
+            if (hit.entityHit instanceof Dragon) {
+                Dragon d = (Dragon) hit.entityHit;
                 if (d.getDragonType() != 0) {
                     return;
                 }
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityPlayer) {
-                EntityPlayer d = (EntityPlayer) par1MovingObjectPosition.entityHit;
+            if (hit.entityHit instanceof EntityPlayer) {
+                EntityPlayer d = (EntityPlayer) hit.entityHit;
                 if (d.ridingEntity != null) {
                     return;
                 }
             }
 
-            par1MovingObjectPosition.entityHit
-                .attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), var2);
+            hit.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), amount);
             if (this.worldObj.rand.nextInt(10) == 1) {
-                par1MovingObjectPosition.entityHit.dropItem(OreSpawnMain.MyWaterBall, 1);
+                hit.entityHit.dropItem(OreSpawnMain.MyWaterBall, 1);
             }
 
-            par1MovingObjectPosition.entityHit.extinguish();
+            hit.entityHit.extinguish();
         }
 
-        for (int var3 = 0; var3 < 8; var3++) {
+        for (int i = 0; i < 8; i++) {
             this.worldObj.spawnParticle(
                 "bubble",
                 this.posX + this.rand.nextFloat() - this.rand.nextFloat(),

@@ -17,8 +17,8 @@ public class Coin extends EntityAnimal {
 
     private float moveSpeed = 0.0F;
 
-    public Coin(World par1World) {
-        super(par1World);
+    public Coin(World world) {
+        super(world);
         this.setSize(1.5F, 1.5F);
         this.experienceValue = 10;
         this.fireResistance = 100;
@@ -89,17 +89,17 @@ public class Coin extends EntityAnimal {
         return null;
     }
 
-    private void dropItemRand(Item index, int par1) {
-        EntityItem var3 = new EntityItem(
+    private void dropItemRand(Item index, int n) {
+        EntityItem entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
-            new ItemStack(index, par1, 0));
-        this.worldObj.spawnEntityInWorld(var3);
+            new ItemStack(index, n, 0));
+        this.worldObj.spawnEntityInWorld(entityItem);
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         int i = this.worldObj.rand.nextInt(10);
         Item j = OreSpawnMain.MyEmeraldSword;
         if (i == 0) {
@@ -143,7 +143,7 @@ public class Coin extends EntityAnimal {
 
     public void initCreature() {}
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 

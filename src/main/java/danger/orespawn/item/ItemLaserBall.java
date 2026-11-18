@@ -18,17 +18,17 @@ public class ItemLaserBall extends Item {
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            par1ItemStack.stackSize--;
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (!player.capabilities.isCreativeMode) {
+            stack.stackSize--;
         }
 
-        par2World.playSoundAtEntity(par3EntityPlayer, "fireworks.launch", 3.0F, 1.0F);
-        if (!par2World.isRemote) {
-            par2World.spawnEntityInWorld(new LaserBall(par2World, par3EntityPlayer));
+        world.playSoundAtEntity(player, "fireworks.launch", 3.0F, 1.0F);
+        if (!world.isRemote) {
+            world.spawnEntityInWorld(new LaserBall(world, player));
         }
 
-        return par1ItemStack;
+        return stack;
     }
 
     @SideOnly(Side.CLIENT)

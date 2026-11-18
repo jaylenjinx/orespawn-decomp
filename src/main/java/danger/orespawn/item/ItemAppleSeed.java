@@ -21,8 +21,8 @@ public class ItemAppleSeed extends Item {
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World world, int x, int y, int z,
-        int par7, float par8, float par9, float par10) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+        float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
             Block bid = world.getBlock(x, y, z);
             if (bid != Blocks.grass && bid != Blocks.dirt && bid != Blocks.farmland) {
@@ -38,8 +38,8 @@ public class ItemAppleSeed extends Item {
             }
         }
 
-        if (!par2EntityPlayer.capabilities.isCreativeMode) {
-            par1ItemStack.stackSize--;
+        if (!player.capabilities.isCreativeMode) {
+            stack.stackSize--;
         }
 
         return true;
@@ -79,36 +79,36 @@ public class ItemAppleSeed extends Item {
                 world.setBlock(x, y + j, z, Blocks.log, 0, 2);
             }
 
-            for (int var19 = 1; var19 < w1; var19++) {
-                OreSpawnMain.setBlockSuperFast(world, x + var19, y + h2, z, Blocks.log, 0, 2, chunk);
+            for (int i = 1; i < w1; i++) {
+                OreSpawnMain.setBlockSuperFast(world, x + i, y + h2, z, Blocks.log, 0, 2, chunk);
             }
 
-            for (int var20 = 1; var20 < w1; var20++) {
-                OreSpawnMain.setBlockSuperFast(world, x - var20, y + h2, z, Blocks.log, 0, 2, chunk);
+            for (int i = 1; i < w1; i++) {
+                OreSpawnMain.setBlockSuperFast(world, x - i, y + h2, z, Blocks.log, 0, 2, chunk);
             }
 
-            for (int var21 = 1; var21 < w1; var21++) {
-                OreSpawnMain.setBlockSuperFast(world, x, y + h2, z + var21, Blocks.log, 0, 2, chunk);
+            for (int i = 1; i < w1; i++) {
+                OreSpawnMain.setBlockSuperFast(world, x, y + h2, z + i, Blocks.log, 0, 2, chunk);
             }
 
-            for (int var22 = 1; var22 < w1; var22++) {
-                OreSpawnMain.setBlockSuperFast(world, x, y + h2, z - var22, Blocks.log, 0, 2, chunk);
+            for (int i = 1; i < w1; i++) {
+                OreSpawnMain.setBlockSuperFast(world, x, y + h2, z - i, Blocks.log, 0, 2, chunk);
             }
 
-            for (int var23 = 1; var23 < w2; var23++) {
-                OreSpawnMain.setBlockSuperFast(world, x + var23, y + h3, z, Blocks.log, 0, 2, chunk);
+            for (int i = 1; i < w2; i++) {
+                OreSpawnMain.setBlockSuperFast(world, x + i, y + h3, z, Blocks.log, 0, 2, chunk);
             }
 
-            for (int var24 = 1; var24 < w2; var24++) {
-                OreSpawnMain.setBlockSuperFast(world, x - var24, y + h3, z, Blocks.log, 0, 2, chunk);
+            for (int i = 1; i < w2; i++) {
+                OreSpawnMain.setBlockSuperFast(world, x - i, y + h3, z, Blocks.log, 0, 2, chunk);
             }
 
-            for (int var25 = 1; var25 < w2; var25++) {
-                OreSpawnMain.setBlockSuperFast(world, x, y + h3, z + var25, Blocks.log, 0, 2, chunk);
+            for (int i = 1; i < w2; i++) {
+                OreSpawnMain.setBlockSuperFast(world, x, y + h3, z + i, Blocks.log, 0, 2, chunk);
             }
 
-            for (int var26 = 1; var26 < w2; var26++) {
-                OreSpawnMain.setBlockSuperFast(world, x, y + h3, z - var26, Blocks.log, 0, 2, chunk);
+            for (int i = 1; i < w2; i++) {
+                OreSpawnMain.setBlockSuperFast(world, x, y + h3, z - i, Blocks.log, 0, 2, chunk);
             }
 
             for (int i = h4; i < h5; i++) {
@@ -125,11 +125,11 @@ public class ItemAppleSeed extends Item {
                     width--;
                 }
 
-                for (int var27 = -width; var27 <= width; var27++) {
+                for (int j = -width; j <= width; j++) {
                     for (int k = -width; k <= width; k++) {
-                        bid = world.getBlock(x + k, y + i, z + var27);
+                        bid = world.getBlock(x + k, y + i, z + j);
                         if (bid == Blocks.air) {
-                            OreSpawnMain.setBlockSuperFast(world, x + k, y + i, z + var27, blkid, 0, 2, chunk);
+                            OreSpawnMain.setBlockSuperFast(world, x + k, y + i, z + j, blkid, 0, 2, chunk);
                         }
                     }
                 }

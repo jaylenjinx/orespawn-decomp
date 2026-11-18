@@ -34,8 +34,8 @@ public class PurplePower extends EntityLiving {
     private GenericTargetSorter TargetSorter = null;
     private int purple_type = 0;
 
-    public PurplePower(World par1World) {
-        super(par1World);
+    public PurplePower(World world) {
+        super(world);
         this.setSize(0.75F, 0.75F);
         this.experienceValue = 35;
         this.isImmuneToFire = true;
@@ -61,11 +61,11 @@ public class PurplePower extends EntityLiving {
         this.dataWatcher.addObject(20, 0);
     }
 
-    public void setPurpleType(int par1) {
+    public void setPurpleType(int n) {
         if (this.worldObj != null) {
             if (!this.worldObj.isRemote) {
-                this.purple_type = par1;
-                this.dataWatcher.updateObject(20, par1);
+                this.purple_type = n;
+                this.dataWatcher.updateObject(20, n);
             }
         }
     }
@@ -102,7 +102,7 @@ public class PurplePower extends EntityLiving {
         return false;
     }
 
-    protected void collideWithEntity(Entity par1Entity) {}
+    protected void collideWithEntity(Entity entity) {}
 
     public int mygetMaxHealth() {
         return 1000;
@@ -225,16 +225,16 @@ public class PurplePower extends EntityLiving {
                 this.setDead();
             }
 
-            double var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.4 - this.motionX) * 0.2;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.7F - this.motionY) * 0.20000000149011612;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.4 - this.motionZ) * 0.2;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx = this.currentFlightTarget.posX + 0.5 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx) * 0.4 - this.motionX) * 0.2;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.7F - this.motionY) * 0.20000000149011612;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.4 - this.motionZ) * 0.2;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 0.75F;
-            this.rotationYaw += var8 / 4.0F;
+            this.rotationYaw += f2 / 4.0F;
         }
     }
 
@@ -242,26 +242,26 @@ public class PurplePower extends EntityLiving {
         return false;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean doesEntityNotTriggerPressurePlate() {
         return true;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        Entity e = par1DamageSource.getEntity();
-        float dm = par2;
+        Entity e = source.getEntity();
+        float dm = amount;
         if (e != null && e instanceof EntityArrow) {
             return false;
         } else {
-            if (par2 > 10.0F) {
+            if (amount > 10.0F) {
                 dm = 10.0F;
             }
 
-            ret = super.attackEntityFrom(par1DamageSource, dm);
+            ret = super.attackEntityFrom(source, dm);
             if (e != null && this.currentFlightTarget != null) {
                 this.currentFlightTarget.set((int) e.posX, (int) (e.posY + e.height / 2.0F), (int) e.posZ);
             }
@@ -278,33 +278,32 @@ public class PurplePower extends EntityLiving {
         return 25;
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (target instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) target;
                 return p.capabilities.isCreativeMode ? false : this.getPurpleType() <= 0 || this.getPurpleType() == 10;
             } else {
-                if (this.getPurpleType() != 0 && this.getPurpleType() != 10
-                    && par1EntityLiving instanceof EntityTameable) {
-                    EntityTameable e = (EntityTameable) par1EntityLiving;
+                if (this.getPurpleType() != 0 && this.getPurpleType() != 10 && target instanceof EntityTameable) {
+                    EntityTameable e = (EntityTameable) target;
                     if (e.isTamed()) {
                         return false;
                     }
                 }
 
-                return !MyUtils.isRoyalty(par1EntityLiving);
+                return !MyUtils.isRoyalty(target);
             }
     }
 
@@ -312,18 +311,18 @@ public class PurplePower extends EntityLiving {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(32.0, 24.0, 32.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -331,13 +330,13 @@ public class PurplePower extends EntityLiving {
         }
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        boolean var4 = false;
-        if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
-            EntityLivingBase e = (EntityLivingBase) par1Entity;
+    public boolean attackEntityAsMob(Entity target) {
+        boolean flag = false;
+        if (target != null && target instanceof EntityLivingBase) {
+            EntityLivingBase e = (EntityLivingBase) target;
             if (this.getPurpleType() != 0 && this.getPurpleType() != 10) {
                 e.setHealth(e.getHealth() * 15.0F / 16.0F);
-                var4 = e.attackEntityFrom(DamageSource.causeMobDamage(this), 5.0F);
+                flag = e.attackEntityFrom(DamageSource.causeMobDamage(this), 5.0F);
                 if (this.getPurpleType() == 1) {
                     e.setFire(10);
                 }
@@ -351,7 +350,7 @@ public class PurplePower extends EntityLiving {
                 }
             } else {
                 e.setHealth(e.getHealth() / 4.0F - 1.0F);
-                var4 = e.attackEntityFrom(DamageSource.causeMobDamage(this), e.getMaxHealth() / 8.0F);
+                flag = e.attackEntityFrom(DamageSource.causeMobDamage(this), e.getMaxHealth() / 8.0F);
                 if (this.getPurpleType() == 10) {
                     this.worldObj.newExplosion(
                         (Entity) null,
@@ -366,20 +365,20 @@ public class PurplePower extends EntityLiving {
             }
         }
 
-        return var4;
+        return flag;
     }
 
     protected Item getDropItem() {
         return null;
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("PurpleType", this.purple_type);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("PurpleType", this.purple_type);
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.purple_type = par1NBTTagCompound.getInteger("PurpleType");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.purple_type = tag.getInteger("PurpleType");
     }
 }

@@ -20,35 +20,34 @@ public class RenderOstrich extends RenderLiving {
     private static final ResourceLocation texture2 = new ResourceLocation("orespawn", "Ostrichtexture2.png");
     private static final ResourceLocation texture3 = new ResourceLocation("orespawn", "Ostrichtexture3.png");
 
-    public RenderOstrich(ModelOstrich par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderOstrich(ModelOstrich modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelOstrich) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderOstrich(Ostrich par1EntityOstrich, double par2, double par4, double par6, float par8,
-        float par9) {
-        super.doRender(par1EntityOstrich, par2, par4, par6, par8, par9);
+    public void renderOstrich(Ostrich entityOstrich, double x, double y, double z, float yaw, float partialTicks) {
+        super.doRender(entityOstrich, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderOstrich((Ostrich) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderOstrich((Ostrich) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderOstrich((Ostrich) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderOstrich((Ostrich) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(Ostrich par1Entity, float par2) {
-        if (par1Entity != null && par1Entity.isChild()) {
+    protected void preRenderScale(Ostrich entity, float f) {
+        if (entity != null && entity.isChild()) {
             GL11.glScalef(this.scale / 2.0F, this.scale / 2.0F, this.scale / 2.0F);
         } else {
             GL11.glScalef(this.scale, this.scale, this.scale);
         }
     }
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
-        this.preRenderScale((Ostrich) par1EntityLiving, par2);
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((Ostrich) entity, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

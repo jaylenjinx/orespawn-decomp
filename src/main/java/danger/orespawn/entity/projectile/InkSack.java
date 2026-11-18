@@ -18,54 +18,53 @@ public class InkSack extends EntityThrowable {
     private float my_rotation = 0.0F;
     private int my_index = 65;
 
-    public InkSack(World par1World) {
-        super(par1World);
+    public InkSack(World world) {
+        super(world);
     }
 
-    public InkSack(World par1World, int par2) {
-        super(par1World);
+    public InkSack(World world, int n) {
+        super(world);
     }
 
-    public InkSack(World par1World, EntityLiving par2EntityLiving) {
-        super(par1World, par2EntityLiving);
+    public InkSack(World world, EntityLiving living) {
+        super(world, living);
     }
 
-    public InkSack(World par1World, EntityLiving par2EntityLiving, int par3) {
-        super(par1World, par2EntityLiving);
+    public InkSack(World world, EntityLiving living, int n) {
+        super(world, living);
     }
 
-    public InkSack(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public InkSack(World world, double x, double y, double z) {
+        super(world, x, y, z);
     }
 
     public int getInkSackIndex() {
         return this.my_index;
     }
 
-    protected void onImpact(MovingObjectPosition par1MovingObjectPosition) {
-        if (par1MovingObjectPosition.entityHit != null) {
-            float var2 = 1.0F;
-            if (par1MovingObjectPosition.entityHit instanceof EntityCreeper) {
-                var2 = 4.0F;
+    protected void onImpact(MovingObjectPosition hit) {
+        if (hit.entityHit != null) {
+            float amount = 1.0F;
+            if (hit.entityHit instanceof EntityCreeper) {
+                amount = 4.0F;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof WaterDragon) {
+            if (hit.entityHit instanceof WaterDragon) {
                 return;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof AttackSquid) {
+            if (hit.entityHit instanceof AttackSquid) {
                 return;
             }
 
-            par1MovingObjectPosition.entityHit
-                .attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), var2);
-            if (par1MovingObjectPosition.entityHit instanceof EntityLivingBase && this.worldObj.rand.nextInt(2) == 0) {
-                ((EntityLivingBase) par1MovingObjectPosition.entityHit).addPotionEffect(
+            hit.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), amount);
+            if (hit.entityHit instanceof EntityLivingBase && this.worldObj.rand.nextInt(2) == 0) {
+                ((EntityLivingBase) hit.entityHit).addPotionEffect(
                     new PotionEffect(Potion.blindness.id, 100 + 50 * this.worldObj.rand.nextInt(8), 0));
             }
         }
 
-        for (int var3 = 0; var3 < 4; var3++) {
+        for (int i = 0; i < 4; i++) {
             this.worldObj.spawnParticle(
                 "smoke",
                 this.posX + this.rand.nextFloat() - this.rand.nextFloat(),

@@ -39,8 +39,8 @@ public class Basilisk extends EntityMob {
     private int hurt_timer = 0;
     private float moveSpeed = 0.4F;
 
-    public Basilisk(World par1World) {
-        super(par1World);
+    public Basilisk(World world) {
+        super(world);
         this.setSize(1.6F, 3.5F);
         this.experienceValue = 150;
         this.fireResistance = 2000;
@@ -133,43 +133,43 @@ public class Basilisk extends EntityMob {
         return Items.beef;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         ItemStack is = null;
         this.dropItemRand(OreSpawnMain.MyBasiliskScale, 1);
         this.dropItemRand(Items.item_frame, 1);
         int i = 12 + this.worldObj.rand.nextInt(6);
 
-        for (int var4 = 0; var4 < i; var4++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(Items.emerald, 1);
         }
 
         i = 8 + this.worldObj.rand.nextInt(5);
 
-        for (int var7 = 0; var7 < i; var7++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(Items.chicken, 1);
         }
 
         i = 3 + this.worldObj.rand.nextInt(5);
 
-        for (int var8 = 0; var8 < i; var8++) {
-            int var3 = this.worldObj.rand.nextInt(15);
-            switch (var3) {
+        for (int i2 = 0; i2 < i; i2++) {
+            int roll = this.worldObj.rand.nextInt(15);
+            switch (roll) {
                 case 1:
                     is = this.dropItemRand(Items.emerald, 1);
                     break;
@@ -337,50 +337,50 @@ public class Basilisk extends EntityMob {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        if (!super.attackEntityAsMob(par1Entity)) {
+    public boolean attackEntityAsMob(Entity target) {
+        if (!super.attackEntityAsMob(target)) {
             return false;
         } else {
-            if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
-                int var2 = 8;
+            if (target != null && target instanceof EntityLivingBase) {
+                int n = 8;
                 if (this.worldObj.difficultySetting == EnumDifficulty.EASY) {
-                    var2 = 10;
+                    n = 10;
                 }
 
                 if (this.worldObj.difficultySetting == EnumDifficulty.NORMAL) {
-                    var2 = 12;
+                    n = 12;
                 } else if (this.worldObj.difficultySetting == EnumDifficulty.HARD) {
-                    var2 = 14;
+                    n = 14;
                 }
 
                 if (this.worldObj.rand.nextInt(3) == 0) {
-                    ((EntityLivingBase) par1Entity).addPotionEffect(new PotionEffect(Potion.poison.id, var2 * 20, 0));
+                    ((EntityLivingBase) target).addPotionEffect(new PotionEffect(Potion.poison.id, n * 20, 0));
                 }
 
                 double ks = 1.5;
                 double inair = 0.15;
-                float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-                if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+                float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+                if (target.isDead || target instanceof EntityPlayer) {
                     inair *= 2.0;
                 }
 
-                par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+                target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
             }
 
             return true;
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         if (this.hurt_timer > 0) {
             return false;
         } else {
             this.hurt_timer = 30;
-            return super.attackEntityFrom(par1DamageSource, par2);
+            return super.attackEntityFrom(source, amount);
         }
     }
 
@@ -419,25 +419,25 @@ public class Basilisk extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof Basilisk) {
+            } else if (target instanceof Basilisk) {
                 return false;
-            } else if (par1EntityLiving instanceof LeafMonster) {
+            } else if (target instanceof LeafMonster) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -451,18 +451,18 @@ public class Basilisk extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(24.0, 7.0, 24.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -474,8 +474,8 @@ public class Basilisk extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public boolean getCanSpawnHere() {
@@ -502,11 +502,11 @@ public class Basilisk extends EntityMob {
         } else if (this.worldObj.isDaytime()) {
             return false;
         } else {
-            for (int var10 = -1; var10 < 2; var10++) {
+            for (int i = -1; i < 2; i++) {
                 for (int j = -1; j < 2; j++) {
                     for (int ix = 1; ix < 5; ix++) {
                         Block bid = this.worldObj
-                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + var10);
+                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
                         if (bid != Blocks.air) {
                             return false;
                         }

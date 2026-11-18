@@ -17,32 +17,32 @@ public class RenderPitchBlack extends RenderLiving {
     private float scale = 1.0F;
     private static final ResourceLocation texture = new ResourceLocation("orespawn", "PitchBlacktexture.png");
 
-    public RenderPitchBlack(ModelPitchBlack par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderPitchBlack(ModelPitchBlack modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelPitchBlack) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderPitchBlack(PitchBlack par1EntityPitchBlack, double par2, double par4, double par6, float par8,
-        float par9) {
-        super.doRender(par1EntityPitchBlack, par2, par4, par6, par8, par9);
+    public void renderPitchBlack(PitchBlack entityPitchBlack, double x, double y, double z, float yaw,
+        float partialTicks) {
+        super.doRender(entityPitchBlack, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderPitchBlack((PitchBlack) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderPitchBlack((PitchBlack) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderPitchBlack((PitchBlack) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderPitchBlack((PitchBlack) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(PitchBlack par1Entity, float par2) {
-        float pscale = par1Entity.getPitchBlackScale();
+    protected void preRenderScale(PitchBlack entity, float f) {
+        float pscale = entity.getPitchBlackScale();
         GL11.glScalef(pscale, pscale, pscale);
     }
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
-        this.preRenderScale((PitchBlack) par1EntityLiving, par2);
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((PitchBlack) entity, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

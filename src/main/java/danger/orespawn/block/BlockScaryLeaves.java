@@ -23,56 +23,52 @@ public class BlockScaryLeaves extends BlockLeaves {
     private IIcon scary_solid = null;
     private IIcon generic_solid = null;
 
-    public BlockScaryLeaves(int par1) {}
+    public BlockScaryLeaves(int n) {}
 
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        par3List.add(new ItemStack(Item.getItemFromBlock(this), 1, 0));
+    public void getSubBlocks(Item item, CreativeTabs tab, List list) {
+        list.add(new ItemStack(Item.getItemFromBlock(this), 1, 0));
     }
 
-    public void dropBlockAsItemWithChance(World par1World, int par2, int par3, int par4, int par5, float par6,
-        int par7) {
-        if (!par1World.isRemote && par1World.rand.nextInt(25) == 1) {
+    public void dropBlockAsItemWithChance(World world, int x, int y, int z, int meta, float chance, int fortune) {
+        if (!world.isRemote && world.rand.nextInt(25) == 1) {
             if (this == OreSpawnMain.MyCherryLeaves) {
-                this.dropBlockAsItem(par1World, par2, par3, par4, new ItemStack(OreSpawnMain.MyCherry));
+                this.dropBlockAsItem(world, x, y, z, new ItemStack(OreSpawnMain.MyCherry));
             }
 
             if (this == OreSpawnMain.MyPeachLeaves) {
-                this.dropBlockAsItem(par1World, par2, par3, par4, new ItemStack(OreSpawnMain.MyPeach));
+                this.dropBlockAsItem(world, x, y, z, new ItemStack(OreSpawnMain.MyPeach));
             }
         }
     }
 
-    public int quantityDropped(Random par1Random) {
+    public int quantityDropped(Random rand) {
         if (this == OreSpawnMain.MyCherryLeaves) {
-            return par1Random.nextInt(4);
+            return rand.nextInt(4);
         } else {
-            return this == OreSpawnMain.MyPeachLeaves ? par1Random.nextInt(1) : 0;
+            return this == OreSpawnMain.MyPeachLeaves ? rand.nextInt(1) : 0;
         }
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        int var7 = 2;
+    public void updateTick(World world, int x, int y, int z, Random rand) {
+        int n = 2;
         int totaldist = 0;
-        if (!par1World.isRemote && par1World
-            .checkChunksExist(par2 - var7, par3 - var7, par4 - var7, par2 + var7, par3 + var7, par4 + var7)) {
-            for (int var12 = -var7; var12 <= var7; var12++) {
-                for (int var13 = -var7; var13 <= 0; var13++) {
-                    for (int var14 = -var7; var14 <= var7; var14++) {
-                        totaldist = Math.abs(var12) + Math.abs(var13) + Math.abs(var14);
+        if (!world.isRemote && world.checkChunksExist(x - n, y - n, z - n, x + n, y + n, z + n)) {
+            for (int i = -n; i <= n; i++) {
+                for (int j = -n; j <= 0; j++) {
+                    for (int k = -n; k <= n; k++) {
+                        totaldist = Math.abs(i) + Math.abs(j) + Math.abs(k);
                         if (totaldist <= 3) {
-                            Block bid = par1World.getBlock(par2 + var12, par3 + var13, par4 + var14);
-                            if (bid != null
-                                && bid.canSustainLeaves(par1World, par2 + var12, par3 + var13, par4 + var14)) {
-                                long t = par1World.getWorldTime();
+                            Block bid = world.getBlock(x + i, y + j, z + k);
+                            if (bid != null && bid.canSustainLeaves(world, x + i, y + j, z + k)) {
+                                long t = world.getWorldTime();
                                 t %= 24000L;
                                 if (this == OreSpawnMain.MyScaryLeaves && t < 12000L) {
-                                    OreSpawnMain
-                                        .setBlockFast(par1World, par2, par3, par4, OreSpawnMain.MyAppleLeaves, 0, 3);
+                                    OreSpawnMain.setBlockFast(world, x, y, z, OreSpawnMain.MyAppleLeaves, 0, 3);
                                 }
 
-                                bid = par1World.getBlock(par2, par3 - 1, par4);
-                                if (bid == Blocks.air && par1World.rand.nextInt(20) == 3) {
-                                    this.dropBlockAsItemWithChance(par1World, par2, par3 - 1, par4, 0, 0.0F, 0);
+                                bid = world.getBlock(x, y - 1, z);
+                                if (bid == Blocks.air && world.rand.nextInt(20) == 3) {
+                                    this.dropBlockAsItemWithChance(world, x, y - 1, z, 0, 0.0F, 0);
                                 }
 
                                 return;
@@ -82,15 +78,15 @@ public class BlockScaryLeaves extends BlockLeaves {
                 }
             }
 
-            this.removeLeaves(par1World, par2, par3, par4);
+            this.removeLeaves(world, x, y, z);
         }
     }
 
-    public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random par5Random) {}
+    public void randomDisplayTick(World world, int x, int y, int z, Random rand) {}
 
-    private void removeLeaves(World par1World, int par2, int par3, int par4) {
-        this.dropBlockAsItem(par1World, par2, par3, par4, 0, 0);
-        par1World.setBlock(par2, par3, par4, Blocks.air, 0, 2);
+    private void removeLeaves(World world, int x, int y, int z) {
+        this.dropBlockAsItem(world, x, y, z, 0, 0);
+        world.setBlock(x, y, z, Blocks.air, 0, 2);
     }
 
     public boolean isOpaqueCube() {
@@ -98,8 +94,8 @@ public class BlockScaryLeaves extends BlockLeaves {
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
-        Block i1 = par1IBlockAccess.getBlock(par2, par3, par4);
+    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side) {
+        Block i1 = blockAccess.getBlock(x, y, z);
         return OreSpawnMain.FastGraphicsLeaves == 0 || i1 != this;
     }
 
@@ -113,7 +109,7 @@ public class BlockScaryLeaves extends BlockLeaves {
     }
 
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int par1, int par2) {
+    public IIcon getIcon(int side, int meta) {
         if (OreSpawnMain.FastGraphicsLeaves != 0) {
             if (this == OreSpawnMain.MyCherryLeaves) {
                 return this.generic_solid;

@@ -28,8 +28,8 @@ public class CreepingHorror extends EntityMob {
     private GenericTargetSorter TargetSorter = null;
     private float moveSpeed = 0.25F;
 
-    public CreepingHorror(World par1World) {
-        super(par1World);
+    public CreepingHorror(World world) {
+        super(world);
         this.setSize(0.75F, 0.5F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -136,41 +136,41 @@ public class CreepingHorror extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof CreepingHorror) {
+            } else if (target instanceof CreepingHorror) {
                 return false;
-            } else if (par1EntityLiving instanceof RockBase) {
+            } else if (target instanceof RockBase) {
                 return false;
-            } else if (par1EntityLiving instanceof EnderReaper) {
+            } else if (target instanceof EnderReaper) {
                 return false;
-            } else if (par1EntityLiving instanceof LeafMonster) {
+            } else if (target instanceof LeafMonster) {
                 return false;
-            } else if (par1EntityLiving instanceof Dragon) {
+            } else if (target instanceof Dragon) {
                 return false;
-            } else if (par1EntityLiving instanceof TerribleTerror) {
+            } else if (target instanceof TerribleTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof LurkingTerror) {
+            } else if (target instanceof LurkingTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof PitchBlack) {
+            } else if (target instanceof PitchBlack) {
                 return false;
-            } else if (par1EntityLiving instanceof Firefly) {
+            } else if (target instanceof Firefly) {
                 return false;
-            } else if (par1EntityLiving instanceof Island) {
+            } else if (target instanceof Island) {
                 return false;
-            } else if (par1EntityLiving instanceof IslandToo) {
+            } else if (target instanceof IslandToo) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -184,18 +184,18 @@ public class CreepingHorror extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(16.0, 4.0, 16.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 

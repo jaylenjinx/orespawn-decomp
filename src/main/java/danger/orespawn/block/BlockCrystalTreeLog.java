@@ -22,12 +22,12 @@ public class BlockCrystalTreeLog extends BlockRotatedPillar {
     @SideOnly(Side.CLIENT)
     private IIcon tree_top;
 
-    public BlockCrystalTreeLog(int par1, int par2) {
+    public BlockCrystalTreeLog(int n, int n2) {
         super(Material.wood);
         this.setCreativeTab(CreativeTabs.tabBlock);
     }
 
-    protected ItemStack createStackedBlock(int par1) {
+    protected ItemStack createStackedBlock(int n) {
         return new ItemStack(Item.getItemFromBlock(this), 1, 0);
     }
 
@@ -47,17 +47,17 @@ public class BlockCrystalTreeLog extends BlockRotatedPillar {
         return false;
     }
 
-    public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         return Item.getItemFromBlock(OreSpawnMain.MyCrystalTreeLog);
     }
 
     @SideOnly(Side.CLIENT)
-    protected IIcon getSideIcon(int par1) {
+    protected IIcon getSideIcon(int n) {
         return this.field_111052_c;
     }
 
     @SideOnly(Side.CLIENT)
-    protected IIcon getTopIcon(int par1) {
+    protected IIcon getTopIcon(int n) {
         return this.tree_top;
     }
 

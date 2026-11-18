@@ -28,16 +28,16 @@ public class UltimatePickaxe extends ItemPickaxe {
 
     private int weaponDamage = 15;
 
-    public UltimatePickaxe(int par1, ToolMaterial par2) {
-        super(par2);
+    public UltimatePickaxe(int n, ToolMaterial toolMaterial) {
+        super(toolMaterial);
         this.maxStackSize = 1;
         this.setMaxDamage(3000);
         this.setCreativeTab(CreativeTabs.tabTools);
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        par1ItemStack.addEnchantment(Enchantment.efficiency, 5);
-        par1ItemStack.addEnchantment(Enchantment.fortune, 5);
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+        stack.addEnchantment(Enchantment.efficiency, 5);
+        stack.addEnchantment(Enchantment.fortune, 5);
     }
 
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
@@ -48,21 +48,21 @@ public class UltimatePickaxe extends ItemPickaxe {
         }
     }
 
-    public void onUpdate(ItemStack stack, World par2World, Entity par3Entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
         this.onUsingTick(stack, (EntityPlayer) null, 0);
     }
 
-    public boolean canHarvestBlock(Block par1Block) {
+    public boolean canHarvestBlock(Block block) {
         return true;
     }
 
-    public int getDamageVsEntity(Entity par1Entity) {
-        if (par1Entity instanceof Girlfriend) {
+    public int getDamageVsEntity(Entity entity) {
+        if (entity instanceof Girlfriend) {
             return 1;
-        } else if (par1Entity instanceof Boyfriend) {
+        } else if (entity instanceof Boyfriend) {
             return 1;
         } else {
-            return par1Entity instanceof EntityPlayer ? 1 : this.weaponDamage;
+            return entity instanceof EntityPlayer ? 1 : this.weaponDamage;
         }
     }
 
@@ -83,56 +83,56 @@ public class UltimatePickaxe extends ItemPickaxe {
         return false;
     }
 
-    private ItemStack dropItemAnItem(World world, int x, int y, int z, Item index, int par1) {
-        EntityItem var3x = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3x = new EntityItem(world, x, y, z, is);
-        if (var3x != null) {
-            world.spawnEntityInWorld(var3x);
+    private ItemStack dropItemAnItem(World world, int x, int y, int z, Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(world, x, y, z, is);
+        if (entityItem != null) {
+            world.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, Block par3, int par4, int par5, int par6,
-        EntityLivingBase par7EntityLivingBase) {
-        if (par3.getBlockHardness(par2World, par4, par5, par6) != 0.0) {
-            par1ItemStack.damageItem(1, par7EntityLivingBase);
+    public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z,
+        EntityLivingBase entity) {
+        if (block.getBlockHardness(world, x, y, z) != 0.0) {
+            stack.damageItem(1, entity);
         }
 
-        if (!par2World.isRemote) {
-            if (par3 == Blocks.iron_ore && par2World.rand.nextInt(2) != 0) {
-                this.dropItemAnItem(par2World, par4, par5, par6, Items.iron_ingot, 1 + par2World.rand.nextInt(2));
+        if (!world.isRemote) {
+            if (block == Blocks.iron_ore && world.rand.nextInt(2) != 0) {
+                this.dropItemAnItem(world, x, y, z, Items.iron_ingot, 1 + world.rand.nextInt(2));
             }
 
-            if (par3 == Blocks.gold_ore && par2World.rand.nextInt(2) != 0) {
-                this.dropItemAnItem(par2World, par4, par5, par6, Items.gold_ingot, 1 + par2World.rand.nextInt(2));
+            if (block == Blocks.gold_ore && world.rand.nextInt(2) != 0) {
+                this.dropItemAnItem(world, x, y, z, Items.gold_ingot, 1 + world.rand.nextInt(2));
             }
 
-            if (par3 == Blocks.stone && par2World.rand.nextInt(100) == 2) {
-                int i = par2World.rand.nextInt(10);
+            if (block == Blocks.stone && world.rand.nextInt(100) == 2) {
+                int i = world.rand.nextInt(10);
                 if (i == 0) {
-                    this.dropItemAnItem(par2World, par4, par5, par6, Items.diamond, 1);
+                    this.dropItemAnItem(world, x, y, z, Items.diamond, 1);
                 }
 
                 if (i == 1) {
-                    this.dropItemAnItem(par2World, par4, par5, par6, Items.emerald, 1);
+                    this.dropItemAnItem(world, x, y, z, Items.emerald, 1);
                 }
 
                 if (i == 2) {
-                    this.dropItemAnItem(par2World, par4, par5, par6, OreSpawnMain.MyAmethyst, 1);
+                    this.dropItemAnItem(world, x, y, z, OreSpawnMain.MyAmethyst, 1);
                 }
 
                 if (i == 3) {
-                    this.dropItemAnItem(par2World, par4, par5, par6, OreSpawnMain.MyRuby, 1);
+                    this.dropItemAnItem(world, x, y, z, OreSpawnMain.MyRuby, 1);
                 }
 
                 if (i == 4) {
-                    this.dropItemAnItem(par2World, par4, par5, par6, OreSpawnMain.UraniumNugget, 1);
+                    this.dropItemAnItem(world, x, y, z, OreSpawnMain.UraniumNugget, 1);
                 }
 
                 if (i == 5) {
-                    this.dropItemAnItem(par2World, par4, par5, par6, OreSpawnMain.TitaniumNugget, 1);
+                    this.dropItemAnItem(world, x, y, z, OreSpawnMain.TitaniumNugget, 1);
                 }
             }
         }

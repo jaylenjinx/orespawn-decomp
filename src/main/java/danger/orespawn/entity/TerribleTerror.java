@@ -28,8 +28,8 @@ public class TerribleTerror extends EntityMob {
     private ChunkCoordinates currentFlightTarget = null;
     private GenericTargetSorter TargetSorter = null;
 
-    public TerribleTerror(World par1World) {
-        super(par1World);
+    public TerribleTerror(World world) {
+        super(world);
         this.setSize(1.0F, 0.75F);
         this.getNavigator()
             .setAvoidsWater(false);
@@ -90,8 +90,8 @@ public class TerribleTerror extends EntityMob {
         this.motionY *= 0.6;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        return par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), 5.0F);
+    public boolean attackEntityAsMob(Entity target) {
+        return target.attackEntityFrom(DamageSource.causeMobDamage(this), 5.0F);
     }
 
     public boolean canSeeTarget(double pX, double pY, double pZ) {
@@ -153,16 +153,16 @@ public class TerribleTerror extends EntityMob {
                 }
             }
 
-            double var1 = this.currentFlightTarget.posX + 0.4 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.4 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.4 - this.motionX) * 0.30000000149011613;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.7F - this.motionY) * 0.20000000149011612;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.4 - this.motionZ) * 0.30000000149011613;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx = this.currentFlightTarget.posX + 0.4 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.4 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx) * 0.4 - this.motionX) * 0.30000000149011613;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.7F - this.motionY) * 0.20000000149011612;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.4 - this.motionZ) * 0.30000000149011613;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 0.75F;
-            this.rotationYaw += var8 / 4.0F;
+            this.rotationYaw += f2 / 4.0F;
         }
     }
 
@@ -170,17 +170,17 @@ public class TerribleTerror extends EntityMob {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean doesEntityNotTriggerPressurePlate() {
         return false;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
-        boolean ret = super.attackEntityFrom(par1DamageSource, par2);
-        Entity e = par1DamageSource.getEntity();
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        boolean ret = super.attackEntityFrom(source, amount);
+        Entity e = source.getEntity();
         if (e != null && this.currentFlightTarget != null) {
             this.currentFlightTarget.set((int) e.posX, (int) e.posY, (int) e.posZ);
         }
@@ -215,57 +215,57 @@ public class TerribleTerror extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof RockBase) {
+            } else if (target instanceof RockBase) {
                 return false;
-            } else if (par1EntityLiving instanceof TerribleTerror) {
+            } else if (target instanceof TerribleTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof EnderReaper) {
+            } else if (target instanceof EnderReaper) {
                 return false;
-            } else if (par1EntityLiving instanceof Mothra) {
+            } else if (target instanceof Mothra) {
                 return false;
-            } else if (par1EntityLiving instanceof LurkingTerror) {
+            } else if (target instanceof LurkingTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof CloudShark) {
+            } else if (target instanceof CloudShark) {
                 return false;
-            } else if (par1EntityLiving instanceof Rotator) {
+            } else if (target instanceof Rotator) {
                 return false;
-            } else if (par1EntityLiving instanceof Bee) {
+            } else if (target instanceof Bee) {
                 return false;
-            } else if (par1EntityLiving instanceof Mantis) {
+            } else if (target instanceof Mantis) {
                 return false;
-            } else if (par1EntityLiving instanceof LeafMonster) {
+            } else if (target instanceof LeafMonster) {
                 return false;
-            } else if (par1EntityLiving instanceof CreepingHorror) {
+            } else if (target instanceof CreepingHorror) {
                 return false;
-            } else if (par1EntityLiving instanceof Triffid) {
+            } else if (target instanceof Triffid) {
                 return false;
-            } else if (par1EntityLiving instanceof PitchBlack) {
+            } else if (target instanceof PitchBlack) {
                 return false;
-            } else if (par1EntityLiving instanceof Dragon) {
+            } else if (target instanceof Dragon) {
                 return false;
-            } else if (par1EntityLiving instanceof Island) {
+            } else if (target instanceof Island) {
                 return false;
-            } else if (par1EntityLiving instanceof IslandToo) {
+            } else if (target instanceof IslandToo) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityButterfly) {
+            } else if (target instanceof EntityButterfly) {
                 return false;
-            } else if (par1EntityLiving instanceof Firefly) {
+            } else if (target instanceof Firefly) {
                 return false;
-            } else if (par1EntityLiving instanceof Triffid) {
+            } else if (target instanceof Triffid) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -279,18 +279,18 @@ public class TerribleTerror extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(12.0, 8.0, 12.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 

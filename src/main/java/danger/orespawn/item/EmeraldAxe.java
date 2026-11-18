@@ -13,14 +13,14 @@ public class EmeraldAxe extends ItemAxe {
 
     private int weaponDamage = 10;
 
-    public EmeraldAxe(int par1, ToolMaterial par2) {
-        super(par2);
+    public EmeraldAxe(int n, ToolMaterial toolMaterial) {
+        super(toolMaterial);
         this.maxStackSize = 1;
         this.setMaxDamage(1300);
         this.setCreativeTab(CreativeTabs.tabTools);
     }
 
-    public int getDamageVsEntity(Entity par1Entity) {
+    public int getDamageVsEntity(Entity entity) {
         return this.weaponDamage;
     }
 

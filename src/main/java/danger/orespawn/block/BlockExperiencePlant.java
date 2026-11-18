@@ -15,25 +15,25 @@ import danger.orespawn.OreSpawnMain;
 
 public class BlockExperiencePlant extends BlockReed {
 
-    public BlockExperiencePlant(int par1) {
-        float var3 = 0.375F;
-        this.setBlockBounds(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, 1.0F, 0.5F + var3);
+    public BlockExperiencePlant(int n) {
+        float f = 0.375F;
+        this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, 1.0F, 0.5F + f);
         this.setTickRandomly(true);
     }
 
-    public boolean canPlaceBlockAt(World par1World, int par2, int par3, int par4) {
-        Block bid = par1World.getBlock(par2, par3 - 1, par4);
+    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+        Block bid = world.getBlock(x, y - 1, z);
         return bid == Blocks.air ? false : bid == Blocks.grass || bid == Blocks.dirt || bid == Blocks.farmland;
     }
 
-    public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        if (par1World.rand.nextInt(20) == 1) {
+    public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
+        if (world.rand.nextInt(20) == 1) {
             for (int j1 = 0; j1 < 20; j1++) {
-                par1World.spawnParticle(
+                world.spawnParticle(
                     "happyVillager",
-                    par2 + par1World.rand.nextFloat(),
-                    (double) par3 + par1World.rand.nextFloat(),
-                    par4 + par1World.rand.nextFloat(),
+                    x + world.rand.nextFloat(),
+                    (double) y + world.rand.nextFloat(),
+                    z + world.rand.nextFloat(),
                     0.0,
                     0.0,
                     0.0);
@@ -41,24 +41,24 @@ public class BlockExperiencePlant extends BlockReed {
         }
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        if (!par1World.isRemote) {
-            if (par1World.rand.nextInt(10) == 1) {
-                par1World.setBlock(par2, par3, par4, Blocks.air, 0, 2);
-                OreSpawnMain.OreSpawnTrees.ExperienceTree(par1World, par2, par3 - 1, par4);
+    public void updateTick(World world, int x, int y, int z, Random rand) {
+        if (!world.isRemote) {
+            if (world.rand.nextInt(10) == 1) {
+                world.setBlock(x, y, z, Blocks.air, 0, 2);
+                OreSpawnMain.OreSpawnTrees.ExperienceTree(world, x, y - 1, z);
             }
         }
     }
 
-    public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         return Item.getItemFromBlock(OreSpawnMain.MyExperiencePlant);
     }
 
-    public int quantityDropped(Random par1Random) {
+    public int quantityDropped(Random rand) {
         return 1;
     }
 
-    public int idPicked(World par1World, int par2, int par3, int par4) {
+    public int idPicked(World world, int x, int y, int z) {
         return 0;
     }
 

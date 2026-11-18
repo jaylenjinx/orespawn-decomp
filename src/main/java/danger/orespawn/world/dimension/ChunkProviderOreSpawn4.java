@@ -23,9 +23,9 @@ public class ChunkProviderOreSpawn4 implements IChunkProvider {
     private final Block[] cachedBlockIDs = new Block[256];
     private final byte[] cachedBlockMetadata = new byte[256];
 
-    public ChunkProviderOreSpawn4(World par1World, long par2, boolean par4) {
-        this.worldObj = par1World;
-        this.random = new Random(par2);
+    public ChunkProviderOreSpawn4(World world, long time, boolean flag) {
+        this.worldObj = world;
+        this.random = new Random(time);
 
         for (int j = 0; j < 8; j++) {
             if (j == 0) {
@@ -38,12 +38,12 @@ public class ChunkProviderOreSpawn4 implements IChunkProvider {
         }
     }
 
-    public Chunk loadChunk(int par1, int par2) {
-        return this.provideChunk(par1, par2);
+    public Chunk loadChunk(int chunkX, int chunkZ) {
+        return this.provideChunk(chunkX, chunkZ);
     }
 
-    public Chunk provideChunk(int par1, int par2) {
-        Chunk chunk = new Chunk(this.worldObj, par1, par2);
+    public Chunk provideChunk(int chunkX, int chunkZ) {
+        Chunk chunk = new Chunk(this.worldObj, chunkX, chunkZ);
 
         for (int k = 0; k < this.cachedBlockIDs.length; k++) {
             Block block = this.cachedBlockIDs[k];
@@ -64,25 +64,25 @@ public class ChunkProviderOreSpawn4 implements IChunkProvider {
             }
         }
 
-        this.addScragglyTrees(this.worldObj, par1 * 16, par2 * 16, chunk);
+        this.addScragglyTrees(this.worldObj, chunkX * 16, chunkZ * 16, chunk);
         chunk.generateSkylightMap();
         return chunk;
     }
 
-    public boolean chunkExists(int par1, int par2) {
+    public boolean chunkExists(int chunkX, int chunkZ) {
         return true;
     }
 
-    public void populate(IChunkProvider par1IChunkProvider, int par2, int par3) {
-        int k = par2 * 16;
-        int l = par3 * 16;
+    public void populate(IChunkProvider provider, int chunkX, int chunkZ) {
+        int k = chunkX * 16;
+        int l = chunkZ * 16;
         this.random.setSeed(this.worldObj.getSeed());
         long i1 = this.random.nextLong() / 2L * 2L + 1L;
         long j1 = this.random.nextLong() / 2L * 2L + 1L;
-        this.random.setSeed(par2 * i1 + par3 * j1 ^ this.worldObj.getSeed());
+        this.random.setSeed(chunkX * i1 + chunkZ * j1 ^ this.worldObj.getSeed());
     }
 
-    public boolean saveChunks(boolean par1, IProgressUpdate par2IProgressUpdate) {
+    public boolean saveChunks(boolean saveAll, IProgressUpdate progress) {
         return true;
     }
 
@@ -100,13 +100,12 @@ public class ChunkProviderOreSpawn4 implements IChunkProvider {
         return "DangerDimension";
     }
 
-    public List getPossibleCreatures(EnumCreatureType par1EnumCreatureType, int par2, int par3, int par4) {
-        BiomeGenBase biomegenbase = this.worldObj.getBiomeGenForCoords(par2, par4);
-        return biomegenbase.getSpawnableList(par1EnumCreatureType);
+    public List getPossibleCreatures(EnumCreatureType creatureType, int x, int y, int z) {
+        BiomeGenBase biomegenbase = this.worldObj.getBiomeGenForCoords(x, z);
+        return biomegenbase.getSpawnableList(creatureType);
     }
 
-    public ChunkPosition func_147416_a(World p_147416_1_, String p_147416_2_, int p_147416_3_, int p_147416_4_,
-        int p_147416_5_) {
+    public ChunkPosition func_147416_a(World world, String str, int n, int n2, int n3) {
         return null;
     }
 
@@ -114,7 +113,7 @@ public class ChunkProviderOreSpawn4 implements IChunkProvider {
         return 0;
     }
 
-    public void recreateStructures(int par1, int par2) {}
+    public void recreateStructures(int n, int n2) {}
 
     public void addScragglyTrees(World world, int chunkX, int chunkZ, Chunk chunk) {
         int howmany = 1 + this.random.nextInt(10);
@@ -208,7 +207,7 @@ public class ChunkProviderOreSpawn4 implements IChunkProvider {
 
         y += i - 1;
 
-        for (int var16 = i; var16 < j; var16++) {
+        for (int i2 = i; i2 < j; i2++) {
             int ix = this.random.nextInt(2) - this.random.nextInt(2);
             int iz = this.random.nextInt(2) - this.random.nextInt(2);
             int iy = this.random.nextInt(4) > 0 ? 1 : 0;
@@ -227,7 +226,7 @@ public class ChunkProviderOreSpawn4 implements IChunkProvider {
                     x,
                     y,
                     z,
-                    this.random.nextInt(1 + j - var16),
+                    this.random.nextInt(1 + j - i2),
                     this.random.nextInt(2) - this.random.nextInt(2),
                     this.random.nextInt(2) - this.random.nextInt(2),
                     chunk);

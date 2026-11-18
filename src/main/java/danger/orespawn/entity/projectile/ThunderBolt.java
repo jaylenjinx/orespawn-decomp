@@ -11,40 +11,38 @@ import danger.orespawn.MyUtils;
 
 public class ThunderBolt extends EntityThrowable {
 
-    public ThunderBolt(World par1World) {
-        super(par1World);
+    public ThunderBolt(World world) {
+        super(world);
     }
 
-    public ThunderBolt(World par1World, EntityLivingBase par3EntityPlayer) {
-        super(par1World, par3EntityPlayer);
+    public ThunderBolt(World world, EntityLivingBase player) {
+        super(world, player);
     }
 
-    public ThunderBolt(World par1World, EntityLivingBase par2EntityLiving, int par3) {
-        super(par1World, par2EntityLiving);
+    public ThunderBolt(World world, EntityLivingBase living, int n) {
+        super(world, living);
     }
 
-    public ThunderBolt(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public ThunderBolt(World world, double x, double y, double z) {
+        super(world, x, y, z);
     }
 
-    protected void onImpact(MovingObjectPosition par1MovingObjectPosition) {
-        if (par1MovingObjectPosition.entityHit != null) {
-            float var2 = 40.0F;
-            if (MyUtils.isRoyalty(par1MovingObjectPosition.entityHit)) {
+    protected void onImpact(MovingObjectPosition hit) {
+        if (hit.entityHit != null) {
+            float f = 40.0F;
+            if (MyUtils.isRoyalty(hit.entityHit)) {
                 this.setDead();
                 return;
             }
 
-            par1MovingObjectPosition.entityHit
-                .attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), var2 / 2.0F);
-            par1MovingObjectPosition.entityHit
-                .attackEntityFrom(DamageSource.causeMobDamage(this.getThrower()), var2 / 2.0F);
-            par1MovingObjectPosition.entityHit.setFire(1);
+            hit.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), f / 2.0F);
+            hit.entityHit.attackEntityFrom(DamageSource.causeMobDamage(this.getThrower()), f / 2.0F);
+            hit.entityHit.setFire(1);
         }
 
         int mx = 20;
 
-        for (int var3 = 0; var3 < mx; var3++) {
+        for (int i = 0; i < mx; i++) {
             this.worldObj.spawnParticle(
                 "smoke",
                 this.posX + this.rand.nextFloat() - this.rand.nextFloat(),

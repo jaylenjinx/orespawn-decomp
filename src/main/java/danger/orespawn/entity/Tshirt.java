@@ -12,8 +12,8 @@ public class Tshirt extends EntityAnimal {
 
     private float moveSpeed = 0.0F;
 
-    public Tshirt(World par1World) {
-        super(par1World);
+    public Tshirt(World world) {
+        super(world);
         this.setSize(4.0F, 4.0F);
         this.experienceValue = 40;
         this.fireResistance = 100;
@@ -85,7 +85,7 @@ public class Tshirt extends EntityAnimal {
 
     public void initCreature() {}
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 

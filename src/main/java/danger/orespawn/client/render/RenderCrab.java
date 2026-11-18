@@ -17,31 +17,31 @@ public class RenderCrab extends RenderLiving {
     private float scale = 1.0F;
     private static final ResourceLocation texture = new ResourceLocation("orespawn", "RobotCrabtexture.png");
 
-    public RenderCrab(ModelCrab par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderCrab(ModelCrab modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelCrab) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderCrab(Crab par1EntityCrab, double par2, double par4, double par6, float par8, float par9) {
-        super.doRender(par1EntityCrab, par2, par4, par6, par8, par9);
+    public void renderCrab(Crab entityCrab, double x, double y, double z, float yaw, float partialTicks) {
+        super.doRender(entityCrab, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderCrab((Crab) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderCrab((Crab) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderCrab((Crab) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderCrab((Crab) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(Crab par1Entity, float par2) {
-        float pscale = par1Entity.getCrabScale();
+    protected void preRenderScale(Crab entity, float f) {
+        float pscale = entity.getCrabScale();
         GL11.glScalef(pscale, pscale, pscale);
     }
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
-        this.preRenderScale((Crab) par1EntityLiving, par2);
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((Crab) entity, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

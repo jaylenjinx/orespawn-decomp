@@ -10,28 +10,28 @@ public class MyEntityAINearestAttackableTargetSorter implements Comparator {
     private Entity theEntity;
     final MyEntityAINearestAttackableTarget parent;
 
-    public MyEntityAINearestAttackableTargetSorter(
-        MyEntityAINearestAttackableTarget par1EntityAINearestAttackableTarget, Entity par2Entity) {
-        this.parent = par1EntityAINearestAttackableTarget;
-        this.theEntity = par2Entity;
+    public MyEntityAINearestAttackableTargetSorter(MyEntityAINearestAttackableTarget entityAINearestAttackableTarget,
+        Entity entity) {
+        this.parent = entityAINearestAttackableTarget;
+        this.theEntity = entity;
     }
 
-    public int compareDistanceSq(Entity par1Entity, Entity par2Entity) {
-        double var3 = this.theEntity.getDistanceSqToEntity(par1Entity);
-        if (par1Entity instanceof EntityCreeper) {
-            var3 /= 2.0;
+    public int compareDistanceSq(Entity entity2, Entity entity) {
+        double distanceSq = this.theEntity.getDistanceSqToEntity(entity2);
+        if (entity2 instanceof EntityCreeper) {
+            distanceSq /= 2.0;
         }
 
-        double var5 = this.theEntity.getDistanceSqToEntity(par2Entity);
-        if (par2Entity instanceof EntityCreeper) {
-            var5 /= 2.0;
+        double distanceSq2 = this.theEntity.getDistanceSqToEntity(entity);
+        if (entity instanceof EntityCreeper) {
+            distanceSq2 /= 2.0;
         }
 
-        return var3 < var5 ? -1 : (var3 > var5 ? 1 : 0);
+        return distanceSq < distanceSq2 ? -1 : (distanceSq > distanceSq2 ? 1 : 0);
     }
 
     @Override
-    public int compare(Object par1Obj, Object par2Obj) {
-        return this.compareDistanceSq((Entity) par1Obj, (Entity) par2Obj);
+    public int compare(Object a, Object b) {
+        return this.compareDistanceSq((Entity) a, (Entity) b);
     }
 }

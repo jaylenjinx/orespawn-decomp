@@ -26,34 +26,35 @@ public abstract class MyEntityAITarget extends EntityAIBase {
     private int targetSearchDelay = 0;
     private int field_75298_g = 0;
 
-    public MyEntityAITarget(EntityLiving par1EntityLiving, float par2, boolean par3) {
-        this(par1EntityLiving, par2, par3, false);
+    public MyEntityAITarget(EntityLiving living, float f, boolean flag) {
+        this(living, f, flag, false);
     }
 
-    public MyEntityAITarget(EntityLiving par1EntityLiving, float par2, boolean par3, boolean par4) {
-        this.taskOwner = par1EntityLiving;
-        this.targetDistance = par2;
-        this.shouldCheckSight = par3;
-        this.nearbyOnly = par4;
+    public MyEntityAITarget(EntityLiving living, float targetDistance2, boolean shouldCheckSight2,
+        boolean nearbyOnly2) {
+        this.taskOwner = living;
+        this.targetDistance = targetDistance2;
+        this.shouldCheckSight = shouldCheckSight2;
+        this.nearbyOnly = nearbyOnly2;
     }
 
     public boolean continueExecuting() {
-        EntityLivingBase var1 = this.taskOwner.getAttackTarget();
-        if (var1 == null) {
+        EntityLivingBase attackTarget = this.taskOwner.getAttackTarget();
+        if (attackTarget == null) {
             return false;
-        } else if (!var1.isEntityAlive()) {
+        } else if (!attackTarget.isEntityAlive()) {
             this.taskOwner.setAttackTarget(null);
             return false;
-        } else if (this.taskOwner.getDistanceSqToEntity(var1) > this.targetDistance * this.targetDistance) {
+        } else if (this.taskOwner.getDistanceSqToEntity(attackTarget) > this.targetDistance * this.targetDistance) {
             return false;
         } else if (this.taskOwner instanceof EntityTameable && ((EntityTameable) this.taskOwner).isTamed()
-            && var1 instanceof EntityTameable
-            && ((EntityTameable) var1).isTamed()) {
+            && attackTarget instanceof EntityTameable
+            && ((EntityTameable) attackTarget).isTamed()) {
                 return false;
             } else {
                 if (this.shouldCheckSight) {
                     if (this.taskOwner.getEntitySenses()
-                        .canSee(var1)) {
+                        .canSee(attackTarget)) {
                         this.field_75298_g = 0;
                     } else if (++this.field_75298_g > 60) {
                         return false;
@@ -74,38 +75,38 @@ public abstract class MyEntityAITarget extends EntityAIBase {
         this.taskOwner.setAttackTarget((EntityLiving) null);
     }
 
-    protected boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    protected boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this.taskOwner) {
+        } else if (target == this.taskOwner) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else {
             if (this.taskOwner instanceof EntityTameable && ((EntityTameable) this.taskOwner).isTamed()) {
-                if (par1EntityLiving instanceof EntityTameable && ((EntityTameable) par1EntityLiving).isTamed()) {
+                if (target instanceof EntityTameable && ((EntityTameable) target).isTamed()) {
                     return false;
                 }
 
-                if (par1EntityLiving == ((EntityTameable) this.taskOwner).getOwner()) {
+                if (target == ((EntityTameable) this.taskOwner).getOwner()) {
                     return false;
                 }
             }
 
-            if (par1EntityLiving instanceof EntityPlayer) {
+            if (target instanceof EntityPlayer) {
                 return OreSpawnMain.valentines_day != 0;
-            } else if (par1EntityLiving instanceof EntityPigZombie) {
+            } else if (target instanceof EntityPigZombie) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityEnderman) {
+            } else if (target instanceof EntityEnderman) {
                 return false;
-            } else if (par1EntityLiving instanceof Mothra) {
+            } else if (target instanceof Mothra) {
                 return true;
             } else if (this.shouldCheckSight && !this.taskOwner.getEntitySenses()
-                .canSee(par1EntityLiving)) {
+                .canSee(target)) {
                     return false;
-                } else if (par1EntityLiving instanceof EntityCreeper) {
+                } else if (target instanceof EntityCreeper) {
                     return true;
-                } else if (par1EntityLiving instanceof EntityGhast) {
+                } else if (target instanceof EntityGhast) {
                     return true;
                 } else {
                     if (this.nearbyOnly) {
@@ -114,7 +115,7 @@ public abstract class MyEntityAITarget extends EntityAIBase {
                         }
 
                         if (this.targetSearchStatus == 0) {
-                            this.targetSearchStatus = this.canEasilyReach(par1EntityLiving) ? 1 : 2;
+                            this.targetSearchStatus = this.canEasilyReach(target) ? 1 : 2;
                         }
 
                         if (this.targetSearchStatus == 2) {
@@ -127,21 +128,21 @@ public abstract class MyEntityAITarget extends EntityAIBase {
         }
     }
 
-    private boolean canEasilyReach(EntityLivingBase par1EntityLiving) {
+    private boolean canEasilyReach(EntityLivingBase living) {
         this.targetSearchDelay = 10 + this.taskOwner.getRNG()
             .nextInt(5);
-        PathEntity var2 = this.taskOwner.getNavigator()
-            .getPathToEntityLiving(par1EntityLiving);
-        if (var2 == null) {
+        PathEntity pathToEntityLiving = this.taskOwner.getNavigator()
+            .getPathToEntityLiving(living);
+        if (pathToEntityLiving == null) {
             return false;
         } else {
-            PathPoint var3 = var2.getFinalPathPoint();
-            if (var3 == null) {
+            PathPoint finalPathPoint = pathToEntityLiving.getFinalPathPoint();
+            if (finalPathPoint == null) {
                 return false;
             } else {
-                int var4 = var3.xCoord - MathHelper.floor_double(par1EntityLiving.posX);
-                int var5 = var3.zCoord - MathHelper.floor_double(par1EntityLiving.posZ);
-                return var4 * var4 + var5 * var5 <= 2.25;
+                int n = finalPathPoint.xCoord - MathHelper.floor_double(living.posX);
+                int n2 = finalPathPoint.zCoord - MathHelper.floor_double(living.posZ);
+                return n * n + n2 * n2 <= 2.25;
             }
         }
     }

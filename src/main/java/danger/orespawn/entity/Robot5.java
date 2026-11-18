@@ -36,8 +36,8 @@ public class Robot5 extends EntityMob {
     private int reload_ticker = 0;
     private float moveSpeed = 0.3F;
 
-    public Robot5(World par1World) {
-        super(par1World);
+    public Robot5(World world) {
+        super(world);
         this.setSize(1.0F, 2.25F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -123,35 +123,35 @@ public class Robot5 extends EntityMob {
         return Items.iron_ingot;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         ItemStack is = null;
-        int var5 = 5 + this.worldObj.rand.nextInt(6);
+        int n = 5 + this.worldObj.rand.nextInt(6);
 
-        for (int var4 = 0; var4 < var5; var4++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(OreSpawnMain.MyLaserBall, 4);
         }
 
         int i = 2 + this.worldObj.rand.nextInt(5);
 
-        for (int var8 = 0; var8 < i; var8++) {
-            int var3 = this.worldObj.rand.nextInt(15);
-            switch (var3) {
+        for (int i2 = 0; i2 < i; i2++) {
+            int roll = this.worldObj.rand.nextInt(15);
+            switch (roll) {
                 case 0:
                     is = this.dropItemRand(Items.redstone, 1);
                     break;
@@ -185,12 +185,12 @@ public class Robot5 extends EntityMob {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        return super.attackEntityAsMob(par1Entity);
+    public boolean attackEntityAsMob(Entity target) {
+        return super.attackEntityAsMob(target);
     }
 
     protected void updateAITasks() {
@@ -235,24 +235,24 @@ public class Robot5 extends EntityMob {
                         if (rdd < 0.5) {
                             double yoff = 1.6;
                             double xzoff = 1.6;
-                            LaserBall var2 = new LaserBall(
+                            LaserBall laserBall = new LaserBall(
                                 this.worldObj,
                                 e.posX - this.posX,
                                 e.posY - (this.posY + yoff),
                                 e.posZ - this.posZ);
-                            var2.setLocationAndAngles(
+                            laserBall.setLocationAndAngles(
                                 this.posX - xzoff * Math.sin(Math.toRadians(this.rotationYawHead)),
                                 this.posY + yoff,
                                 this.posZ + xzoff * Math.cos(Math.toRadians(this.rotationYawHead)),
                                 this.rotationYawHead,
                                 this.rotationPitch);
-                            double var3 = e.posX - var2.posX;
-                            double var5 = e.posY - var2.posY;
-                            double var7 = e.posZ - var2.posZ;
-                            float var9 = MathHelper.sqrt_double(var3 * var3 + var7 * var7) * 0.2F;
-                            var2.setThrowableHeading(var3, var5 + var9, var7, 1.4F, 5.0F);
+                            double dx = e.posX - laserBall.posX;
+                            double dy = e.posY - laserBall.posY;
+                            double dz = e.posZ - laserBall.posZ;
+                            float f = MathHelper.sqrt_double(dx * dx + dz * dz) * 0.2F;
+                            laserBall.setThrowableHeading(dx, dy + f, dz, 1.4F, 5.0F);
                             this.worldObj.playSoundAtEntity(this, "fireworks.launch", 3.0F, 1.0F);
-                            this.worldObj.spawnEntityInWorld(var2);
+                            this.worldObj.spawnEntityInWorld(laserBall);
                             this.setAttacking(1);
                         }
 
@@ -268,33 +268,33 @@ public class Robot5 extends EntityMob {
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        if (!par1DamageSource.getDamageType()
+        if (!source.getDamageType()
             .equals("cactus")) {
-            ret = super.attackEntityFrom(par1DamageSource, par2);
+            ret = super.attackEntityFrom(source, amount);
         }
 
         return ret;
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityMob) {
+            } else if (target instanceof EntityMob) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -308,14 +308,14 @@ public class Robot5 extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(30.0, 6.0, 30.0));
-            Collections.sort(var5, this.TargetSorter);
+            Collections.sort(entities, this.TargetSorter);
 
-            for (Entity var3 : (List<Entity>) var5) {
-                EntityLivingBase var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            for (Entity entity : (List<Entity>) entities) {
+                EntityLivingBase target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -327,8 +327,8 @@ public class Robot5 extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public boolean getCanSpawnHere() {
@@ -355,11 +355,11 @@ public class Robot5 extends EntityMob {
         } else if (this.worldObj.isDaytime()) {
             return false;
         } else {
-            for (int var10 = -1; var10 < 1; var10++) {
+            for (int i = -1; i < 1; i++) {
                 for (int j = -1; j <= 1; j++) {
                     for (int ix = 1; ix < 3; ix++) {
                         Block bid = this.worldObj
-                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + var10);
+                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
                         if (bid != Blocks.air && bid != Blocks.tallgrass) {
                             return false;
                         }

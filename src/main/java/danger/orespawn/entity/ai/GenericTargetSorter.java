@@ -9,37 +9,37 @@ public class GenericTargetSorter implements Comparator {
 
     private Entity theEntity;
 
-    public GenericTargetSorter(Entity par2Entity) {
-        this.theEntity = par2Entity;
+    public GenericTargetSorter(Entity entity) {
+        this.theEntity = entity;
     }
 
-    public int compareDistanceSq(Entity par1Entity, Entity par2Entity) {
+    public int compareDistanceSq(Entity entity2, Entity entity) {
         double weight = 0.0;
-        double var3 = this.theEntity.getDistanceSqToEntity(par1Entity);
-        if (par1Entity instanceof EntityCreeper) {
-            var3 /= 2.0;
+        double distanceSq = this.theEntity.getDistanceSqToEntity(entity2);
+        if (entity2 instanceof EntityCreeper) {
+            distanceSq /= 2.0;
         }
 
-        weight = par1Entity.height * par1Entity.width;
+        weight = entity2.height * entity2.width;
         if (weight > 1.0) {
-            var3 /= weight;
+            distanceSq /= weight;
         }
 
-        double var5 = this.theEntity.getDistanceSqToEntity(par2Entity);
-        if (par2Entity instanceof EntityCreeper) {
-            var5 /= 2.0;
+        double distanceSq2 = this.theEntity.getDistanceSqToEntity(entity);
+        if (entity instanceof EntityCreeper) {
+            distanceSq2 /= 2.0;
         }
 
-        weight = par2Entity.height * par2Entity.width;
+        weight = entity.height * entity.width;
         if (weight > 1.0) {
-            var5 /= weight;
+            distanceSq2 /= weight;
         }
 
-        return var3 < var5 ? -1 : (var3 > var5 ? 1 : 0);
+        return distanceSq < distanceSq2 ? -1 : (distanceSq > distanceSq2 ? 1 : 0);
     }
 
     @Override
-    public int compare(Object par1Obj, Object par2Obj) {
-        return this.compareDistanceSq((Entity) par1Obj, (Entity) par2Obj);
+    public int compare(Object a, Object b) {
+        return this.compareDistanceSq((Entity) a, (Entity) b);
     }
 }

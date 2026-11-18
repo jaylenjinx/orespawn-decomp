@@ -60,8 +60,8 @@ public class Cephadrome extends EntityCreature {
     private int badmood = 0;
     private float moveSpeed = 0.25F;
 
-    public Cephadrome(World par1World) {
-        super(par1World);
+    public Cephadrome(World world) {
+        super(world);
         this.setSize(2.5F, 2.25F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -78,15 +78,15 @@ public class Cephadrome extends EntityCreature {
         this.renderdata = new RenderInfo();
     }
 
-    public Cephadrome(World par1World, double par2, double par4, double par6) {
-        this(par1World);
-        this.setPosition(par2, par4 + this.yOffset, par6);
+    public Cephadrome(World world, double x, double y, double z) {
+        this(world);
+        this.setPosition(x, y + this.yOffset, z);
         this.motionX = 0.0;
         this.motionY = 0.0;
         this.motionZ = 0.0;
-        this.prevPosX = par2;
-        this.prevPosY = par4;
-        this.prevPosZ = par6;
+        this.prevPosX = x;
+        this.prevPosY = y;
+        this.prevPosZ = z;
     }
 
     protected void applyEntityAttributes() {
@@ -117,9 +117,9 @@ public class Cephadrome extends EntityCreature {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     protected boolean canTriggerWalking() {
         return true;
@@ -209,206 +209,206 @@ public class Cephadrome extends EntityCreature {
         return Items.beef;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         int i = 4 + this.worldObj.rand.nextInt(6);
 
-        for (int var4 = 0; var4 < i; var4++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(OreSpawnMain.UraniumNugget, 1);
         }
 
         i = 4 + this.worldObj.rand.nextInt(6);
 
-        for (int var7 = 0; var7 < i; var7++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(OreSpawnMain.TitaniumNugget, 1);
         }
 
         i = 1 + this.worldObj.rand.nextInt(5);
 
-        for (int var8 = 0; var8 < i; var8++) {
-            int var3 = this.worldObj.rand.nextInt(20);
-            switch (var3) {
+        for (int i2 = 0; i2 < i; i2++) {
+            int roll = this.worldObj.rand.nextInt(20);
+            switch (roll) {
                 case 0: {
                     ItemStack is = this.dropItemRand(OreSpawnMain.MyRubySword, 1);
                     break;
                 }
                 case 1:
-                    ItemStack var21 = this.dropItemRand(Items.diamond, 1);
+                    ItemStack stack = this.dropItemRand(Items.diamond, 1);
                     break;
                 case 2:
-                    ItemStack var20 = this.dropItemRand(OreSpawnMain.MyThunderStaff, 1);
+                    ItemStack stack2 = this.dropItemRand(OreSpawnMain.MyThunderStaff, 1);
                     break;
                 case 3:
-                    ItemStack var19 = this.dropItemRand(OreSpawnMain.MyRubySword, 1);
+                    ItemStack stack3 = this.dropItemRand(OreSpawnMain.MyRubySword, 1);
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var19.addEnchantment(Enchantment.sharpness, 1 + this.worldObj.rand.nextInt(5));
+                        stack3.addEnchantment(Enchantment.sharpness, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var19.addEnchantment(Enchantment.baneOfArthropods, 1 + this.worldObj.rand.nextInt(5));
+                        stack3.addEnchantment(Enchantment.baneOfArthropods, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var19.addEnchantment(Enchantment.knockback, 1 + this.worldObj.rand.nextInt(5));
+                        stack3.addEnchantment(Enchantment.knockback, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var19.addEnchantment(Enchantment.looting, 1 + this.worldObj.rand.nextInt(5));
+                        stack3.addEnchantment(Enchantment.looting, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var19.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack3.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var19.addEnchantment(Enchantment.fireAspect, 1 + this.worldObj.rand.nextInt(5));
+                        stack3.addEnchantment(Enchantment.fireAspect, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var19.addEnchantment(Enchantment.sharpness, 1 + this.worldObj.rand.nextInt(5));
+                        stack3.addEnchantment(Enchantment.sharpness, 1 + this.worldObj.rand.nextInt(5));
                     }
                     break;
                 case 4:
-                    ItemStack var18 = this.dropItemRand(OreSpawnMain.MyRubyShovel, 1);
+                    ItemStack stack4 = this.dropItemRand(OreSpawnMain.MyRubyShovel, 1);
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var18.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack4.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var18.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
+                        stack4.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
                     }
                     break;
                 case 5:
-                    ItemStack var17 = this.dropItemRand(OreSpawnMain.MyRubyPickaxe, 1);
+                    ItemStack stack5 = this.dropItemRand(OreSpawnMain.MyRubyPickaxe, 1);
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var17.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack5.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var17.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
+                        stack5.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var17.addEnchantment(Enchantment.fortune, 1 + this.worldObj.rand.nextInt(5));
+                        stack5.addEnchantment(Enchantment.fortune, 1 + this.worldObj.rand.nextInt(5));
                     }
                     break;
                 case 6:
-                    ItemStack var16 = this.dropItemRand(OreSpawnMain.MyRubyAxe, 1);
+                    ItemStack stack6 = this.dropItemRand(OreSpawnMain.MyRubyAxe, 1);
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var16.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack6.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var16.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
+                        stack6.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
                     }
                     break;
                 case 7:
-                    ItemStack var15 = this.dropItemRand(OreSpawnMain.MyRubyHoe, 1);
+                    ItemStack stack7 = this.dropItemRand(OreSpawnMain.MyRubyHoe, 1);
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var15.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack7.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var15.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
+                        stack7.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
                     }
                     break;
                 case 8:
-                    ItemStack var14 = this.dropItemRand(OreSpawnMain.RubyHelmet, 1);
+                    ItemStack stack8 = this.dropItemRand(OreSpawnMain.RubyHelmet, 1);
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var14.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
+                        stack8.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var14.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack8.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var14.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack8.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var14.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack8.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var14.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack8.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var14.addEnchantment(Enchantment.respiration, 1 + this.worldObj.rand.nextInt(2));
+                        stack8.addEnchantment(Enchantment.respiration, 1 + this.worldObj.rand.nextInt(2));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var14.addEnchantment(Enchantment.aquaAffinity, 1 + this.worldObj.rand.nextInt(5));
+                        stack8.addEnchantment(Enchantment.aquaAffinity, 1 + this.worldObj.rand.nextInt(5));
                     }
                     break;
                 case 9:
-                    ItemStack var13 = this.dropItemRand(OreSpawnMain.RubyBody, 1);
+                    ItemStack stack9 = this.dropItemRand(OreSpawnMain.RubyBody, 1);
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var13.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
+                        stack9.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var13.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack9.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var13.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack9.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var13.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack9.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var13.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack9.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
                     break;
                 case 10:
-                    ItemStack var12 = this.dropItemRand(OreSpawnMain.RubyLegs, 1);
+                    ItemStack stack10 = this.dropItemRand(OreSpawnMain.RubyLegs, 1);
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var12.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
+                        stack10.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var12.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack10.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var12.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack10.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var12.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack10.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var12.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack10.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
                     break;
                 case 11:
-                    ItemStack var11 = this.dropItemRand(OreSpawnMain.RubyBoots, 1);
+                    ItemStack stack11 = this.dropItemRand(OreSpawnMain.RubyBoots, 1);
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var11.addEnchantment(Enchantment.featherFalling, 5 + this.worldObj.rand.nextInt(5));
+                        stack11.addEnchantment(Enchantment.featherFalling, 5 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var11.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack11.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
                     break;
                 case 12:
@@ -427,50 +427,50 @@ public class Cephadrome extends EntityCreature {
         return (int) this.getHealth();
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         double ks = 2.5;
         double inair = 0.35;
         float iskraken = 1.0F;
         boolean ret = false;
-        if (par1Entity != null && par1Entity instanceof EntityDragon) {
-            EntityDragon dr = (EntityDragon) par1Entity;
-            DamageSource var21 = null;
-            var21 = DamageSource.setExplosionSource(null);
-            var21.setExplosion();
+        if (target != null && target instanceof EntityDragon) {
+            EntityDragon dr = (EntityDragon) target;
+            DamageSource source = null;
+            source = DamageSource.setExplosionSource(null);
+            source.setExplosion();
             if (this.worldObj.rand.nextInt(6) == 1) {
-                dr.attackEntityFromPart(dr.dragonPartHead, var21, 70.0F);
+                dr.attackEntityFromPart(dr.dragonPartHead, source, 70.0F);
             } else {
-                dr.attackEntityFromPart(dr.dragonPartBody, var21, 70.0F);
+                dr.attackEntityFromPart(dr.dragonPartBody, source, 70.0F);
             }
 
             ret = true;
-        } else if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
-            if (par1Entity instanceof Kraken) {
+        } else if (target != null && target instanceof EntityLivingBase) {
+            if (target instanceof Kraken) {
                 iskraken = 1.5F;
             }
 
-            ret = par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), iskraken * 70.0F);
-            float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-            if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+            ret = target.attackEntityFrom(DamageSource.causeMobDamage(this), iskraken * 70.0F);
+            float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+            if (target.isDead || target instanceof EntityPlayer) {
                 inair *= 2.0;
             }
 
-            par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+            target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
         }
 
         return ret;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
         if (this.hurt_timer > 0) {
             return false;
         } else {
-            if (!par1DamageSource.getDamageType()
+            if (!source.getDamageType()
                 .equals("cactus")) {
-                ret = super.attackEntityFrom(par1DamageSource, par2);
+                ret = super.attackEntityFrom(source, amount);
                 this.hurt_timer = 25;
-                Entity e = par1DamageSource.getEntity();
+                Entity e = source.getEntity();
                 if (e != null && e instanceof EntityLivingBase) {
                     this.setAttackTarget((EntityLivingBase) e);
                     this.setTarget(e);
@@ -488,9 +488,9 @@ public class Cephadrome extends EntityCreature {
         }
     }
 
-    public double getHorizontalDistanceSqToEntity(Entity par1Entity) {
-        double d0 = this.posX - par1Entity.posX;
-        double d2 = this.posZ - par1Entity.posZ;
+    public double getHorizontalDistanceSqToEntity(Entity entity) {
+        double d0 = this.posX - entity.posX;
+        double d2 = this.posZ - entity.posZ;
         return d0 * d0 + d2 * d2;
     }
 
@@ -556,37 +556,37 @@ public class Cephadrome extends EntityCreature {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof Cephadrome) {
+            } else if (target instanceof Cephadrome) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityMob) {
+            } else if (target instanceof EntityMob) {
                 return true;
-            } else if (par1EntityLiving instanceof Mothra) {
+            } else if (target instanceof Mothra) {
                 return true;
-            } else if (par1EntityLiving instanceof Leon) {
-                EntityTameable et = (EntityTameable) par1EntityLiving;
+            } else if (target instanceof Leon) {
+                EntityTameable et = (EntityTameable) target;
                 return !et.isTamed();
-            } else if (par1EntityLiving instanceof GammaMetroid) {
-                EntityTameable et = (EntityTameable) par1EntityLiving;
+            } else if (target instanceof GammaMetroid) {
+                EntityTameable et = (EntityTameable) target;
                 return !et.isTamed();
-            } else if (par1EntityLiving instanceof WaterDragon) {
-                EntityTameable et = (EntityTameable) par1EntityLiving;
+            } else if (target instanceof WaterDragon) {
+                EntityTameable et = (EntityTameable) target;
                 return !et.isTamed();
-            } else if (par1EntityLiving instanceof EntityDragon) {
+            } else if (target instanceof EntityDragon) {
                 return true;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (target instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) target;
                 if (p.capabilities.isCreativeMode) {
                     return false;
                 } else if (this.hit_by_player != 0) {
@@ -608,18 +608,18 @@ public class Cephadrome extends EntityCreature {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(16.0, 20.0, 16.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -652,11 +652,11 @@ public class Cephadrome extends EntityCreature {
         } else if (this.posY < 50.0) {
             return false;
         } else {
-            for (int var10 = -2; var10 < 2; var10++) {
+            for (int i = -2; i < 2; i++) {
                 for (int j = -2; j < 2; j++) {
                     for (int ix = 1; ix < 5; ix++) {
                         Block bid = this.worldObj
-                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + var10);
+                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
                         if (bid != Blocks.air) {
                             return false;
                         }
@@ -672,20 +672,21 @@ public class Cephadrome extends EntityCreature {
     }
 
     @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
-        super.setPositionAndRotation2(par1, par3, par5, par7, par8, par9);
-        this.boatPosRotationIncrements = par9;
-        this.boatX = par1;
-        this.boatY = par3;
-        this.boatZ = par5;
-        this.boatYaw = par7;
-        this.boatPitch = par8;
-        this.boatYawHead = par7;
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch,
+        int posRotationIncrements) {
+        super.setPositionAndRotation2(x, y, z, yaw, pitch, posRotationIncrements);
+        this.boatPosRotationIncrements = posRotationIncrements;
+        this.boatX = x;
+        this.boatY = y;
+        this.boatZ = z;
+        this.boatYaw = yaw;
+        this.boatPitch = pitch;
+        this.boatYawHead = yaw;
     }
 
     @SideOnly(Side.CLIENT)
-    public void setVelocity(double par1, double par3, double par5) {
-        super.setVelocity(par1, par3, par5);
+    public void setVelocity(double vx, double vy, double vz) {
+        super.setVelocity(vx, vy, vz);
     }
 
     public void onUpdate() {
@@ -778,11 +779,11 @@ public class Cephadrome extends EntityCreature {
                     }
 
                     obstruction_factor = 0.0;
-                    int var85 = 2;
-                    var85 += (int) (velocity * 6.0);
+                    int n = 2;
+                    n += (int) (velocity * 6.0);
 
-                    for (int k = 1; k < var85; k++) {
-                        for (int i = 1; i < var85 * 2; i++) {
+                    for (int k = 1; k < n; k++) {
+                        for (int i = 1; i < n * 2; i++) {
                             double dx = i * Math.cos(Math.toRadians(this.rotationYaw + 90.0F));
                             double dz = i * Math.sin(Math.toRadians(this.rotationYaw + 90.0F));
                             bid = this.worldObj
@@ -953,9 +954,9 @@ public class Cephadrome extends EntityCreature {
         }
     }
 
-    protected void playTameEffect(boolean par1) {
+    protected void playTameEffect(boolean success) {
         String s = "heart";
-        if (!par1) {
+        if (!success) {
             s = "smoke";
         }
 
@@ -974,17 +975,17 @@ public class Cephadrome extends EntityCreature {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (var2 != null
-            && (var2.getItem() == Items.beef || var2.getItem() == Items.chicken || var2.getItem() == Items.porkchop)
-            && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+        if (currentItem != null
+            && (currentItem.getItem() == Items.beef || currentItem.getItem() == Items.chicken
+                || currentItem.getItem() == Items.porkchop)
+            && player.getDistanceSqToEntity(this) < 25.0) {
             if (!this.worldObj.isRemote) {
                 this.heal(this.mygetMaxHealth() - this.getHealth());
             }
@@ -992,29 +993,28 @@ public class Cephadrome extends EntityCreature {
             this.wasfed = 1;
             this.shouldattack = 0;
             this.playTameEffect(true);
-            if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                var2.stackSize--;
-                if (var2.stackSize <= 0) {
-                    par1EntityPlayer.inventory
-                        .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-                    ItemStack var3 = null;
+            if (!player.capabilities.isCreativeMode) {
+                currentItem.stackSize--;
+                if (currentItem.stackSize <= 0) {
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                    ItemStack stack = null;
                 }
             }
 
             return false;
         } else if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer
-            && this.riddenByEntity != par1EntityPlayer) {
+            && this.riddenByEntity != player) {
                 return true;
             } else {
-                if (var2 == null && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0 && !this.worldObj.isRemote) {
+                if (currentItem == null && player.getDistanceSqToEntity(this) < 25.0 && !this.worldObj.isRemote) {
                     if (this.wasfed == 0) {
                         this.getNavigator()
-                            .tryMoveToEntityLiving(par1EntityPlayer, 1.2);
+                            .tryMoveToEntityLiving(player, 1.2);
                         this.shouldattack = 1;
                         return false;
                     }
 
-                    par1EntityPlayer.mountEntity(this);
+                    player.mountEntity(this);
                     this.wasfed = 0;
                 }
 
@@ -1026,9 +1026,9 @@ public class Cephadrome extends EntityCreature {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public void setAttacking(int par1) {
+    public void setAttacking(int attacking) {
         if (this.worldObj == null || !this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(20, (byte) par1);
+            this.dataWatcher.updateObject(20, (byte) attacking);
         }
     }
 
@@ -1036,9 +1036,9 @@ public class Cephadrome extends EntityCreature {
         return this.dataWatcher.getWatchableObjectByte(21);
     }
 
-    public void setActivity(int par1) {
+    public void setActivity(int activity) {
         if (this.worldObj == null || !this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(21, (byte) par1);
+            this.dataWatcher.updateObject(21, (byte) activity);
         }
     }
 
@@ -1046,21 +1046,21 @@ public class Cephadrome extends EntityCreature {
         return this.isNoDespawnRequired() ? false : this.riddenByEntity == null;
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("CephaWasFed", this.wasfed);
-        par1NBTTagCompound.setInteger("CephaAttacking", this.getAttacking());
-        par1NBTTagCompound.setInteger("CephaActivity", this.getActivity());
-        par1NBTTagCompound.setInteger("CephaHitByPlayer", this.hit_by_player);
-        par1NBTTagCompound.setInteger("CephaBadMood", this.badmood);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("CephaWasFed", this.wasfed);
+        tag.setInteger("CephaAttacking", this.getAttacking());
+        tag.setInteger("CephaActivity", this.getActivity());
+        tag.setInteger("CephaHitByPlayer", this.hit_by_player);
+        tag.setInteger("CephaBadMood", this.badmood);
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.wasfed = par1NBTTagCompound.getInteger("CephaWasFed");
-        this.hit_by_player = par1NBTTagCompound.getInteger("CephaHitByPlayer");
-        this.badmood = par1NBTTagCompound.getInteger("CephaBadMood");
-        this.setAttacking(par1NBTTagCompound.getInteger("CephaAttacking"));
-        this.setActivity(par1NBTTagCompound.getInteger("CephaActivity"));
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.wasfed = tag.getInteger("CephaWasFed");
+        this.hit_by_player = tag.getInteger("CephaHitByPlayer");
+        this.badmood = tag.getInteger("CephaBadMood");
+        this.setAttacking(tag.getInteger("CephaAttacking"));
+        this.setActivity(tag.getInteger("CephaActivity"));
     }
 }

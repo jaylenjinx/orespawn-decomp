@@ -9,8 +9,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemLettuce extends ItemSeedFood {
 
-    public ItemLettuce(int par1, int par2, float par3, Block par4, Block par5) {
-        super(par2, par3, par4, par5);
+    public ItemLettuce(int n, int n2, float f, Block block, Block block2) {
+        super(n2, f, block, block2);
     }
 
     @SideOnly(Side.CLIENT)

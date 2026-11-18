@@ -26,8 +26,8 @@ public class GodzillaHead extends EntityLiving {
     private double velocityY;
     private double velocityZ;
 
-    public GodzillaHead(World par1World) {
-        super(par1World);
+    public GodzillaHead(World world) {
+        super(world);
         this.setSize(9.9F, 10.0F);
         this.noClip = true;
         this.fireResistance = 10000;
@@ -50,9 +50,9 @@ public class GodzillaHead extends EntityLiving {
         return false;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     protected boolean canTriggerWalking() {
         return false;
@@ -66,25 +66,25 @@ public class GodzillaHead extends EntityLiving {
         return true;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        if (par1DamageSource.getDamageType()
+        if (source.getDamageType()
             .equals("inWall")) {
             return false;
         } else {
-            Entity e = par1DamageSource.getEntity();
+            Entity e = source.getEntity();
             if (e == null || !(e instanceof Godzilla) && !(e instanceof GodzillaHead)) {
-                e = par1DamageSource.getSourceOfDamage();
+                e = source.getSourceOfDamage();
                 if (e == null || !(e instanceof Godzilla) && !(e instanceof GodzillaHead)) {
-                    List var5 = this.worldObj
+                    List entities = this.worldObj
                         .getEntitiesWithinAABB(Godzilla.class, this.boundingBox.expand(32.0, 32.0, 32.0));
-                    Iterator var2x = var5.iterator();
-                    Entity var3 = null;
-                    Godzilla var4 = null;
-                    if (var2x.hasNext()) {
-                        var3 = (Entity) var2x.next();
-                        var4 = (Godzilla) var3;
-                        ret = var4.attackEntityFrom(par1DamageSource, par2);
+                    Iterator iterator = entities.iterator();
+                    Entity entity = null;
+                    Godzilla godzilla = null;
+                    if (iterator.hasNext()) {
+                        entity = (Entity) iterator.next();
+                        godzilla = (Godzilla) entity;
+                        ret = godzilla.attackEntityFrom(source, amount);
                     }
 
                     return ret;
@@ -102,28 +102,29 @@ public class GodzillaHead extends EntityLiving {
     }
 
     @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch,
+        int posRotationIncrements) {
         if (this.riddenByEntity != null) {
-            this.boatPosRotationIncrements = par9 + 8;
+            this.boatPosRotationIncrements = posRotationIncrements + 8;
         } else {
             this.boatPosRotationIncrements = 6;
         }
 
-        this.boatX = par1;
-        this.boatY = par3;
-        this.boatZ = par5;
-        this.boatYaw = par7;
-        this.boatPitch = par8;
+        this.boatX = x;
+        this.boatY = y;
+        this.boatZ = z;
+        this.boatYaw = yaw;
+        this.boatPitch = pitch;
         this.motionX = this.velocityX;
         this.motionY = this.velocityY;
         this.motionZ = this.velocityZ;
     }
 
     @SideOnly(Side.CLIENT)
-    public void setVelocity(double par1, double par3, double par5) {
-        this.velocityX = this.motionX = par1;
-        this.velocityY = this.motionY = par3;
-        this.velocityZ = this.motionZ = par5;
+    public void setVelocity(double vx, double vy, double vz) {
+        this.velocityX = this.motionX = vx;
+        this.velocityY = this.motionY = vy;
+        this.velocityZ = this.motionZ = vz;
     }
 
     public void onUpdate() {
@@ -149,23 +150,23 @@ public class GodzillaHead extends EntityLiving {
                     this.boatPosRotationIncrements--;
                 }
             } else {
-                List var5 = this.worldObj
+                List entities = this.worldObj
                     .getEntitiesWithinAABB(Godzilla.class, this.boundingBox.expand(32.0, 32.0, 32.0));
-                Iterator var2 = var5.iterator();
-                Entity var3 = null;
-                Godzilla var4 = null;
-                if (var2.hasNext()) {
-                    var3 = (Entity) var2.next();
-                    var4 = (Godzilla) var3;
-                    this.posY = var4.posY + 16.0;
-                    this.posX = var4.posX - 17.0 * Math.sin(Math.toRadians(var4.rotationYawHead));
-                    this.posZ = var4.posZ + 17.0 * Math.cos(Math.toRadians(var4.rotationYawHead));
-                    this.rotationYaw = var4.rotationYaw;
-                    this.rotationYawHead = var4.rotationYawHead;
-                    this.motionX = var4.motionX;
-                    this.motionY = var4.motionY;
-                    this.motionZ = var4.motionZ;
-                    this.setHealth(var4.getHealth());
+                Iterator iterator = entities.iterator();
+                Entity entity = null;
+                Godzilla godzilla = null;
+                if (iterator.hasNext()) {
+                    entity = (Entity) iterator.next();
+                    godzilla = (Godzilla) entity;
+                    this.posY = godzilla.posY + 16.0;
+                    this.posX = godzilla.posX - 17.0 * Math.sin(Math.toRadians(godzilla.rotationYawHead));
+                    this.posZ = godzilla.posZ + 17.0 * Math.cos(Math.toRadians(godzilla.rotationYawHead));
+                    this.rotationYaw = godzilla.rotationYaw;
+                    this.rotationYawHead = godzilla.rotationYawHead;
+                    this.motionX = godzilla.motionX;
+                    this.motionY = godzilla.motionY;
+                    this.motionZ = godzilla.motionZ;
+                    this.setHealth(godzilla.getHealth());
                 } else {
                     this.setDead();
                 }

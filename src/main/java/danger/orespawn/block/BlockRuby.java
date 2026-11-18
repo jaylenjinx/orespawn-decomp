@@ -16,7 +16,7 @@ import danger.orespawn.OreSpawnMain;
 
 public class BlockRuby extends Block {
 
-    public BlockRuby(int par1) {
+    public BlockRuby(int n) {
         super(Material.rock);
         this.setHardness(4.0F);
         this.setResistance(4.0F);
@@ -32,15 +32,15 @@ public class BlockRuby extends Block {
         return true;
     }
 
-    public void onEntityCollidedWithBlock(World par1World, int par2, int par3, int par4, Entity par5Entity) {
-        if (this == OreSpawnMain.MyBlockMobzillaScaleBlock && par5Entity instanceof EntityLivingBase) {
-            ((EntityLivingBase) par5Entity).addPotionEffect(new PotionEffect(Potion.damageBoost.id, 200, 0));
+    public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
+        if (this == OreSpawnMain.MyBlockMobzillaScaleBlock && entity instanceof EntityLivingBase) {
+            ((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.damageBoost.id, 200, 0));
         }
     }
 
-    public void onEntityWalking(World par1World, int par2, int par3, int par4, Entity par5Entity) {
-        if (this == OreSpawnMain.MyBlockMobzillaScaleBlock && par5Entity instanceof EntityLivingBase) {
-            ((EntityLivingBase) par5Entity).addPotionEffect(new PotionEffect(Potion.damageBoost.id, 200, 0));
+    public void onEntityWalking(World world, int x, int y, int z, Entity entity) {
+        if (this == OreSpawnMain.MyBlockMobzillaScaleBlock && entity instanceof EntityLivingBase) {
+            ((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.damageBoost.id, 200, 0));
         }
     }
 

@@ -18,31 +18,31 @@ public class RenderThePrincess extends RenderLiving {
     private static final ResourceLocation texture = new ResourceLocation("orespawn", "ThePrincesstexture.png");
     private static final ResourceLocation texture2 = new ResourceLocation("orespawn", "ThePrincesstexture2.png");
 
-    public RenderThePrincess(ModelThePrincess par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderThePrincess(ModelThePrincess modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelThePrincess) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderThePrincess(ThePrincess par1EntityThePrincess, double par2, double par4, double par6, float par8,
-        float par9) {
-        super.doRender(par1EntityThePrincess, par2, par4, par6, par8, par9);
+    public void renderThePrincess(ThePrincess entityThePrincess, double x, double y, double z, float yaw,
+        float partialTicks) {
+        super.doRender(entityThePrincess, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderThePrincess((ThePrincess) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderThePrincess((ThePrincess) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderThePrincess((ThePrincess) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderThePrincess((ThePrincess) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(ThePrincess par1Entity, float par2) {
+    protected void preRenderScale(ThePrincess entity, float f) {
         GL11.glScalef(this.scale, this.scale, this.scale);
     }
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
-        this.preRenderScale((ThePrincess) par1EntityLiving, par2);
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((ThePrincess) entity, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

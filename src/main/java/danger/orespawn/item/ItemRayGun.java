@@ -19,35 +19,35 @@ public class ItemRayGun extends Item {
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (par1ItemStack.getMaxDamage() - par1ItemStack.getItemDamage() <= 1) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (stack.getMaxDamage() - stack.getItemDamage() <= 1) {
+            return stack;
         } else {
-            par2World.playSoundAtEntity(par3EntityPlayer, "fireworks.launch", 3.5F, 0.5F);
-            if (!par2World.isRemote) {
+            world.playSoundAtEntity(player, "fireworks.launch", 3.5F, 0.5F);
+            if (!world.isRemote) {
                 double xzoff = 1.0;
                 double yoff = 1.55;
-                LaserBall lb = new LaserBall(par2World, par3EntityPlayer);
+                LaserBall lb = new LaserBall(world, player);
                 lb.setSpecial();
                 lb.setLocationAndAngles(
-                    par3EntityPlayer.posX - xzoff * Math.sin(Math.toRadians(par3EntityPlayer.rotationYawHead + 45.0F)),
-                    par3EntityPlayer.posY + yoff,
-                    par3EntityPlayer.posZ + xzoff * Math.cos(Math.toRadians(par3EntityPlayer.rotationYawHead + 45.0F)),
-                    par3EntityPlayer.rotationYawHead,
-                    par3EntityPlayer.rotationPitch);
+                    player.posX - xzoff * Math.sin(Math.toRadians(player.rotationYawHead + 45.0F)),
+                    player.posY + yoff,
+                    player.posZ + xzoff * Math.cos(Math.toRadians(player.rotationYawHead + 45.0F)),
+                    player.rotationYawHead,
+                    player.rotationPitch);
                 lb.motionX *= 3.0;
                 lb.motionY *= 3.0;
                 lb.motionZ *= 3.0;
-                par2World.spawnEntityInWorld(lb);
+                world.spawnEntityInWorld(lb);
             }
 
-            par3EntityPlayer.swingItem();
-            par3EntityPlayer.addVelocity(
-                Math.cos(Math.toRadians(par3EntityPlayer.rotationYawHead - 90.0F)) * 1.5,
+            player.swingItem();
+            player.addVelocity(
+                Math.cos(Math.toRadians(player.rotationYawHead - 90.0F)) * 1.5,
                 0.3,
-                Math.sin(Math.toRadians(par3EntityPlayer.rotationYawHead - 90.0F)) * 1.5);
-            par1ItemStack.damageItem(1, par3EntityPlayer);
-            return par1ItemStack;
+                Math.sin(Math.toRadians(player.rotationYawHead - 90.0F)) * 1.5);
+            stack.damageItem(1, player);
+            return stack;
         }
     }
 

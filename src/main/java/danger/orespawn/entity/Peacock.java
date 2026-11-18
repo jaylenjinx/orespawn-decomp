@@ -39,8 +39,8 @@ public class Peacock extends EntityAnimal {
     int blinker = 0;
     private GenericTargetSorter TargetSorter = null;
 
-    public Peacock(World par1World) {
-        super(par1World);
+    public Peacock(World world) {
+        super(world);
         this.setSize(0.65F, 1.2F);
         this.fireResistance = 100;
         this.experienceValue = 8;
@@ -152,7 +152,7 @@ public class Peacock extends EntityAnimal {
         return OreSpawnMain.MyRawPeacock;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         this.dropItem(OreSpawnMain.MyRawPeacock, 1);
         if (this.worldObj.rand.nextInt(3) == 1) {
             this.dropItem(OreSpawnMain.MyRawPeacock, 1);
@@ -163,21 +163,21 @@ public class Peacock extends EntityAnimal {
         }
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        return par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), 6.0F);
+    public boolean attackEntityAsMob(Entity target) {
+        return target.attackEntityFrom(DamageSource.causeMobDamage(this), 6.0F);
     }
 
-    private ItemStack LayAnEgg(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack LayAnEgg(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
@@ -208,18 +208,18 @@ public class Peacock extends EntityAnimal {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else {
             return !this.getEntitySenses()
-                .canSee(par1EntityLiving) ? false : par1EntityLiving instanceof Termite;
+                .canSee(target) ? false : target instanceof Termite;
         }
     }
 
@@ -227,18 +227,18 @@ public class Peacock extends EntityAnimal {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(10.0, 2.0, 10.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -259,20 +259,20 @@ public class Peacock extends EntityAnimal {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public Peacock spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public Peacock spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new Peacock(this.worldObj);
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.apple;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.apple;
     }
 
-    public boolean isBreedingItem(ItemStack par1ItemStack) {
-        return par1ItemStack.getItem() == OreSpawnMain.MyCrystalApple;
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
     }
 
     private int findBuddies() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(Peacock.class, this.boundingBox.expand(16.0, 10.0, 16.0));
-        return var5.size();
+        List entities = this.worldObj.getEntitiesWithinAABB(Peacock.class, this.boundingBox.expand(16.0, 10.0, 16.0));
+        return entities.size();
     }
 }

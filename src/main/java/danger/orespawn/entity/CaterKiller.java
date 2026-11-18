@@ -43,8 +43,8 @@ public class CaterKiller extends EntityMob {
     private int ty = 0;
     private int tz = 0;
 
-    public CaterKiller(World par1World) {
-        super(par1World);
+    public CaterKiller(World world) {
+        super(world);
         if (OreSpawnMain.PlayNicely == 0) {
             this.setSize(2.9F, 4.6F);
         } else {
@@ -88,10 +88,10 @@ public class CaterKiller extends EntityMob {
         return !this.isNoDespawnRequired();
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         Entity e = null;
-        Boolean ret = super.attackEntityFrom(par1DamageSource, par2);
-        e = par1DamageSource.getEntity();
+        Boolean ret = super.attackEntityFrom(source, amount);
+        e = source.getEntity();
         if (e != null && e instanceof EntityLiving) {
             this.setAttackTarget((EntityLiving) e);
         }
@@ -145,40 +145,40 @@ public class CaterKiller extends EntityMob {
         return Items.beef;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         ItemStack is = null;
         this.dropItemRand(OreSpawnMain.CaterKillerJaw, 1);
         this.dropItemRand(Items.item_frame, 1);
 
-        for (int var4 = 0; var4 < 10; var4++) {
+        for (int i = 0; i < 10; i++) {
             this.dropItemRand(Items.leather, 1);
         }
 
-        for (int var7 = 0; var7 < 6; var7++) {
+        for (int i = 0; i < 6; i++) {
             this.dropItemRand(Items.beef, 1);
         }
 
         int i = 1 + this.worldObj.rand.nextInt(5);
 
-        for (int var8 = 0; var8 < i; var8++) {
-            int var3 = this.worldObj.rand.nextInt(20);
-            switch (var3) {
+        for (int i2 = 0; i2 < i; i2++) {
+            int roll = this.worldObj.rand.nextInt(20);
+            switch (roll) {
                 case 0:
                     is = this.dropItemRand(OreSpawnMain.MyUltimateSword, 1);
                     break;
@@ -351,46 +351,46 @@ public class CaterKiller extends EntityMob {
             }
         }
 
-        for (int var9 = 0; var9 < 25; var9++) {
+        for (int i2 = 0; i2 < 25; i2++) {
             spawnCreature(this.worldObj, "Butterfly", this.posX, this.posY + 1.0, this.posZ);
         }
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        if (par0World == null) {
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        if (world == null) {
             return null;
         } else {
-            var8 = EntityList.createEntityByName(par1, par0World);
-            if (var8 != null) {
-                var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-                par0World.spawnEntityInWorld(var8);
-                ((EntityLiving) var8).playLivingSound();
+            entity = EntityList.createEntityByName(str, world);
+            if (entity != null) {
+                entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+                world.spawnEntityInWorld(entity);
+                ((EntityLiving) entity).playLivingSound();
             }
 
-            return var8;
+            return entity;
         }
     }
 
     public void initCreature() {}
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        if (!super.attackEntityAsMob(par1Entity)) {
+    public boolean attackEntityAsMob(Entity target) {
+        if (!super.attackEntityAsMob(target)) {
             return false;
         } else {
-            if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
+            if (target != null && target instanceof EntityLivingBase) {
                 double ks = 1.2;
                 double inair = 0.1;
-                float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-                if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+                float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+                if (target.isDead || target instanceof EntityPlayer) {
                     inair *= 2.0;
                 }
 
-                par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+                target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
             }
 
             return true;
@@ -446,9 +446,9 @@ public class CaterKiller extends EntityMob {
             }
         }
 
-        for (int var12 = -dx; var12 <= dx; var12++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dz; j <= dz; j++) {
-                Block bidx = this.worldObj.getBlock(x + var12, y + dy, z + j);
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
                 if (bidx == Blocks.leaves || bidx == Blocks.vine
                     || bidx == Blocks.log
                     || bidx == OreSpawnMain.MyDT
@@ -459,17 +459,17 @@ public class CaterKiller extends EntityMob {
                     || bidx == OreSpawnMain.MyScaryLeaves
                     || bidx == OreSpawnMain.MyPeachLeaves
                     || bidx == OreSpawnMain.MyCherryLeaves) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y + dy;
                         this.tz = z + j;
                         found++;
                     }
                 }
 
-                bidx = this.worldObj.getBlock(x + var12, y - dy, z + j);
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
                 if (bidx == Blocks.leaves || bidx == Blocks.vine
                     || bidx == Blocks.log
                     || bidx == OreSpawnMain.MyDT
@@ -480,10 +480,10 @@ public class CaterKiller extends EntityMob {
                     || bidx == OreSpawnMain.MyScaryLeaves
                     || bidx == OreSpawnMain.MyPeachLeaves
                     || bidx == OreSpawnMain.MyCherryLeaves) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y - dy;
                         this.tz = z + j;
                         found++;
@@ -492,9 +492,9 @@ public class CaterKiller extends EntityMob {
             }
         }
 
-        for (int var13 = -dx; var13 <= dx; var13++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dy; j <= dy; j++) {
-                Block bidxx = this.worldObj.getBlock(x + var13, y + j, z + dz);
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
                 if (bidxx == Blocks.leaves || bidxx == Blocks.vine
                     || bidxx == Blocks.log
                     || bidxx == OreSpawnMain.MyDT
@@ -505,17 +505,17 @@ public class CaterKiller extends EntityMob {
                     || bidxx == OreSpawnMain.MyScaryLeaves
                     || bidxx == OreSpawnMain.MyPeachLeaves
                     || bidxx == OreSpawnMain.MyCherryLeaves) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z + dz;
                         found++;
                     }
                 }
 
-                bidxx = this.worldObj.getBlock(x + var13, y + j, z - dz);
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
                 if (bidxx == Blocks.leaves || bidxx == Blocks.vine
                     || bidxx == Blocks.log
                     || bidxx == OreSpawnMain.MyDT
@@ -526,10 +526,10 @@ public class CaterKiller extends EntityMob {
                     || bidxx == OreSpawnMain.MyScaryLeaves
                     || bidxx == OreSpawnMain.MyPeachLeaves
                     || bidxx == OreSpawnMain.MyCherryLeaves) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z - dz;
                         found++;
@@ -680,22 +680,22 @@ public class CaterKiller extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (!this.MyCanSee(par1EntityLiving)) {
+        } else if (!this.MyCanSee(target)) {
             return false;
-        } else if (par1EntityLiving instanceof EntityPlayer) {
-            EntityPlayer p = (EntityPlayer) par1EntityLiving;
+        } else if (target instanceof EntityPlayer) {
+            EntityPlayer p = (EntityPlayer) target;
             return !p.capabilities.isCreativeMode;
-        } else if (par1EntityLiving instanceof CaterKiller) {
+        } else if (target instanceof CaterKiller) {
             return false;
         } else {
-            return par1EntityLiving instanceof EntityMob ? true : MyUtils.isAttackableNonMob(par1EntityLiving);
+            return target instanceof EntityMob ? true : MyUtils.isAttackableNonMob(target);
         }
     }
 
@@ -703,18 +703,18 @@ public class CaterKiller extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(20.0, 8.0, 20.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -726,8 +726,8 @@ public class CaterKiller extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public boolean getCanSpawnHere() {
@@ -756,11 +756,11 @@ public class CaterKiller extends EntityMob {
         } else if (!this.worldObj.isDaytime()) {
             return false;
         } else {
-            for (int var10 = -1; var10 < 2; var10++) {
+            for (int i = -1; i < 2; i++) {
                 for (int j = -1; j < 2; j++) {
                     for (int ix = 1; ix < 5; ix++) {
                         Block bid = this.worldObj
-                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + var10);
+                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
                         if (bid != Blocks.air && bid != Blocks.leaves
                             && bid != Blocks.leaves2
                             && bid != Blocks.log

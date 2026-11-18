@@ -12,28 +12,28 @@ public class IceBall extends LaserBall {
     private int my_index = 84;
     private int icemaker = 0;
 
-    public IceBall(World par1World) {
-        super(par1World);
+    public IceBall(World world) {
+        super(world);
         super.setIceBall();
     }
 
-    public IceBall(World par1World, int par2) {
-        super(par1World);
+    public IceBall(World world, int n) {
+        super(world);
         super.setIceBall();
     }
 
-    public IceBall(World par1World, EntityLivingBase par2EntityLiving) {
-        super(par1World, par2EntityLiving);
+    public IceBall(World world, EntityLivingBase living) {
+        super(world, living);
         super.setIceBall();
     }
 
-    public IceBall(World par1World, EntityLivingBase par2EntityLiving, int par3) {
-        super(par1World, par2EntityLiving);
+    public IceBall(World world, EntityLivingBase living, int n) {
+        super(world, living);
         super.setIceBall();
     }
 
-    public IceBall(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public IceBall(World world, double x, double y, double z) {
+        super(world, x, y, z);
         super.setIceBall();
     }
 
@@ -46,11 +46,11 @@ public class IceBall extends LaserBall {
     }
 
     @Override
-    protected void onImpact(MovingObjectPosition par1MovingObjectPosition) {
-        if (par1MovingObjectPosition.entityHit != null && MyUtils.isRoyalty(par1MovingObjectPosition.entityHit)) {
+    protected void onImpact(MovingObjectPosition hit) {
+        if (hit.entityHit != null && MyUtils.isRoyalty(hit.entityHit)) {
             this.setDead();
         } else {
-            super.onImpact(par1MovingObjectPosition);
+            super.onImpact(hit);
             if (this.icemaker != 0) {
                 for (int i = 0; i < 5; i++) {
                     int x = this.worldObj.rand.nextInt(4);
@@ -68,9 +68,9 @@ public class IceBall extends LaserBall {
                         z = -z;
                     }
 
-                    x = (int) (x + par1MovingObjectPosition.hitVec.xCoord);
-                    y = (int) (y + par1MovingObjectPosition.hitVec.yCoord);
-                    z = (int) (z + par1MovingObjectPosition.hitVec.zCoord);
+                    x = (int) (x + hit.hitVec.xCoord);
+                    y = (int) (y + hit.hitVec.yCoord);
+                    z = (int) (z + hit.hitVec.zCoord);
                     this.worldObj.setBlock(x, y, z, Blocks.ice);
                 }
             }

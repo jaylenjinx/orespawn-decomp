@@ -20,9 +20,9 @@ public class FairySword extends ItemSword {
     private int weaponDamage;
     private final ToolMaterial toolMaterial;
 
-    public FairySword(int par1, ToolMaterial par2EnumToolMaterial) {
-        super(par2EnumToolMaterial);
-        this.toolMaterial = par2EnumToolMaterial;
+    public FairySword(int n, ToolMaterial enumToolMaterial) {
+        super(enumToolMaterial);
+        this.toolMaterial = enumToolMaterial;
         this.weaponDamage = 15;
         this.maxStackSize = 1;
         this.setMaxDamage(1300);
@@ -33,53 +33,48 @@ public class FairySword extends ItemSword {
         return "Fairy";
     }
 
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLiving,
-        EntityLivingBase par3EntityLiving) {
-        int var2x = 5;
-        if (par2EntityLiving != null && !par2EntityLiving.worldObj.isRemote) {
-            int num = 1 + par2EntityLiving.worldObj.rand.nextInt(3);
+    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+        int n = 5;
+        if (target != null && !target.worldObj.isRemote) {
+            int num = 1 + target.worldObj.rand.nextInt(3);
 
             for (int i = 0; i < num; i++) {
                 Fairy r = null;
                 r = (Fairy) spawnCreature(
-                    par2EntityLiving.worldObj,
+                    target.worldObj,
                     0,
                     "Fairy",
-                    par2EntityLiving.posX
-                        + (par2EntityLiving.worldObj.rand.nextFloat() - par2EntityLiving.worldObj.rand.nextFloat())
-                            * 0.5,
-                    par2EntityLiving.posY + par2EntityLiving.worldObj.rand.nextFloat() + 0.01,
-                    par2EntityLiving.posZ
-                        + (par2EntityLiving.worldObj.rand.nextFloat() - par2EntityLiving.worldObj.rand.nextFloat())
-                            * 0.5);
+                    target.posX + (target.worldObj.rand.nextFloat() - target.worldObj.rand.nextFloat()) * 0.5,
+                    target.posY + target.worldObj.rand.nextFloat() + 0.01,
+                    target.posZ + (target.worldObj.rand.nextFloat() - target.worldObj.rand.nextFloat()) * 0.5);
                 if (r != null) {
-                    r.setOwner(par3EntityLiving);
+                    r.setOwner(attacker);
                 }
             }
         }
 
-        par1ItemStack.damageItem(1, par3EntityLiving);
+        stack.damageItem(1, attacker);
         return true;
     }
 
-    public static Entity spawnCreature(World par0World, int par1, String name, double par2, double par4, double par6) {
-        Entity var8 = null;
+    public static Entity spawnCreature(World world, int n, String name, double x, double y, double z) {
+        Entity entity = null;
         if (name == null) {
-            var8 = EntityList.createEntityByID(par1, par0World);
+            entity = EntityList.createEntityByID(n, world);
         } else {
-            var8 = EntityList.createEntityByName(name, par0World);
+            entity = EntityList.createEntityByName(name, world);
         }
 
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 3000;
     }
 

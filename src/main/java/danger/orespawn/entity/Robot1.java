@@ -30,8 +30,8 @@ public class Robot1 extends EntityMob {
     private RenderInfo renderdata = new RenderInfo();
     private float moveSpeed = 0.2F;
 
-    public Robot1(World par1World) {
-        super(par1World);
+    public Robot1(World world) {
+        super(world);
         this.setSize(0.5F, 0.5F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -165,12 +165,12 @@ public class Robot1 extends EntityMob {
         return Items.gunpowder;
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        return super.attackEntityAsMob(par1Entity);
+    public boolean attackEntityAsMob(Entity target) {
+        return super.attackEntityAsMob(target);
     }
 
     protected void updateAITasks() {
@@ -179,33 +179,33 @@ public class Robot1 extends EntityMob {
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        if (!par1DamageSource.getDamageType()
+        if (!source.getDamageType()
             .equals("cactus")) {
-            ret = super.attackEntityFrom(par1DamageSource, par2);
+            ret = super.attackEntityFrom(source, amount);
         }
 
         return ret;
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityMob) {
+            } else if (target instanceof EntityMob) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -219,14 +219,14 @@ public class Robot1 extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(8.0, 3.0, 8.0));
-            Collections.sort(var5, this.TargetSorter);
+            Collections.sort(entities, this.TargetSorter);
 
-            for (Entity var3 : (List<Entity>) var5) {
-                EntityLivingBase var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            for (Entity entity : (List<Entity>) entities) {
+                EntityLivingBase target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -238,8 +238,8 @@ public class Robot1 extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public boolean getCanSpawnHere() {

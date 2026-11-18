@@ -22,15 +22,15 @@ public class UltimateAxe extends ItemAxe {
 
     private int weaponDamage = 15;
 
-    public UltimateAxe(int par1, ToolMaterial par2) {
-        super(par2);
+    public UltimateAxe(int n, ToolMaterial toolMaterial) {
+        super(toolMaterial);
         this.maxStackSize = 1;
         this.setMaxDamage(3000);
         this.setCreativeTab(CreativeTabs.tabTools);
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        par1ItemStack.addEnchantment(Enchantment.efficiency, 5);
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+        stack.addEnchantment(Enchantment.efficiency, 5);
     }
 
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
@@ -40,7 +40,7 @@ public class UltimateAxe extends ItemAxe {
         }
     }
 
-    public void onUpdate(ItemStack stack, World par2World, Entity par3Entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
         this.onUsingTick(stack, (EntityPlayer) null, 0);
     }
 
@@ -61,11 +61,11 @@ public class UltimateAxe extends ItemAxe {
         return false;
     }
 
-    public int getDamageVsEntity(Entity par1Entity) {
-        if (par1Entity instanceof Girlfriend) {
+    public int getDamageVsEntity(Entity entity) {
+        if (entity instanceof Girlfriend) {
             return 1;
         } else {
-            return par1Entity instanceof EntityPlayer ? 1 : this.weaponDamage;
+            return entity instanceof EntityPlayer ? 1 : this.weaponDamage;
         }
     }
 

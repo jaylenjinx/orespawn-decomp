@@ -19,8 +19,8 @@ public class EntityLunaMoth extends EntityButterfly {
     private int ty = 0;
     private int tz = 0;
 
-    public EntityLunaMoth(World par1World) {
-        super(par1World);
+    public EntityLunaMoth(World world) {
+        super(world);
         this.moth_type = OreSpawnMain.OreSpawnRand.nextInt(4);
         this.setSize(0.5F, 0.5F);
         this.getNavigator()
@@ -44,7 +44,7 @@ public class EntityLunaMoth extends EntityButterfly {
     }
 
     @Override
-    protected void collideWithEntity(Entity par1Entity) {}
+    protected void collideWithEntity(Entity entity) {}
 
     @Override
     protected boolean isAIEnabled() {
@@ -88,26 +88,26 @@ public class EntityLunaMoth extends EntityButterfly {
             }
         }
 
-        for (int var12 = -dx; var12 <= dx; var12++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dz; j <= dz; j++) {
-                Block bidx = this.worldObj.getBlock(x + var12, y + dy, z + j);
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
                 if (bidx == Blocks.torch || bidx == OreSpawnMain.ExtremeTorch) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y + dy;
                         this.tz = z + j;
                         found++;
                     }
                 }
 
-                bidx = this.worldObj.getBlock(x + var12, y - dy, z + j);
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
                 if (bidx == Blocks.torch || bidx == OreSpawnMain.ExtremeTorch) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y - dy;
                         this.tz = z + j;
                         found++;
@@ -116,26 +116,26 @@ public class EntityLunaMoth extends EntityButterfly {
             }
         }
 
-        for (int var13 = -dx; var13 <= dx; var13++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dy; j <= dy; j++) {
-                Block bidxx = this.worldObj.getBlock(x + var13, y + j, z + dz);
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
                 if (bidxx == Blocks.torch || bidxx == OreSpawnMain.ExtremeTorch) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z + dz;
                         found++;
                     }
                 }
 
-                bidxx = this.worldObj.getBlock(x + var13, y + j, z - dz);
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
                 if (bidxx == Blocks.torch || bidxx == OreSpawnMain.ExtremeTorch) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z - dz;
                         found++;
@@ -187,24 +187,24 @@ public class EntityLunaMoth extends EntityButterfly {
                 }
             }
 
-            double var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.5 - this.motionX) * 0.1F;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.68 - this.motionY) * 0.1F;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.5 - this.motionZ) * 0.1F;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx = this.currentFlightTarget.posX + 0.5 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx) * 0.5 - this.motionX) * 0.1F;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.68 - this.motionY) * 0.1F;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.5 - this.motionZ) * 0.1F;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float rotationYaw = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 0.75F;
-            this.rotationYaw += var8;
+            this.rotationYaw += rotationYaw;
         }
     }
 
     @Override
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
     @Override
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     @Override
     public boolean doesEntityNotTriggerPressurePlate() {

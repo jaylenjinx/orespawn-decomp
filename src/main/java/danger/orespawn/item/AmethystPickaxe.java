@@ -13,14 +13,14 @@ public class AmethystPickaxe extends ItemPickaxe {
 
     private int weaponDamage = 12;
 
-    public AmethystPickaxe(int par1, ToolMaterial par2) {
-        super(par2);
+    public AmethystPickaxe(int n, ToolMaterial toolMaterial) {
+        super(toolMaterial);
         this.maxStackSize = 1;
         this.setMaxDamage(2000);
         this.setCreativeTab(CreativeTabs.tabTools);
     }
 
-    public int getDamageVsEntity(Entity par1Entity) {
+    public int getDamageVsEntity(Entity entity) {
         return this.weaponDamage;
     }
 

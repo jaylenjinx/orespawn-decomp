@@ -36,8 +36,8 @@ public class Mantis extends EntityMob {
     private int lastZ = 0;
     private Entity rt = null;
 
-    public Mantis(World par1World) {
-        super(par1World);
+    public Mantis(World world) {
+        super(world);
         this.setSize(2.5F, 3.25F);
         this.getNavigator()
             .setAvoidsWater(false);
@@ -70,8 +70,8 @@ public class Mantis extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     protected float getSoundVolume() {
@@ -98,7 +98,7 @@ public class Mantis extends EntityMob {
         return true;
     }
 
-    protected void collideWithEntity(Entity par1Entity) {}
+    protected void collideWithEntity(Entity entity) {}
 
     public int mygetMaxHealth() {
         return OreSpawnMain.Mantis_stats.health;
@@ -108,41 +108,41 @@ public class Mantis extends EntityMob {
         return Item.getItemFromBlock(Blocks.yellow_flower);
     }
 
-    private void dropItemRand(Item index, int par1) {
-        EntityItem var3 = new EntityItem(
+    private void dropItemRand(Item index, int n) {
+        EntityItem entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
-            new ItemStack(index, par1, 0));
-        this.worldObj.spawnEntityInWorld(var3);
+            new ItemStack(index, n, 0));
+        this.worldObj.spawnEntityInWorld(entityItem);
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         this.dropItemRand(OreSpawnMain.MyMantisClaw, 1);
         this.dropItemRand(OreSpawnMain.MyMantisClaw, 1);
         this.dropItemRand(Items.item_frame, 1);
-        int var4 = 2 + this.worldObj.rand.nextInt(10);
+        int n = 2 + this.worldObj.rand.nextInt(10);
 
-        for (int i = 0; i < var4; i++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(Items.gold_nugget, 1);
         }
 
-        var4 = 1 + this.worldObj.rand.nextInt(3);
+        n = 1 + this.worldObj.rand.nextInt(3);
 
-        for (int var8 = 0; var8 < var4; var8++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(OreSpawnMain.UraniumNugget, 1);
         }
 
-        var4 = 1 + this.worldObj.rand.nextInt(3);
+        n = 1 + this.worldObj.rand.nextInt(3);
 
-        for (int var9 = 0; var9 < var4; var9++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(OreSpawnMain.TitaniumNugget, 1);
         }
 
-        var4 = 2 + this.worldObj.rand.nextInt(3);
+        n = 2 + this.worldObj.rand.nextInt(3);
 
-        for (int var10 = 0; var10 < var4; var10++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(Items.diamond, 1);
         }
     }
@@ -239,16 +239,16 @@ public class Mantis extends EntityMob {
                 }
             }
 
-            double var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.5 - this.motionX) * 0.30000000149011613;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.7F - this.motionY) * 0.20000000149011612;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.5 - this.motionZ) * 0.30000000149011613;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx = this.currentFlightTarget.posX + 0.5 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx) * 0.5 - this.motionX) * 0.30000000149011613;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.7F - this.motionY) * 0.20000000149011612;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.5 - this.motionZ) * 0.30000000149011613;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 1.0F;
-            this.rotationYaw += var8 / 4.0F;
+            this.rotationYaw += f2 / 4.0F;
             if (this.worldObj.rand.nextInt(100) == 1) {
                 this.heal(1.0F);
             }
@@ -259,17 +259,17 @@ public class Mantis extends EntityMob {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean doesEntityNotTriggerPressurePlate() {
         return false;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
-        boolean ret = super.attackEntityFrom(par1DamageSource, par2);
-        Entity e = par1DamageSource.getEntity();
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        boolean ret = super.attackEntityFrom(source, amount);
+        Entity e = source.getEntity();
         if (e != null && e instanceof EntityLivingBase && this.currentFlightTarget != null) {
             this.rt = e;
             this.currentFlightTarget.set((int) e.posX, (int) e.posY, (int) e.posZ);
@@ -297,11 +297,10 @@ public class Mantis extends EntityMob {
             }
         }
 
-        for (int var10 = -2; var10 < 2; var10++) {
+        for (int i = -2; i < 2; i++) {
             for (int j = -2; j < 2; j++) {
                 for (int ix = 1; ix < 6; ix++) {
-                    Block bid = this.worldObj
-                        .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + var10);
+                    Block bid = this.worldObj.getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
                     if (bid != Blocks.air) {
                         return false;
                     }
@@ -329,66 +328,66 @@ public class Mantis extends EntityMob {
 
     public void initCreature() {}
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving.isInWater()) {
+            } else if (target.isInWater()) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (target instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) target;
                 return !p.capabilities.isCreativeMode;
-            } else if (par1EntityLiving instanceof Mantis) {
+            } else if (target instanceof Mantis) {
                 return false;
-            } else if (par1EntityLiving instanceof Irukandji) {
+            } else if (target instanceof Irukandji) {
                 return false;
-            } else if (par1EntityLiving instanceof Skate) {
+            } else if (target instanceof Skate) {
                 return false;
-            } else if (par1EntityLiving instanceof Flounder) {
+            } else if (target instanceof Flounder) {
                 return false;
-            } else if (par1EntityLiving instanceof Whale) {
+            } else if (target instanceof Whale) {
                 return false;
-            } else if (par1EntityLiving instanceof EntitySquid) {
+            } else if (target instanceof EntitySquid) {
                 return false;
-            } else if (par1EntityLiving instanceof WaterDragon) {
+            } else if (target instanceof WaterDragon) {
                 return false;
-            } else if (par1EntityLiving instanceof AttackSquid) {
+            } else if (target instanceof AttackSquid) {
                 return false;
-            } else if (par1EntityLiving instanceof TerribleTerror) {
+            } else if (target instanceof TerribleTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof LurkingTerror) {
+            } else if (target instanceof LurkingTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof CloudShark) {
+            } else if (target instanceof CloudShark) {
                 return false;
-            } else if (par1EntityLiving instanceof Rotator) {
+            } else if (target instanceof Rotator) {
                 return false;
-            } else if (par1EntityLiving instanceof Bee) {
+            } else if (target instanceof Bee) {
                 return false;
-            } else if (par1EntityLiving instanceof Mothra) {
+            } else if (target instanceof Mothra) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityMob) {
+            } else if (target instanceof EntityMob) {
                 return true;
-            } else if (par1EntityLiving instanceof EntityButterfly) {
+            } else if (target instanceof EntityButterfly) {
                 return true;
-            } else if (par1EntityLiving instanceof Cockateil) {
+            } else if (target instanceof Cockateil) {
                 return true;
-            } else if (par1EntityLiving instanceof Fairy) {
+            } else if (target instanceof Fairy) {
                 return true;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (!p.capabilities.isCreativeMode) {
                         return true;
                     }
                 }
 
-                return MyUtils.isAttackableNonMob(par1EntityLiving);
+                return MyUtils.isAttackableNonMob(target);
             }
     }
 
@@ -396,18 +395,18 @@ public class Mantis extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(16.0, 8.0, 16.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 

@@ -7,28 +7,28 @@ public class Acid extends LaserBall {
 
     private int my_index = 85;
 
-    public Acid(World par1World) {
-        super(par1World);
+    public Acid(World world) {
+        super(world);
         super.setAcid();
     }
 
-    public Acid(World par1World, int par2) {
-        super(par1World);
+    public Acid(World world, int n) {
+        super(world);
         super.setAcid();
     }
 
-    public Acid(World par1World, EntityLivingBase par2EntityLiving) {
-        super(par1World, par2EntityLiving);
+    public Acid(World world, EntityLivingBase living) {
+        super(world, living);
         super.setAcid();
     }
 
-    public Acid(World par1World, EntityLivingBase par2EntityLiving, int par3) {
-        super(par1World, par2EntityLiving);
+    public Acid(World world, EntityLivingBase living, int n) {
+        super(world, living);
         super.setAcid();
     }
 
-    public Acid(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public Acid(World world, double x, double y, double z) {
+        super(world, x, y, z);
         super.setAcid();
     }
 

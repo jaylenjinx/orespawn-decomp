@@ -18,7 +18,7 @@ public class OreUranium extends Block {
     private boolean glowing = false;
     private int glowcount = 0;
 
-    public OreUranium(int par1) {
+    public OreUranium(int n) {
         super(Material.rock);
         this.setHardness(10.0F);
         this.setResistance(1.0F);
@@ -31,34 +31,34 @@ public class OreUranium extends Block {
         return 30;
     }
 
-    public void onBlockClicked(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer) {
-        this.glow(par1World, par2, par3, par4);
-        super.onBlockClicked(par1World, par2, par3, par4, par5EntityPlayer);
+    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
+        this.glow(world, x, y, z);
+        super.onBlockClicked(world, x, y, z, player);
     }
 
-    public void onEntityWalking(World par1World, int par2, int par3, int par4, Entity par5Entity) {
-        this.glow(par1World, par2, par3, par4);
-        super.onEntityWalking(par1World, par2, par3, par4, par5Entity);
+    public void onEntityWalking(World world, int x, int y, int z, Entity entity) {
+        this.glow(world, x, y, z);
+        super.onEntityWalking(world, x, y, z, entity);
     }
 
-    public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer,
-        int par6, float par7, float par8, float par9) {
-        this.glow(par1World, par2, par3, par4);
-        return super.onBlockActivated(par1World, par2, par3, par4, par5EntityPlayer, par6, par7, par8, par9);
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
+        float hitY, float hitZ) {
+        this.glow(world, x, y, z);
+        return super.onBlockActivated(world, x, y, z, player, side, hitX, hitY, hitZ);
     }
 
-    private void glow(World par1World, int par2, int par3, int par4) {
+    private void glow(World world, int x, int y, int z) {
         this.glowing = true;
         this.glowcount = 10;
-        this.sparkle(par1World, par2, par3, par4);
+        this.sparkle(world, x, y, z);
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {}
+    public void updateTick(World world, int x, int y, int z, Random rand) {}
 
     @SideOnly(Side.CLIENT)
-    public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random par5Random) {
+    public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
         if (this.glowing) {
-            this.sparkle(par1World, par2, par3, par4);
+            this.sparkle(world, x, y, z);
             if (this.glowcount > 0) {
                 this.glowcount--;
             } else {
@@ -67,56 +67,55 @@ public class OreUranium extends Block {
         }
     }
 
-    private void sparkle(World par1World, int par2, int par3, int par4) {
-        Random var5 = par1World.rand;
-        double var6 = 0.0625;
+    private void sparkle(World world, int x, int y, int z) {
+        Random rand = world.rand;
+        double d = 0.0625;
 
-        for (int var8 = 0; var8 < 6; var8++) {
-            double var9 = par2 + var5.nextFloat();
-            double var11 = par3 + var5.nextFloat();
-            double var13 = par4 + var5.nextFloat();
-            if (var8 == 0 && !par1World.getBlock(par2, par3 + 1, par4)
+        for (int i = 0; i < 6; i++) {
+            double x2 = x + rand.nextFloat();
+            double y2 = y + rand.nextFloat();
+            double z2 = z + rand.nextFloat();
+            if (i == 0 && !world.getBlock(x, y + 1, z)
                 .isOpaqueCube()) {
-                var11 = par3 + 1 + var6;
+                y2 = y + 1 + d;
             }
 
-            if (var8 == 1 && !par1World.getBlock(par2, par3 - 1, par4)
+            if (i == 1 && !world.getBlock(x, y - 1, z)
                 .isOpaqueCube()) {
-                var11 = par3 + 0 - var6;
+                y2 = y + 0 - d;
             }
 
-            if (var8 == 2 && !par1World.getBlock(par2, par3, par4 + 1)
+            if (i == 2 && !world.getBlock(x, y, z + 1)
                 .isOpaqueCube()) {
-                var13 = par4 + 1 + var6;
+                z2 = z + 1 + d;
             }
 
-            if (var8 == 3 && !par1World.getBlock(par2, par3, par4 - 1)
+            if (i == 3 && !world.getBlock(x, y, z - 1)
                 .isOpaqueCube()) {
-                var13 = par4 + 0 - var6;
+                z2 = z + 0 - d;
             }
 
-            if (var8 == 4 && !par1World.getBlock(par2 + 1, par3, par4)
+            if (i == 4 && !world.getBlock(x + 1, y, z)
                 .isOpaqueCube()) {
-                var9 = par2 + 1 + var6;
+                x2 = x + 1 + d;
             }
 
-            if (var8 == 5 && !par1World.getBlock(par2 - 1, par3, par4)
+            if (i == 5 && !world.getBlock(x - 1, y, z)
                 .isOpaqueCube()) {
-                var9 = par2 + 0 - var6;
+                x2 = x + 0 - d;
             }
 
-            if (var9 < par2 || var9 > par2 + 1 || var11 < 0.0 || var11 > par3 + 1 || var13 < par4 || var13 > par4 + 1) {
-                par1World.spawnParticle("reddust", var9, var11, var13, 0.0, 0.0, 0.0);
+            if (x2 < x || x2 > x + 1 || y2 < 0.0 || y2 > y + 1 || z2 < z || z2 > z + 1) {
+                world.spawnParticle("reddust", x2, y2, z2, 0.0, 0.0, 0.0);
             }
         }
     }
 
-    public void dropBlockAsItemWithChance(World par1World, int par2, int par3, int par4, int par5, float par6,
-        int par7) {
-        super.dropBlockAsItemWithChance(par1World, par2, par3, par4, par5, par6, par7);
-        int j1 = 5 + par1World.rand.nextInt(5) + par1World.rand.nextInt(10);
-        if (par3 < 40) {
-            this.dropXpOnBlockBreak(par1World, par2, par3, par4, j1);
+    public void dropBlockAsItemWithChance(World world, int x, int y, int z, int meta, float chance, int fortune) {
+        super.dropBlockAsItemWithChance(world, x, y, z, meta, chance, fortune);
+        int j1 = 5 + world.rand.nextInt(5) + world.rand.nextInt(10);
+        if (y < 40) {
+            this.dropXpOnBlockBreak(world, x, y, z, j1);
         }
     }
 

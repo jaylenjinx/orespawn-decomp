@@ -9,12 +9,8 @@ import danger.orespawn.entity.projectile.IrukandjiArrow;
 
 public final class MyDispenserBehaviorArrow extends BehaviorProjectileDispense {
 
-    protected IProjectile getProjectileEntity(World par1World, IPosition par2IPosition) {
-        IrukandjiArrow entityarrow = new IrukandjiArrow(
-            par1World,
-            par2IPosition.getX(),
-            par2IPosition.getY(),
-            par2IPosition.getZ());
+    protected IProjectile getProjectileEntity(World world, IPosition position) {
+        IrukandjiArrow entityarrow = new IrukandjiArrow(world, position.getX(), position.getY(), position.getZ());
         entityarrow.canBePickedUp = 1;
         return entityarrow;
     }

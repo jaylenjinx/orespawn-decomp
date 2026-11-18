@@ -11,21 +11,21 @@ public class RedCow extends EntityCow {
         super(world);
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
-        int var3 = this.rand.nextInt(3) + this.rand.nextInt(1 + par2);
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int n = this.rand.nextInt(3) + this.rand.nextInt(1 + lootingLevel);
 
-        for (int var4 = 0; var4 < var3; var4++) {
+        for (int i = 0; i < n; i++) {
             this.dropItem(Items.apple, 1);
         }
 
-        super.dropFewItems(par1, par2);
+        super.dropFewItems(wasRecentlyHit, lootingLevel);
     }
 
     public EntityCow createChild(EntityAgeable entityageable) {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public RedCow spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public RedCow spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new RedCow(this.worldObj);
     }
 

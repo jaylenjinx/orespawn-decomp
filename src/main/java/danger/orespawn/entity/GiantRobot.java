@@ -38,8 +38,8 @@ public class GiantRobot extends EntityMob {
     private int reload_ticker = 0;
     private float moveSpeed = 0.55F;
 
-    public GiantRobot(World par1World) {
-        super(par1World);
+    public GiantRobot(World world) {
+        super(world);
         this.setSize(3.0F, 9.75F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -145,35 +145,35 @@ public class GiantRobot extends EntityMob {
         return Items.iron_ingot;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         ItemStack is = null;
-        int var5 = 15 + this.worldObj.rand.nextInt(15);
+        int n = 15 + this.worldObj.rand.nextInt(15);
 
-        for (int var4 = 0; var4 < var5; var4++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(OreSpawnMain.MyLaserBall, 4);
         }
 
         int i = 10 + this.worldObj.rand.nextInt(10);
 
-        for (int var8 = 0; var8 < i; var8++) {
-            int var3 = this.worldObj.rand.nextInt(12);
-            switch (var3) {
+        for (int i2 = 0; i2 < i; i2++) {
+            int roll = this.worldObj.rand.nextInt(12);
+            switch (roll) {
                 case 0:
                     is = this.dropItemRand(OreSpawnMain.SpiderRobotKit, 1);
                     break;
@@ -207,23 +207,23 @@ public class GiantRobot extends EntityMob {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         double ks = 2.2;
         double inair = 0.25;
-        if (!super.attackEntityAsMob(par1Entity)) {
+        if (!super.attackEntityAsMob(target)) {
             return false;
         } else {
-            if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
-                float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-                if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+            if (target != null && target instanceof EntityLivingBase) {
+                float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+                if (target.isDead || target instanceof EntityPlayer) {
                     inair *= 2.0;
                 }
 
-                par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+                target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
             }
 
             return true;
@@ -269,24 +269,24 @@ public class GiantRobot extends EntityMob {
                             if (this.reload_ticker == 0) {
                                 double yoff = 10.0;
                                 double xzoff = 3.75;
-                                LaserBall var2 = new LaserBall(
+                                LaserBall laserBall = new LaserBall(
                                     this.worldObj,
                                     e.posX - this.posX,
                                     e.posY - (this.posY + yoff),
                                     e.posZ - this.posZ);
-                                var2.setLocationAndAngles(
+                                laserBall.setLocationAndAngles(
                                     this.posX - xzoff * Math.sin(Math.toRadians(this.rotationYawHead)),
                                     this.posY + yoff,
                                     this.posZ + xzoff * Math.cos(Math.toRadians(this.rotationYawHead)),
                                     this.rotationYawHead,
                                     this.rotationPitch);
-                                double var3 = e.posX - var2.posX;
-                                double var5 = e.posY - var2.posY;
-                                double var7 = e.posZ - var2.posZ;
-                                float var9 = MathHelper.sqrt_double(var3 * var3 + var7 * var7) * 0.2F;
-                                var2.setThrowableHeading(var3, var5 + var9, var7, 2.0F, 4.0F);
+                                double dx = e.posX - laserBall.posX;
+                                double dy = e.posY - laserBall.posY;
+                                double dz = e.posZ - laserBall.posZ;
+                                float f = MathHelper.sqrt_double(dx * dx + dz * dz) * 0.2F;
+                                laserBall.setThrowableHeading(dx, dy + f, dz, 2.0F, 4.0F);
                                 if (this.getDistanceSqToEntity(e) > 100.0) {
-                                    var2.setSpecial();
+                                    laserBall.setSpecial();
                                     this.reload_ticker = 25;
                                     this.worldObj.playSoundAtEntity(this, "fireworks.launch", 3.5F, 0.5F);
                                 } else {
@@ -294,7 +294,7 @@ public class GiantRobot extends EntityMob {
                                     this.worldObj.playSoundAtEntity(this, "fireworks.launch", 2.5F, 1.0F);
                                 }
 
-                                this.worldObj.spawnEntityInWorld(var2);
+                                this.worldObj.spawnEntityInWorld(laserBall);
                             }
 
                             if (this.getDistanceSqToEntity(e) < (8.0F + e.width / 2.0F) * (8.0F + e.width / 2.0F)) {
@@ -317,14 +317,14 @@ public class GiantRobot extends EntityMob {
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        if (!par1DamageSource.getDamageType()
+        if (!source.getDamageType()
             .equals("cactus")) {
-            ret = super.attackEntityFrom(par1DamageSource, par2);
+            ret = super.attackEntityFrom(source, amount);
         }
 
-        Entity e = par1DamageSource.getEntity();
+        Entity e = source.getEntity();
         if (e != null && e instanceof EntityLiving) {
             this.setAttackTarget((EntityLiving) e);
             this.setTarget(e);
@@ -333,23 +333,23 @@ public class GiantRobot extends EntityMob {
         return ret;
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityMob) {
+            } else if (target instanceof EntityMob) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -363,14 +363,14 @@ public class GiantRobot extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(16.0, 12.0, 16.0));
-            Collections.sort(var5, this.TargetSorter);
+            Collections.sort(entities, this.TargetSorter);
 
-            for (Entity var3 : (List<Entity>) var5) {
-                EntityLivingBase var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            for (Entity entity : (List<Entity>) entities) {
+                EntityLivingBase target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -382,8 +382,8 @@ public class GiantRobot extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public boolean getCanSpawnHere() {

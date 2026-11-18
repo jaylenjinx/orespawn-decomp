@@ -35,8 +35,8 @@ public class TRex extends EntityMob {
     private float moveSpeed = 0.38F;
     private EntityLivingBase rt = null;
 
-    public TRex(World par1World) {
-        super(par1World);
+    public TRex(World world) {
+        super(world);
         this.setSize(2.0F, 4.2F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -116,27 +116,27 @@ public class TRex extends EntityMob {
         return Items.beef;
     }
 
-    private void dropItemRand(Item index, int par1) {
-        EntityItem var3 = new EntityItem(
+    private void dropItemRand(Item index, int n) {
+        EntityItem entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
-            new ItemStack(index, par1, 0));
-        this.worldObj.spawnEntityInWorld(var3);
+            new ItemStack(index, n, 0));
+        this.worldObj.spawnEntityInWorld(entityItem);
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         this.dropItemRand(OreSpawnMain.TRexTooth, 1);
         this.dropItemRand(Items.item_frame, 1);
 
-        for (int var4 = 0; var4 < 7; var4++) {
+        for (int i = 0; i < 7; i++) {
             this.dropItemRand(Items.beef, 1);
         }
 
-        int var5 = 2 + this.worldObj.rand.nextInt(4);
+        int n = 2 + this.worldObj.rand.nextInt(4);
 
-        for (int i = 0; i < var5; i++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(OreSpawnMain.UraniumNugget, 1);
             this.dropItemRand(OreSpawnMain.TitaniumNugget, 1);
         }
@@ -144,35 +144,35 @@ public class TRex extends EntityMob {
 
     public void initCreature() {}
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        if (!super.attackEntityAsMob(par1Entity)) {
+    public boolean attackEntityAsMob(Entity target) {
+        if (!super.attackEntityAsMob(target)) {
             return false;
         } else {
-            if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
+            if (target != null && target instanceof EntityLivingBase) {
                 double ks = 1.2;
                 double inair = 0.1;
-                float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-                if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+                float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+                if (target.isDead || target instanceof EntityPlayer) {
                     inair *= 2.0;
                 }
 
-                par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+                target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
             }
 
             return true;
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        if (!par1DamageSource.getDamageType()
+        if (!source.getDamageType()
             .equals("cactus")) {
-            ret = super.attackEntityFrom(par1DamageSource, par2);
-            Entity e = par1DamageSource.getEntity();
+            ret = super.attackEntityFrom(source, amount);
+            Entity e = source.getEntity();
             if (e != null && e instanceof EntityLivingBase) {
                 this.rt = (EntityLivingBase) e;
             }
@@ -225,27 +225,27 @@ public class TRex extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof TRex) {
+            } else if (target instanceof TRex) {
                 return false;
-            } else if (par1EntityLiving instanceof Cryolophosaurus) {
+            } else if (target instanceof Cryolophosaurus) {
                 return false;
-            } else if (par1EntityLiving instanceof VelocityRaptor) {
+            } else if (target instanceof VelocityRaptor) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -259,18 +259,18 @@ public class TRex extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(20.0, 6.0, 20.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -282,8 +282,8 @@ public class TRex extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public boolean getCanSpawnHere() {
@@ -312,11 +312,11 @@ public class TRex extends EntityMob {
         } else if (this.worldObj.isDaytime()) {
             return false;
         } else {
-            for (int var10 = -1; var10 <= 1; var10++) {
+            for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
                     for (int ix = 1; ix < 6; ix++) {
                         Block bid = this.worldObj
-                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + var10);
+                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
                         if (bid != Blocks.air) {
                             return false;
                         }

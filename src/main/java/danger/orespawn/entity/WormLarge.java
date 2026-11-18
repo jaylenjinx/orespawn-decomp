@@ -29,8 +29,8 @@ public class WormLarge extends EntityMob {
 
     private int wormsSpawned = 0;
 
-    public WormLarge(World par1World) {
-        super(par1World);
+    public WormLarge(World world) {
+        super(world);
         this.setSize(1.55F, 2.5F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -85,7 +85,7 @@ public class WormLarge extends EntityMob {
         return true;
     }
 
-    protected void collideWithEntity(Entity par1Entity) {}
+    protected void collideWithEntity(Entity entity) {}
 
     protected void collideWithNearbyEntities() {}
 
@@ -228,7 +228,7 @@ public class WormLarge extends EntityMob {
                                     }
 
                                     boots.damageItem(bid, this);
-                                    EntityItem var3 = new EntityItem(
+                                    EntityItem entityItem = new EntityItem(
                                         this.worldObj,
                                         this.posX + OreSpawnMain.OreSpawnRand.nextInt(5)
                                             - OreSpawnMain.OreSpawnRand.nextInt(5),
@@ -236,7 +236,7 @@ public class WormLarge extends EntityMob {
                                         this.posZ + OreSpawnMain.OreSpawnRand.nextInt(5)
                                             - OreSpawnMain.OreSpawnRand.nextInt(5),
                                         boots);
-                                    this.worldObj.spawnEntityInWorld(var3);
+                                    this.worldObj.spawnEntityInWorld(entityItem);
                                 } else {
                                     boots = target.getEquipmentInSlot(3);
                                     if (boots != null) {
@@ -249,7 +249,7 @@ public class WormLarge extends EntityMob {
                                         }
 
                                         boots.damageItem(bid, this);
-                                        EntityItem var3 = new EntityItem(
+                                        EntityItem entityItem = new EntityItem(
                                             this.worldObj,
                                             this.posX + OreSpawnMain.OreSpawnRand.nextInt(5)
                                                 - OreSpawnMain.OreSpawnRand.nextInt(5),
@@ -257,7 +257,7 @@ public class WormLarge extends EntityMob {
                                             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(5)
                                                 - OreSpawnMain.OreSpawnRand.nextInt(5),
                                             boots);
-                                        this.worldObj.spawnEntityInWorld(var3);
+                                        this.worldObj.spawnEntityInWorld(entityItem);
                                     }
                                 }
                             }
@@ -274,7 +274,7 @@ public class WormLarge extends EntityMob {
                                     }
 
                                     boots.damageItem(bid, this);
-                                    EntityItem var3 = new EntityItem(
+                                    EntityItem entityItem = new EntityItem(
                                         this.worldObj,
                                         this.posX + OreSpawnMain.OreSpawnRand.nextInt(5)
                                             - OreSpawnMain.OreSpawnRand.nextInt(5),
@@ -282,7 +282,7 @@ public class WormLarge extends EntityMob {
                                         this.posZ + OreSpawnMain.OreSpawnRand.nextInt(5)
                                             - OreSpawnMain.OreSpawnRand.nextInt(5),
                                         boots);
-                                    this.worldObj.spawnEntityInWorld(var3);
+                                    this.worldObj.spawnEntityInWorld(entityItem);
                                 }
                             }
                         }
@@ -296,15 +296,15 @@ public class WormLarge extends EntityMob {
         return false;
     }
 
-    protected void fall(float par1) {
+    protected void fall(float distance) {
         if (!this.noClip) {
-            super.fall(par1);
+            super.fall(distance);
         }
     }
 
-    protected void updateFallState(double par1, boolean par3) {
+    protected void updateFallState(double distanceFallen, boolean onGround) {
         if (!this.noClip) {
-            super.updateFallState(par1, par3);
+            super.updateFallState(distanceFallen, onGround);
         }
     }
 
@@ -343,9 +343,9 @@ public class WormLarge extends EntityMob {
             } else {
                 for (int ix = -6; ix <= 6; ix++) {
                     for (int j = -6; j <= 6; j++) {
-                        for (int var13 = -2; var13 >= -8; var13--) {
+                        for (int k = -2; k >= -8; k--) {
                             Block bid = this.worldObj
-                                .getBlock((int) this.posX + ix, (int) this.posY + var13, (int) this.posZ + j);
+                                .getBlock((int) this.posX + ix, (int) this.posY + k, (int) this.posZ + j);
                             if (bid == Blocks.air) {
                                 return false;
                             }
@@ -353,11 +353,11 @@ public class WormLarge extends EntityMob {
                     }
                 }
 
-                for (int var10 = -6; var10 <= 6; var10++) {
+                for (int i = -6; i <= 6; i++) {
                     for (int j = -6; j <= 6; j++) {
-                        for (int var14 = 2; var14 <= 8; var14++) {
+                        for (int k = 2; k <= 8; k++) {
                             Block bid = this.worldObj
-                                .getBlock((int) this.posX + var10, (int) this.posY + var14, (int) this.posZ + j);
+                                .getBlock((int) this.posX + i, (int) this.posY + k, (int) this.posZ + j);
                             if (bid != Blocks.air) {
                                 return false;
                             }
@@ -372,76 +372,76 @@ public class WormLarge extends EntityMob {
 
     public void initCreature() {}
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        return par1DamageSource.getDamageType()
-            .equals("inWall") ? ret : super.attackEntityFrom(par1DamageSource, par2);
+        return source.getDamageType()
+            .equals("inWall") ? ret : super.attackEntityFrom(source, amount);
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("wormsSpawned", this.wormsSpawned);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("wormsSpawned", this.wormsSpawned);
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.wormsSpawned = par1NBTTagCompound.getInteger("wormsSpawned");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.wormsSpawned = tag.getInteger("wormsSpawned");
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
         }
 
-        return var8;
+        return entity;
     }
 
     protected Item getDropItem() {
         return Items.rotten_flesh;
     }
 
-    private void dropItemRand(Item index, int par1) {
-        EntityItem var3 = new EntityItem(
+    private void dropItemRand(Item index, int n) {
+        EntityItem entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
             this.posY + 2.5 + this.worldObj.rand.nextInt(4),
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
-            new ItemStack(index, par1, 0));
-        this.worldObj.spawnEntityInWorld(var3);
+            new ItemStack(index, n, 0));
+        this.worldObj.spawnEntityInWorld(entityItem);
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         this.dropItemRand(OreSpawnMain.WormTooth, 1);
         this.dropItemRand(Items.item_frame, 1);
 
-        for (int var4 = 0; var4 < 6; var4++) {
+        for (int i = 0; i < 6; i++) {
             this.dropItemRand(Items.rotten_flesh, 1);
         }
 
-        for (int var41 = 0; var41 < 6; var41++) {
+        for (int i = 0; i < 6; i++) {
             this.dropItemRand(Items.leather, 1);
         }
 
-        for (int var5 = 0; var5 < 8; var5++) {
+        for (int i = 0; i < 8; i++) {
             this.dropItemRand(Item.getItemFromBlock(Blocks.dirt), 1);
         }
 
-        for (int var6 = 0; var6 < 16; var6++) {
+        for (int i = 0; i < 16; i++) {
             this.dropItemRand(Items.gold_nugget, 1);
         }
 
-        for (int var7 = 0; var7 < 5; var7++) {
+        for (int i = 0; i < 5; i++) {
             this.dropItemRand(Items.diamond, 1);
         }
 
-        for (int var8 = 0; var8 < 4; var8++) {
+        for (int i = 0; i < 4; i++) {
             this.dropItemRand(OreSpawnMain.UraniumNugget, 1);
         }
 
-        for (int var9 = 0; var9 < 4; var9++) {
+        for (int i = 0; i < 4; i++) {
             this.dropItemRand(OreSpawnMain.TitaniumNugget, 1);
         }
     }

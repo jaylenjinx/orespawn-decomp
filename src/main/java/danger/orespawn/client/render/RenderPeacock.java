@@ -17,35 +17,34 @@ public class RenderPeacock extends RenderLiving {
     private float scale = 1.0F;
     private static final ResourceLocation texture = new ResourceLocation("orespawn", "peacocktexture.png");
 
-    public RenderPeacock(ModelPeacock par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderPeacock(ModelPeacock modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelPeacock) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderPeacock(Peacock par1EntityPeacock, double par2, double par4, double par6, float par8,
-        float par9) {
-        super.doRender(par1EntityPeacock, par2, par4, par6, par8, par9);
+    public void renderPeacock(Peacock entityPeacock, double x, double y, double z, float yaw, float partialTicks) {
+        super.doRender(entityPeacock, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderPeacock((Peacock) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderPeacock((Peacock) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderPeacock((Peacock) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderPeacock((Peacock) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(Peacock par1Entity, float par2) {
-        if (par1Entity != null && par1Entity.isChild()) {
+    protected void preRenderScale(Peacock entity, float f) {
+        if (entity != null && entity.isChild()) {
             GL11.glScalef(this.scale / 2.0F, this.scale / 2.0F, this.scale / 2.0F);
         } else {
             GL11.glScalef(this.scale, this.scale, this.scale);
         }
     }
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
-        this.preRenderScale((Peacock) par1EntityLiving, par2);
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((Peacock) entity, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

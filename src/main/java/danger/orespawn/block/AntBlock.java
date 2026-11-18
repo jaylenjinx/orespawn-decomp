@@ -25,105 +25,105 @@ public class AntBlock extends BlockGrass {
     @SideOnly(Side.CLIENT)
     private IIcon[] field_94364_a;
 
-    public AntBlock(int par1) {
+    public AntBlock(int n) {
         this.setTickRandomly(true);
         this.setCreativeTab(CreativeTabs.tabBlock);
     }
 
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int par1, int par2) {
+    public IIcon getIcon(int side, int meta) {
         if (this.field_94364_a == null) {
             return null;
         } else {
-            return par1 == 1 ? this.field_94364_a[0] : (par1 == 0 ? this.field_94364_a[1] : this.field_94364_a[2]);
+            return side == 1 ? this.field_94364_a[0] : (side == 0 ? this.field_94364_a[1] : this.field_94364_a[2]);
         }
     }
 
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
+    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int n) {
         if (this.field_94364_a == null) {
             return null;
-        } else if (par5 == 1) {
+        } else if (n == 1) {
             return this.field_94364_a[0];
         } else {
-            return par5 == 0 ? this.field_94364_a[1] : this.field_94364_a[2];
+            return n == 0 ? this.field_94364_a[1] : this.field_94364_a[2];
         }
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
+    public void updateTick(World world, int x, int y, int z, Random rand) {
         int howmany = 0;
-        if (!par1World.isRemote) {
-            if (par1World.isRaining()) {
+        if (!world.isRemote) {
+            if (world.isRaining()) {
                 return;
             }
 
-            Block bid = par1World.getBlock(par2, par3 + 1, par4);
+            Block bid = world.getBlock(x, y + 1, z);
             if (bid == Blocks.air) {
                 howmany = OreSpawnMain.OreSpawnRand.nextInt(6) + 2;
 
                 for (int i = 0; i < howmany; i++) {
                     if (this == OreSpawnMain.MyAntBlock) {
                         if (OreSpawnMain.BlackAntEnable != 0) {
-                            spawnCreature(par1World, "Ant", par2 + 0.5, par3 + 1.01, par4 + 0.5);
+                            spawnCreature(world, "Ant", x + 0.5, y + 1.01, z + 0.5);
                         }
                     } else if (this == OreSpawnMain.MyRedAntBlock) {
                         if (OreSpawnMain.RedAntEnable != 0) {
-                            spawnCreature(par1World, "Red Ant", par2 + 0.5, par3 + 1.01, par4 + 0.5);
+                            spawnCreature(world, "Red Ant", x + 0.5, y + 1.01, z + 0.5);
                         }
                     } else if (this == OreSpawnMain.MyUnstableAntBlock) {
                         if (OreSpawnMain.UnstableAntEnable != 0) {
-                            spawnCreature(par1World, "Unstable Ant", par2 + 0.5, par3 + 1.01, par4 + 0.5);
+                            spawnCreature(world, "Unstable Ant", x + 0.5, y + 1.01, z + 0.5);
                         }
                     } else if (this == OreSpawnMain.TermiteBlock) {
                         if (OreSpawnMain.TermiteEnable != 0) {
-                            spawnCreature(par1World, "Termite", par2 + 0.5, par3 + 1.01, par4 + 0.5);
+                            spawnCreature(world, "Termite", x + 0.5, y + 1.01, z + 0.5);
                         }
                     } else if (OreSpawnMain.RainbowAntEnable != 0) {
-                        spawnCreature(par1World, "Rainbow Ant", par2 + 0.5, par3 + 1.01, par4 + 0.5);
+                        spawnCreature(world, "Rainbow Ant", x + 0.5, y + 1.01, z + 0.5);
                     }
                 }
             }
         }
     }
 
-    public Item getItemDropped(int par1, Random par2Random, int par3) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         return Item.getItemFromBlock(this);
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
     @SideOnly(Side.CLIENT)
     public int getBlockColor() {
-        double var1 = 0.5;
-        double var3 = 1.0;
-        return ColorizerGrass.getGrassColor(var1, var3);
+        double d = 0.5;
+        double d2 = 1.0;
+        return ColorizerGrass.getGrassColor(d, d2);
     }
 
     @SideOnly(Side.CLIENT)
-    public int getRenderColor(int par1) {
+    public int getRenderColor(int meta) {
         return this.getBlockColor();
     }
 
     @SideOnly(Side.CLIENT)
-    public int colorMultiplier(IBlockAccess p_149720_1_, int p_149720_2_, int p_149720_3_, int p_149720_4_) {
+    public int colorMultiplier(IBlockAccess blockAccess, int x, int y, int z) {
         int l = 0;
         int i1 = 0;
         int j1 = 0;
 
         for (int k1 = -1; k1 <= 1; k1++) {
             for (int l1 = -1; l1 <= 1; l1++) {
-                int i2 = p_149720_1_.getBiomeGenForCoords(p_149720_2_ + l1, p_149720_4_ + k1)
-                    .getBiomeGrassColor(p_149720_2_ + l1, p_149720_3_, p_149720_4_ + k1);
+                int i2 = blockAccess.getBiomeGenForCoords(x + l1, z + k1)
+                    .getBiomeGrassColor(x + l1, y, z + k1);
                 l += (i2 & 0xFF0000) >> 16;
                 i1 += (i2 & 0xFF00) >> 8;
                 j1 += i2 & 0xFF;
@@ -134,10 +134,10 @@ public class AntBlock extends BlockGrass {
     }
 
     @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister par1IIconRegister) {
+    public void registerBlockIcons(IIconRegister iconRegister) {
         this.field_94364_a = new IIcon[3];
-        this.field_94364_a[0] = par1IIconRegister.registerIcon("OreSpawn:antnest_top");
-        this.field_94364_a[1] = par1IIconRegister.registerIcon("OreSpawn:antnest_bottom");
-        this.field_94364_a[2] = par1IIconRegister.registerIcon("OreSpawn:antnest_side");
+        this.field_94364_a[0] = iconRegister.registerIcon("OreSpawn:antnest_top");
+        this.field_94364_a[1] = iconRegister.registerIcon("OreSpawn:antnest_bottom");
+        this.field_94364_a[2] = iconRegister.registerIcon("OreSpawn:antnest_side");
     }
 }

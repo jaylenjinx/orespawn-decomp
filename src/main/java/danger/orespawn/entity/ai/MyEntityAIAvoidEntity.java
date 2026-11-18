@@ -26,14 +26,14 @@ public class MyEntityAIAvoidEntity extends EntityAIBase {
     private PathNavigate entityPathNavigate;
     private Class targetEntityClass;
 
-    public MyEntityAIAvoidEntity(EntityCreature par1EntityCreature, Class par2Class, float par3, double par4,
-        double par6) {
-        this.theEntity = par1EntityCreature;
-        this.targetEntityClass = par2Class;
-        this.distanceFromEntity = par3;
-        this.farSpeed = par4;
-        this.nearSpeed = par6;
-        this.entityPathNavigate = par1EntityCreature.getNavigator();
+    public MyEntityAIAvoidEntity(EntityCreature creature, Class clazz, float distanceFromEntity2, double farSpeed2,
+        double nearSpeed2) {
+        this.theEntity = creature;
+        this.targetEntityClass = clazz;
+        this.distanceFromEntity = distanceFromEntity2;
+        this.farSpeed = farSpeed2;
+        this.nearSpeed = nearSpeed2;
+        this.entityPathNavigate = creature.getNavigator();
         this.setMutexBits(1);
     }
 
@@ -108,7 +108,7 @@ public class MyEntityAIAvoidEntity extends EntityAIBase {
         }
     }
 
-    static EntityCreature func_98217_a(MyEntityAIAvoidEntity par0EntityAIAvoidEntity) {
-        return par0EntityAIAvoidEntity.theEntity;
+    static EntityCreature func_98217_a(MyEntityAIAvoidEntity entityAIAvoidEntity) {
+        return entityAIAvoidEntity.theEntity;
     }
 }

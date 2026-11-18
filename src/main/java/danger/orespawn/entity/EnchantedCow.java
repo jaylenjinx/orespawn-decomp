@@ -14,26 +14,26 @@ public class EnchantedCow extends RedCow {
     }
 
     private void dropEnchantedGoldenApple() {
-        EntityItem var3 = new EntityItem(
+        EntityItem entityItem = new EntityItem(
             this.worldObj,
             this.posX,
             this.posY + 1.0,
             this.posZ,
             new ItemStack(Items.golden_apple, 1, 1));
-        this.worldObj.spawnEntityInWorld(var3);
+        this.worldObj.spawnEntityInWorld(entityItem);
     }
 
     @Override
-    protected void dropFewItems(boolean par1, int par2) {
-        int var3 = this.rand.nextInt(4) + this.rand.nextInt(1 + par2);
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int n = this.rand.nextInt(4) + this.rand.nextInt(1 + lootingLevel);
 
-        for (int var4 = 0; var4 < var3; var4++) {
+        for (int i = 0; i < n; i++) {
             this.dropItem(Items.apple, 1);
         }
 
         this.dropItem(Items.golden_apple, 2);
         this.dropEnchantedGoldenApple();
-        super.dropFewItems(par1, par2);
+        super.dropFewItems(wasRecentlyHit, lootingLevel);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class EnchantedCow extends RedCow {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public EnchantedCow spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public EnchantedCow spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new EnchantedCow(this.worldObj);
     }
 }

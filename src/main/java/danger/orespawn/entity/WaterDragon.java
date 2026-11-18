@@ -52,8 +52,8 @@ public class WaterDragon extends EntityTameable {
     private int ty = 0;
     private int tz = 0;
 
-    public WaterDragon(World par1World) {
-        super(par1World);
+    public WaterDragon(World world) {
+        super(world);
         this.moveSpeed = 0.25F;
         this.setSize(1.25F, 1.9F);
         this.getNavigator()
@@ -102,24 +102,23 @@ public class WaterDragon extends EntityTameable {
         this.renderdata.ri4 = 0;
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (super.interact(par1EntityPlayer)) {
+        if (super.interact(player)) {
             return true;
-        } else
-            if (var2 != null && var2.getItem() == Items.fish && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+        } else if (currentItem != null && currentItem.getItem() == Items.fish
+            && player.getDistanceSqToEntity(this) < 25.0) {
                 if (!this.isTamed()) {
                     if (!this.worldObj.isRemote) {
                         if (this.rand.nextInt(3) == 0) {
                             this.setTamed(true);
                             this.func_152115_b(
-                                par1EntityPlayer.getUniqueID()
+                                player.getUniqueID()
                                     .toString());
                             this.playTameEffect(true);
                             this.worldObj.setEntityState(this, (byte) 7);
@@ -129,7 +128,7 @@ public class WaterDragon extends EntityTameable {
                             this.worldObj.setEntityState(this, (byte) 6);
                         }
                     }
-                } else if (this.func_152114_e(par1EntityPlayer)) {
+                } else if (this.func_152114_e(player)) {
                     if (this.worldObj.isRemote) {
                         this.playTameEffect(true);
                         this.worldObj.setEntityState(this, (byte) 7);
@@ -140,19 +139,18 @@ public class WaterDragon extends EntityTameable {
                     }
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
-            } else if (this.isTamed() && var2 != null
-                && var2.getItem() == Item.getItemFromBlock(Blocks.deadbush)
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0
-                && this.func_152114_e(par1EntityPlayer)) {
+            } else if (this.isTamed() && currentItem != null
+                && currentItem.getItem() == Item.getItemFromBlock(Blocks.deadbush)
+                && player.getDistanceSqToEntity(this) < 25.0
+                && this.func_152114_e(player)) {
                     if (!this.worldObj.isRemote) {
                         this.setTamed(false);
                         this.func_152115_b("");
@@ -160,41 +158,40 @@ public class WaterDragon extends EntityTameable {
                         this.worldObj.setEntityState(this, (byte) 6);
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
-                } else if (this.isTamed() && var2 != null
-                    && var2.getItem() == Items.name_tag
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                    && this.func_152114_e(par1EntityPlayer)) {
-                        this.setCustomNameTag(var2.getDisplayName());
-                        if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                            var2.stackSize--;
-                            if (var2.stackSize <= 0) {
-                                par1EntityPlayer.inventory
-                                    .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                } else if (this.isTamed() && currentItem != null
+                    && currentItem.getItem() == Items.name_tag
+                    && player.getDistanceSqToEntity(this) < 16.0
+                    && this.func_152114_e(player)) {
+                        this.setCustomNameTag(currentItem.getDisplayName());
+                        if (!player.capabilities.isCreativeMode) {
+                            currentItem.stackSize--;
+                            if (currentItem.stackSize <= 0) {
+                                player.inventory
+                                    .setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                             }
                         }
 
                         return true;
-                    } else if (this.isTamed() && this.func_152114_e(par1EntityPlayer)
-                        && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
-                            if (!this.isSitting()) {
-                                this.setSitting(true);
-                            } else {
-                                this.setSitting(false);
-                            }
-
-                            return true;
+                    } else
+                    if (this.isTamed() && this.func_152114_e(player) && player.getDistanceSqToEntity(this) < 25.0) {
+                        if (!this.isSitting()) {
+                            this.setSitting(true);
                         } else {
-                            return false;
+                            this.setSitting(false);
                         }
+
+                        return true;
+                    } else {
+                        return false;
+                    }
     }
 
     protected boolean canDespawn() {
@@ -252,18 +249,18 @@ public class WaterDragon extends EntityTameable {
         return (int) this.getHealth();
     }
 
-    public int getAttackStrength(Entity par1Entity) {
-        int var2 = 4;
+    public int getAttackStrength(Entity entity) {
+        int n = 4;
         if (this.worldObj.difficultySetting == EnumDifficulty.EASY) {
-            var2 = 6;
+            n = 6;
             if (this.worldObj.difficultySetting == EnumDifficulty.NORMAL) {
-                var2 = 8;
+                n = 8;
             } else if (this.worldObj.difficultySetting == EnumDifficulty.HARD) {
-                var2 = 10;
+                n = 10;
             }
         }
 
-        return var2;
+        return n;
     }
 
     protected String getLivingSound() {
@@ -290,34 +287,34 @@ public class WaterDragon extends EntityTameable {
         return Items.fish;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         ItemStack is = null;
         this.dropItemRand(OreSpawnMain.MyWaterDragonScale, 1);
         this.dropItemRand(Items.item_frame, 1);
-        int var5 = 9 + this.worldObj.rand.nextInt(6);
+        int n = 9 + this.worldObj.rand.nextInt(6);
 
-        for (int var4 = 0; var4 < var5; var4++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(Items.fish, 1);
         }
 
-        int var7 = this.worldObj.rand.nextInt(20);
-        switch (var7) {
+        int roll = this.worldObj.rand.nextInt(20);
+        switch (roll) {
             case 0:
                 is = this.dropItemRand(OreSpawnMain.MyUltimateAxe, 1);
                 break;
@@ -494,34 +491,34 @@ public class WaterDragon extends EntityTameable {
         }
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        boolean var4 = par1Entity
+    public boolean attackEntityAsMob(Entity target) {
+        boolean flag = target
             .attackEntityFrom(DamageSource.causeMobDamage(this), OreSpawnMain.WaterDragon_stats.attack);
-        if (!var4) {
+        if (!flag) {
             return false;
         } else {
-            if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
+            if (target != null && target instanceof EntityLivingBase) {
                 double ks = 1.1;
                 double inair = 0.14;
-                float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-                if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+                float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+                if (target.isDead || target instanceof EntityPlayer) {
                     inair *= 2.0;
                 }
 
-                par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+                target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
             }
 
             return true;
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        if (par1DamageSource.getDamageType()
+        if (source.getDamageType()
             .equals("cactus")) {
             return false;
         } else {
-            Entity e = par1DamageSource.getEntity();
+            Entity e = source.getEntity();
             if (e != null && e instanceof WaterDragon) {
                 return false;
             } else if (e != null && e instanceof AttackSquid) {
@@ -530,7 +527,7 @@ public class WaterDragon extends EntityTameable {
                 return false;
             } else {
                 if (this.hurt_timer <= 0) {
-                    ret = super.attackEntityFrom(par1DamageSource, par2);
+                    ret = super.attackEntityFrom(source, amount);
                     this.hurt_timer = 10;
                 }
 
@@ -585,26 +582,26 @@ public class WaterDragon extends EntityTameable {
             }
         }
 
-        for (int var12 = -dx; var12 <= dx; var12++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dz; j <= dz; j++) {
-                Block bidx = this.worldObj.getBlock(x + var12, y + dy, z + j);
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y + dy;
                         this.tz = z + j;
                         found++;
                     }
                 }
 
-                bidx = this.worldObj.getBlock(x + var12, y - dy, z + j);
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y - dy;
                         this.tz = z + j;
                         found++;
@@ -613,26 +610,26 @@ public class WaterDragon extends EntityTameable {
             }
         }
 
-        for (int var13 = -dx; var13 <= dx; var13++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dy; j <= dy; j++) {
-                Block bidxx = this.worldObj.getBlock(x + var13, y + j, z + dz);
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z + dz;
                         found++;
                     }
                 }
 
-                bidxx = this.worldObj.getBlock(x + var13, y + j, z - dz);
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z - dz;
                         found++;
@@ -721,13 +718,13 @@ public class WaterDragon extends EntityTameable {
         if (this.stream_count > 0) {
             this.setAttacking(2);
             if (this.rand.nextInt(15) == 1) {
-                EntitySmallFireball var2 = new EntitySmallFireball(
+                EntitySmallFireball fireball = new EntitySmallFireball(
                     this.worldObj,
                     this,
                     e.posX - this.posX,
                     e.posY + 0.75 - (this.posY + yoff),
                     e.posZ - this.posZ);
-                var2.setLocationAndAngles(
+                fireball.setLocationAndAngles(
                     this.posX - xzoff * Math.sin(Math.toRadians(this.rotationYawHead)),
                     this.posY + yoff,
                     this.posZ + xzoff * Math.cos(Math.toRadians(this.rotationYawHead)),
@@ -739,32 +736,32 @@ public class WaterDragon extends EntityTameable {
                     0.75F,
                     1.0F / (this.getRNG()
                         .nextFloat() * 0.4F + 0.8F));
-                this.worldObj.spawnEntityInWorld(var2);
+                this.worldObj.spawnEntityInWorld(fireball);
             }
 
-            WaterBall var2 = new WaterBall(
+            WaterBall waterBall = new WaterBall(
                 this.worldObj,
                 e.posX - this.posX,
                 e.posY + 0.75 - (this.posY + yoff),
                 e.posZ - this.posZ);
-            var2.setLocationAndAngles(
+            waterBall.setLocationAndAngles(
                 this.posX - xzoff * Math.sin(Math.toRadians(this.rotationYawHead)),
                 this.posY + yoff,
                 this.posZ + xzoff * Math.cos(Math.toRadians(this.rotationYaw)),
                 this.rotationYawHead,
                 this.rotationPitch);
-            double var3 = e.posX - var2.posX;
-            double var5 = e.posY + 0.25 - var2.posY;
-            double var7 = e.posZ - var2.posZ;
-            float var9 = MathHelper.sqrt_double(var3 * var3 + var7 * var7) * 0.2F;
-            var2.setThrowableHeading(var3, var5 + var9, var7, 1.4F, 5.0F);
+            double dx = e.posX - waterBall.posX;
+            double dy = e.posY + 0.25 - waterBall.posY;
+            double dz = e.posZ - waterBall.posZ;
+            float f = MathHelper.sqrt_double(dx * dx + dz * dz) * 0.2F;
+            waterBall.setThrowableHeading(dx, dy + f, dz, 1.4F, 5.0F);
             this.worldObj.playSoundAtEntity(
                 this,
                 "random.bow",
                 0.75F,
                 1.0F / (this.getRNG()
                     .nextFloat() * 0.4F + 0.8F));
-            this.worldObj.spawnEntityInWorld(var2);
+            this.worldObj.spawnEntityInWorld(waterBall);
             this.stream_count--;
         } else {
             this.setAttacking(0);
@@ -775,29 +772,29 @@ public class WaterDragon extends EntityTameable {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof WaterDragon) {
+            } else if (target instanceof WaterDragon) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityMob) {
+            } else if (target instanceof EntityMob) {
                 return true;
             } else if (this.isTamed()) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (target instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) target;
                 return !p.capabilities.isCreativeMode;
             } else {
-                return MyUtils.isAttackableNonMob(par1EntityLiving);
+                return MyUtils.isAttackableNonMob(target);
             }
     }
 
@@ -807,23 +804,23 @@ public class WaterDragon extends EntityTameable {
         } else if (this.isChild()) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(14.0, 4.0, 14.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
             EntityLivingBase e = this.getAttackTarget();
             if (e != null && e.isEntityAlive()) {
                 return e;
             } else {
                 this.setAttackTarget(null);
 
-                while (var2.hasNext()) {
-                    var3 = (Entity) var2.next();
-                    var4 = (EntityLivingBase) var3;
-                    if (this.isSuitableTarget(var4, false)) {
-                        return var4;
+                while (iterator.hasNext()) {
+                    entity = (Entity) iterator.next();
+                    target = (EntityLivingBase) entity;
+                    if (this.isSuitableTarget(target, false)) {
+                        return target;
                     }
                 }
 
@@ -836,8 +833,8 @@ public class WaterDragon extends EntityTameable {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public boolean getCanSpawnHere() {
@@ -875,7 +872,7 @@ public class WaterDragon extends EntityTameable {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public WaterDragon spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public WaterDragon spawnBabyAnimal(EntityAgeable entityAgeable) {
         WaterDragon w = new WaterDragon(this.worldObj);
         if (this.isTamed()) {
             this.func_152115_b(this.func_152113_b());
@@ -885,12 +882,12 @@ public class WaterDragon extends EntityTameable {
         return w;
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.fish;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.fish;
     }
 
-    public boolean isBreedingItem(ItemStack par1ItemStack) {
-        return par1ItemStack.getItem() == OreSpawnMain.MyCrystalApple;
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
     }
 
     public boolean canBreatheUnderwater() {

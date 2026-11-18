@@ -1056,17 +1056,17 @@ public class OreSpawnWorld implements IWorldGenerator {
                 for (int j = 0; j < nc; j++) {
                     int posX = chunkX + random.nextInt(16);
                     int posZ = chunkZ + random.nextInt(16);
-                    boolean var15 = true;
+                    boolean flag = true;
 
                     for (int posY = 100; posY > 40 && world.isAirBlock(posX, posY, posZ); posY--) {
                         if (world.getBlock(posX, posY - 1, posZ) == Blocks.grass) {
                             for (int i = 1; i < 10; i++) {
                                 if (!world.isAirBlock(posX, posY + i, posZ)) {
-                                    var15 = false;
+                                    flag = false;
                                 }
                             }
 
-                            if (!var15) {
+                            if (!flag) {
                                 break;
                             }
 
@@ -1086,9 +1086,8 @@ public class OreSpawnWorld implements IWorldGenerator {
 
                             OreSpawnMain.setBlockFast(world, posX, posY, posZ, OreSpawnMain.MyCornPlant2, 0, 2);
 
-                            for (int var14 = 1; var14 < corn_height; var14++) {
-                                OreSpawnMain
-                                    .setBlockFast(world, posX, posY + var14, posZ, OreSpawnMain.MyCornPlant4, 0, 2);
+                            for (int k = 1; k < corn_height; k++) {
+                                OreSpawnMain.setBlockFast(world, posX, posY + k, posZ, OreSpawnMain.MyCornPlant4, 0, 2);
                             }
 
                             OreSpawnMain
@@ -1111,17 +1110,17 @@ public class OreSpawnWorld implements IWorldGenerator {
                 for (int j = 0; j < 5; j++) {
                     int posX = chunkX + random.nextInt(16);
                     int posZ = chunkZ + random.nextInt(16);
-                    boolean var14 = true;
+                    boolean flag = true;
 
                     for (int posY = 100; posY > 40 && world.isAirBlock(posX, posY, posZ); posY--) {
                         if (world.getBlock(posX, posY - 1, posZ) == Blocks.grass) {
                             for (int i = 1; i < 10; i++) {
                                 if (!world.isAirBlock(posX, posY + i, posZ)) {
-                                    var14 = false;
+                                    flag = false;
                                 }
                             }
 
-                            if (!var14) {
+                            if (!flag) {
                                 break;
                             }
 
@@ -1142,9 +1141,9 @@ public class OreSpawnWorld implements IWorldGenerator {
 
                             OreSpawnMain.setBlockFast(world, posX, posY, posZ, OreSpawnMain.MyTomatoPlant3, 0, 2);
 
-                            for (int var13 = 1; var13 < corn_height; var13++) {
+                            for (int k = 1; k < corn_height; k++) {
                                 OreSpawnMain
-                                    .setBlockFast(world, posX, posY + var13, posZ, OreSpawnMain.MyTomatoPlant4, 0, 2);
+                                    .setBlockFast(world, posX, posY + k, posZ, OreSpawnMain.MyTomatoPlant4, 0, 2);
                             }
 
                             OreSpawnMain
@@ -2075,7 +2074,7 @@ public class OreSpawnWorld implements IWorldGenerator {
                                 no_critters,
                                 chunk);
                         } else if (rand_treetype == 0) {
-                            int var17 = 6;
+                            int t_radius = 6;
                             no_critters = true;
                             if (random.nextInt(2) == 0) {
                                 a.MakeBigSquareTree(
@@ -2087,7 +2086,7 @@ public class OreSpawnWorld implements IWorldGenerator {
                                     Blocks.emerald_block,
                                     Blocks.diamond_block,
                                     -1,
-                                    var17,
+                                    t_radius,
                                     no_critters,
                                     chunk);
                             } else {
@@ -2100,7 +2099,7 @@ public class OreSpawnWorld implements IWorldGenerator {
                                     OreSpawnMain.MyBlockRubyBlock,
                                     OreSpawnMain.MyBlockAmethystBlock,
                                     -1,
-                                    var17,
+                                    t_radius,
                                     no_critters,
                                     chunk);
                             }
@@ -2240,9 +2239,9 @@ public class OreSpawnWorld implements IWorldGenerator {
                         }
                     }
 
-                    for (int var11 = -2; var11 <= 2; var11++) {
+                    for (int j = -2; j <= 2; j++) {
                         for (int jx = -2; jx <= 2; jx++) {
-                            Block bid = world.getBlock(posX + var11, posY - 1, posZ + jx);
+                            Block bid = world.getBlock(posX + j, posY - 1, posZ + jx);
                             if (bid != OreSpawnMain.CrystalGrass) {
                                 return false;
                             }
@@ -3101,31 +3100,31 @@ public class OreSpawnWorld implements IWorldGenerator {
         return true;
     }
 
-    private Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            if (par2 > 0.0) {
-                par2 += 0.5;
+    private Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            if (x > 0.0) {
+                x += 0.5;
             }
 
-            if (par2 < 0.0) {
-                par2 -= 0.5;
+            if (x < 0.0) {
+                x -= 0.5;
             }
 
-            if (par6 > 0.0) {
-                par6 += 0.5;
+            if (z > 0.0) {
+                z += 0.5;
             }
 
-            if (par6 < 0.0) {
-                par6 -= 0.5;
+            if (z < 0.0) {
+                z -= 0.5;
             }
 
-            var8.setLocationAndAngles(par2, par4 + 0.01, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+            entity.setLocationAndAngles(x, y + 0.01, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 }

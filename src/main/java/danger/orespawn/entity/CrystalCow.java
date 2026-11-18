@@ -14,15 +14,15 @@ public class CrystalCow extends RedCow {
     }
 
     @Override
-    protected void dropFewItems(boolean par1, int par2) {
-        int var3 = this.rand.nextInt(3) + this.rand.nextInt(1 + par2);
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int n = this.rand.nextInt(3) + this.rand.nextInt(1 + lootingLevel);
 
-        for (int var4 = 0; var4 < var3; var4++) {
+        for (int i = 0; i < n; i++) {
             this.dropItem(OreSpawnMain.MyCrystalApple, 1);
         }
 
         this.dropItem(Items.apple, 1);
-        super.dropFewItems(par1, par2);
+        super.dropFewItems(wasRecentlyHit, lootingLevel);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class CrystalCow extends RedCow {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public CrystalCow spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public CrystalCow spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new CrystalCow(this.worldObj);
     }
 }

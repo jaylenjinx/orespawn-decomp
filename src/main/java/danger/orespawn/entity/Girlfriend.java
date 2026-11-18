@@ -129,8 +129,8 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
     private static final ResourceLocation PrincessTexture1 = new ResourceLocation("orespawn", "FrogPrincess.png");
     private static final ResourceLocation PrincessTexture2 = new ResourceLocation("orespawn", "FrogPrincess2.png");
 
-    public Girlfriend(World par1World) {
-        super(par1World);
+    public Girlfriend(World world) {
+        super(world);
         this.which_girl = this.rand.nextInt(41);
         this.which_wet_girl = this.rand.nextInt(18);
         this.voice = this.rand.nextInt(10);
@@ -274,29 +274,29 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
         }
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("GirlType", this.getTameSkin());
-        par1NBTTagCompound.setInteger("WetGirlType", this.getWetTameSkin());
-        par1NBTTagCompound.setInteger("GirlVoice", this.dataWatcher.getWatchableObjectInt(21));
-        par1NBTTagCompound.setInteger("GirlVoiceEnable", this.dataWatcher.getWatchableObjectInt(23));
-        par1NBTTagCompound.setInteger("IsPrincess", this.dataWatcher.getWatchableObjectInt(24));
-        par1NBTTagCompound.setInteger("feelingBetter", this.dataWatcher.getWatchableObjectInt(25));
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("GirlType", this.getTameSkin());
+        tag.setInteger("WetGirlType", this.getWetTameSkin());
+        tag.setInteger("GirlVoice", this.dataWatcher.getWatchableObjectInt(21));
+        tag.setInteger("GirlVoiceEnable", this.dataWatcher.getWatchableObjectInt(23));
+        tag.setInteger("IsPrincess", this.dataWatcher.getWatchableObjectInt(24));
+        tag.setInteger("feelingBetter", this.dataWatcher.getWatchableObjectInt(25));
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.which_girl = par1NBTTagCompound.getInteger("GirlType");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.which_girl = tag.getInteger("GirlType");
         this.setTameSkin(this.which_girl);
-        this.which_wet_girl = par1NBTTagCompound.getInteger("WetGirlType");
+        this.which_wet_girl = tag.getInteger("WetGirlType");
         this.setWetTameSkin(this.which_wet_girl);
-        this.voice = par1NBTTagCompound.getInteger("GirlVoice");
+        this.voice = tag.getInteger("GirlVoice");
         this.dataWatcher.updateObject(21, this.voice);
-        this.voice_enable = par1NBTTagCompound.getInteger("GirlVoiceEnable");
+        this.voice_enable = tag.getInteger("GirlVoiceEnable");
         this.dataWatcher.updateObject(23, this.voice_enable);
-        this.is_princess = par1NBTTagCompound.getInteger("IsPrincess");
+        this.is_princess = tag.getInteger("IsPrincess");
         this.dataWatcher.updateObject(24, this.is_princess);
-        this.feelingBetter = par1NBTTagCompound.getInteger("feelingBetter");
+        this.feelingBetter = tag.getInteger("feelingBetter");
         this.dataWatcher.updateObject(25, this.feelingBetter);
         if (OreSpawnMain.valentines_day != 0 && this.feelingBetter != 0) {
             this.setSize(0.5F, 1.6F);
@@ -370,8 +370,8 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
         }
     }
 
-    public void setPrincess(int par1) {
-        this.is_princess = par1;
+    public void setPrincess(int n) {
+        this.is_princess = n;
     }
 
     public ResourceLocation getTexture() {
@@ -638,18 +638,18 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
         return this.dataWatcher.getWatchableObjectInt(21);
     }
 
-    public void setTameSkin(int par1) {
-        this.dataWatcher.updateObject(20, par1);
-        this.which_girl = par1;
+    public void setTameSkin(int n) {
+        this.dataWatcher.updateObject(20, n);
+        this.which_girl = n;
     }
 
     public int getWetTameSkin() {
         return this.dataWatcher.getWatchableObjectInt(22);
     }
 
-    public void setWetTameSkin(int par1) {
-        this.dataWatcher.updateObject(22, par1);
-        this.which_wet_girl = par1;
+    public void setWetTameSkin(int n) {
+        this.dataWatcher.updateObject(22, n);
+        this.which_wet_girl = n;
     }
 
     public boolean isAIEnabled() {
@@ -660,8 +660,8 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
         return true;
     }
 
-    protected void fall(float par1) {
-        float i = MathHelper.ceiling_float_int(par1 - 3.0F);
+    protected void fall(float distance) {
+        float i = MathHelper.ceiling_float_int(distance - 3.0F);
         if (i > 0.0F) {
             if (i > 3.0F) {
                 this.playSound("damage.fallbig", 1.0F, 1.0F);
@@ -721,24 +721,23 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
         return (int) this.getHealth();
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (var2 != null
-            && (var2.getItem() == Item.getItemFromBlock(Blocks.red_flower)
-                || var2.getItem() == Item.getItemFromBlock(OreSpawnMain.CrystalFlowerRedBlock))
-            && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+        if (currentItem != null
+            && (currentItem.getItem() == Item.getItemFromBlock(Blocks.red_flower)
+                || currentItem.getItem() == Item.getItemFromBlock(OreSpawnMain.CrystalFlowerRedBlock))
+            && player.getDistanceSqToEntity(this) < 16.0) {
             if (!this.isTamed()) {
                 if (!this.worldObj.isRemote) {
                     if (this.rand.nextInt(3) == 0) {
                         this.setTamed(true);
                         this.func_152115_b(
-                            par1EntityPlayer.getUniqueID()
+                            player.getUniqueID()
                                 .toString());
                         this.playTameEffect(true);
                         this.worldObj.setEntityState(this, (byte) 7);
@@ -748,7 +747,7 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
                         this.worldObj.setEntityState(this, (byte) 6);
                     }
                 }
-            } else if (this.func_152114_e(par1EntityPlayer)) {
+            } else if (this.func_152114_e(player)) {
                 if (this.worldObj.isRemote) {
                     this.playTameEffect(true);
                     this.worldObj.setEntityState(this, (byte) 7);
@@ -759,19 +758,18 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
                 }
             }
 
-            if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                var2.stackSize--;
-                if (var2.stackSize <= 0) {
-                    par1EntityPlayer.inventory
-                        .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+            if (!player.capabilities.isCreativeMode) {
+                currentItem.stackSize--;
+                if (currentItem.stackSize <= 0) {
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                 }
             }
 
             return true;
-        } else if (this.isTamed() && var2 != null
-            && var2.getItem() == Item.getItemFromBlock(Blocks.deadbush)
-            && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-            && this.func_152114_e(par1EntityPlayer)) {
+        } else if (this.isTamed() && currentItem != null
+            && currentItem.getItem() == Item.getItemFromBlock(Blocks.deadbush)
+            && player.getDistanceSqToEntity(this) < 16.0
+            && this.func_152114_e(player)) {
                 if (!this.worldObj.isRemote) {
                     this.setTamed(false);
                     this.func_152115_b("");
@@ -779,19 +777,18 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
                     this.worldObj.setEntityState(this, (byte) 6);
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
-            } else if (this.isTamed() && var2 != null
-                && var2.getItem() == OreSpawnMain.MyRuby
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                && this.func_152114_e(par1EntityPlayer)) {
+            } else if (this.isTamed() && currentItem != null
+                && currentItem.getItem() == OreSpawnMain.MyRuby
+                && player.getDistanceSqToEntity(this) < 16.0
+                && this.func_152114_e(player)) {
                     if (!this.worldObj.isRemote) {
                         this.voice_enable = 0;
                         this.dataWatcher.updateObject(23, this.voice_enable);
@@ -799,19 +796,18 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
                         this.worldObj.setEntityState(this, (byte) 7);
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
-                } else if (this.isTamed() && var2 != null
-                    && var2.getItem() == OreSpawnMain.MyAmethyst
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                    && this.func_152114_e(par1EntityPlayer)) {
+                } else if (this.isTamed() && currentItem != null
+                    && currentItem.getItem() == OreSpawnMain.MyAmethyst
+                    && player.getDistanceSqToEntity(this) < 16.0
+                    && this.func_152114_e(player)) {
                         if (!this.worldObj.isRemote) {
                             this.voice_enable = 1;
                             this.dataWatcher.updateObject(23, this.voice_enable);
@@ -819,20 +815,20 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
                             this.worldObj.setEntityState(this, (byte) 7);
                         }
 
-                        if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                            var2.stackSize--;
-                            if (var2.stackSize <= 0) {
-                                par1EntityPlayer.inventory
-                                    .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                        if (!player.capabilities.isCreativeMode) {
+                            currentItem.stackSize--;
+                            if (currentItem.stackSize <= 0) {
+                                player.inventory
+                                    .setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                             }
                         }
 
                         return true;
-                    } else if (this.isTamed() && var2 != null
-                        && (var2.getItem() == Item.getItemFromBlock(Blocks.yellow_flower)
-                            || var2.getItem() == Item.getItemFromBlock(OreSpawnMain.CrystalFlowerYellowBlock))
-                        && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                        && this.func_152114_e(par1EntityPlayer)) {
+                    } else if (this.isTamed() && currentItem != null
+                        && (currentItem.getItem() == Item.getItemFromBlock(Blocks.yellow_flower)
+                            || currentItem.getItem() == Item.getItemFromBlock(OreSpawnMain.CrystalFlowerYellowBlock))
+                        && player.getDistanceSqToEntity(this) < 16.0
+                        && this.func_152114_e(player)) {
                             if (!this.worldObj.isRemote) {
                                 if (this.wet_count <= 0 && !this.isInWater() && !this.handleLavaMovement()) {
                                     this.which_girl++;
@@ -856,35 +852,34 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
                                 }
                             }
 
-                            if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                                var2.stackSize--;
-                                if (var2.stackSize <= 0) {
-                                    par1EntityPlayer.inventory.setInventorySlotContents(
-                                        par1EntityPlayer.inventory.currentItem,
-                                        (ItemStack) null);
+                            if (!player.capabilities.isCreativeMode) {
+                                currentItem.stackSize--;
+                                if (currentItem.stackSize <= 0) {
+                                    player.inventory
+                                        .setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                                 }
                             }
 
                             return true;
-                        } else if (this.isTamed() && var2 != null
-                            && this.func_152114_e(par1EntityPlayer)
-                            && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
-                                if (var2.getItem() instanceof ItemFood) {
+                        } else if (this.isTamed() && currentItem != null
+                            && this.func_152114_e(player)
+                            && player.getDistanceSqToEntity(this) < 16.0) {
+                                if (currentItem.getItem() instanceof ItemFood) {
                                     if (!this.worldObj.isRemote) {
-                                        ItemFood var3 = (ItemFood) var2.getItem();
+                                        ItemFood item = (ItemFood) currentItem.getItem();
                                         if (this.mygetMaxHealth() > this.getHealth()) {
-                                            this.heal(var3.func_150905_g(var2) * 5);
+                                            this.heal(item.func_150905_g(currentItem) * 5);
                                         }
 
                                         this.playTameEffect(true);
                                         this.worldObj.setEntityState(this, (byte) 7);
                                     }
 
-                                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                                        var2.stackSize--;
-                                        if (var2.stackSize <= 0) {
-                                            par1EntityPlayer.inventory.setInventorySlotContents(
-                                                par1EntityPlayer.inventory.currentItem,
+                                    if (!player.capabilities.isCreativeMode) {
+                                        currentItem.stackSize--;
+                                        if (currentItem.stackSize <= 0) {
+                                            player.inventory.setInventorySlotContents(
+                                                player.inventory.currentItem,
                                                 (ItemStack) null);
                                         }
                                     }
@@ -894,48 +889,47 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
                                         this.worldObj.setEntityState(this, (byte) 7);
                                     }
 
-                                    ItemStack var3 = this.getCurrentEquippedItem();
-                                    this.setCurrentItemOrArmor(0, var2);
-                                    if (var2.getItem() == Items.diamond) {
+                                    ItemStack heldItem = this.getCurrentEquippedItem();
+                                    this.setCurrentItemOrArmor(0, currentItem);
+                                    if (currentItem.getItem() == Items.diamond) {
                                         this.setSitting(true);
                                     } else {
                                         this.setSitting(false);
                                     }
 
-                                    if (var3 != null) {
-                                        par1EntityPlayer.inventory
-                                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, var3);
+                                    if (heldItem != null) {
+                                        player.inventory
+                                            .setInventorySlotContents(player.inventory.currentItem, heldItem);
                                     } else {
-                                        par1EntityPlayer.inventory.setInventorySlotContents(
-                                            par1EntityPlayer.inventory.currentItem,
-                                            (ItemStack) null);
-                                        Item itm = var2.getItem();
+                                        player.inventory
+                                            .setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                                        Item itm = currentItem.getItem();
                                         if (itm instanceof ItemOreSpawnArmor) {
                                             if (itm == OreSpawnMain.CrystalPinkHelmet
                                                 || itm == OreSpawnMain.TigersEyeHelmet) {
                                                 ItemStack v4 = this.getEquipmentInSlot(4);
-                                                this.setCurrentItemOrArmor(4, var2);
+                                                this.setCurrentItemOrArmor(4, currentItem);
                                                 this.setCurrentItemOrArmor(0, v4);
                                             }
 
                                             if (itm == OreSpawnMain.CrystalPinkBody
                                                 || itm == OreSpawnMain.TigersEyeBody) {
                                                 ItemStack v4 = this.getEquipmentInSlot(3);
-                                                this.setCurrentItemOrArmor(3, var2);
+                                                this.setCurrentItemOrArmor(3, currentItem);
                                                 this.setCurrentItemOrArmor(0, v4);
                                             }
 
                                             if (itm == OreSpawnMain.CrystalPinkLegs
                                                 || itm == OreSpawnMain.TigersEyeLegs) {
                                                 ItemStack v4 = this.getEquipmentInSlot(2);
-                                                this.setCurrentItemOrArmor(2, var2);
+                                                this.setCurrentItemOrArmor(2, currentItem);
                                                 this.setCurrentItemOrArmor(0, v4);
                                             }
 
                                             if (itm == OreSpawnMain.CrystalPinkBoots
                                                 || itm == OreSpawnMain.TigersEyeBoots) {
                                                 ItemStack v4 = this.getEquipmentInSlot(1);
-                                                this.setCurrentItemOrArmor(1, var2);
+                                                this.setCurrentItemOrArmor(1, currentItem);
                                                 this.setCurrentItemOrArmor(0, v4);
                                             }
                                         }
@@ -943,66 +937,66 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
                                 }
 
                                 return true;
-                            } else if (this.isTamed() && var2 != null
-                                && var2.getItem() == Item.getItemFromBlock(Blocks.diamond_block)
-                                && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+                            } else if (this.isTamed() && currentItem != null
+                                && currentItem.getItem() == Item.getItemFromBlock(Blocks.diamond_block)
+                                && player.getDistanceSqToEntity(this) < 16.0) {
                                     this.setSitting(false);
                                     this.setTamed(true);
                                     this.func_152115_b(
-                                        par1EntityPlayer.getUniqueID()
+                                        player.getUniqueID()
                                             .toString());
                                     this.playTameEffect(true);
                                     this.worldObj.setEntityState(this, (byte) 7);
-                                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                                        var2.stackSize--;
-                                        if (var2.stackSize <= 0) {
-                                            par1EntityPlayer.inventory.setInventorySlotContents(
-                                                par1EntityPlayer.inventory.currentItem,
+                                    if (!player.capabilities.isCreativeMode) {
+                                        currentItem.stackSize--;
+                                        if (currentItem.stackSize <= 0) {
+                                            player.inventory.setInventorySlotContents(
+                                                player.inventory.currentItem,
                                                 (ItemStack) null);
                                         }
                                     }
 
                                     return true;
-                                } else if (this.isTamed() && var2 != null
-                                    && var2.getItem() == Items.name_tag
-                                    && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                                    && this.func_152114_e(par1EntityPlayer)) {
-                                        this.setCustomNameTag(var2.getDisplayName());
-                                        if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                                            var2.stackSize--;
-                                            if (var2.stackSize <= 0) {
-                                                par1EntityPlayer.inventory.setInventorySlotContents(
-                                                    par1EntityPlayer.inventory.currentItem,
+                                } else if (this.isTamed() && currentItem != null
+                                    && currentItem.getItem() == Items.name_tag
+                                    && player.getDistanceSqToEntity(this) < 16.0
+                                    && this.func_152114_e(player)) {
+                                        this.setCustomNameTag(currentItem.getDisplayName());
+                                        if (!player.capabilities.isCreativeMode) {
+                                            currentItem.stackSize--;
+                                            if (currentItem.stackSize <= 0) {
+                                                player.inventory.setInventorySlotContents(
+                                                    player.inventory.currentItem,
                                                     (ItemStack) null);
                                             }
                                         }
 
                                         return true;
-                                    } else if (this.isTamed() && var2 == null
-                                        && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                                        && this.func_152114_e(par1EntityPlayer)) {
-                                            ItemStack var3x = this.getEquipmentInSlot(0);
+                                    } else if (this.isTamed() && currentItem == null
+                                        && player.getDistanceSqToEntity(this) < 16.0
+                                        && this.func_152114_e(player)) {
+                                            ItemStack equipmentInSlot = this.getEquipmentInSlot(0);
                                             int it = 0;
-                                            if (var3x == null) {
-                                                var3x = this.getEquipmentInSlot(++it);
+                                            if (equipmentInSlot == null) {
+                                                equipmentInSlot = this.getEquipmentInSlot(++it);
                                             }
 
-                                            if (var3x == null) {
-                                                var3x = this.getEquipmentInSlot(++it);
+                                            if (equipmentInSlot == null) {
+                                                equipmentInSlot = this.getEquipmentInSlot(++it);
                                             }
 
-                                            if (var3x == null) {
-                                                var3x = this.getEquipmentInSlot(++it);
+                                            if (equipmentInSlot == null) {
+                                                equipmentInSlot = this.getEquipmentInSlot(++it);
                                             }
 
-                                            if (var3x == null) {
-                                                var3x = this.getEquipmentInSlot(++it);
+                                            if (equipmentInSlot == null) {
+                                                equipmentInSlot = this.getEquipmentInSlot(++it);
                                             }
 
-                                            if (var3x != null) {
-                                                par1EntityPlayer.inventory.setInventorySlotContents(
-                                                    par1EntityPlayer.inventory.currentItem,
-                                                    var3x);
+                                            if (equipmentInSlot != null) {
+                                                player.inventory.setInventorySlotContents(
+                                                    player.inventory.currentItem,
+                                                    equipmentInSlot);
                                                 this.setCurrentItemOrArmor(it, null);
                                                 this.setSitting(false);
                                                 if (!this.worldObj.isRemote) {
@@ -1016,18 +1010,17 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
                                                 healthMessage = String.format(
                                                     "I have %d health. Thank you for asking! xoxo",
                                                     this.getGirlfriendHealth());
-                                                par1EntityPlayer
-                                                    .addChatComponentMessage(new ChatComponentText(healthMessage));
+                                                player.addChatComponentMessage(new ChatComponentText(healthMessage));
                                             }
 
                                             return true;
                                         } else {
-                                            return super.interact(par1EntityPlayer);
+                                            return super.interact(player);
                                         }
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Item.getItemFromBlock(Blocks.red_flower);
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Item.getItemFromBlock(Blocks.red_flower);
     }
 
     protected boolean canDespawn() {
@@ -1098,23 +1091,23 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
         return Item.getItemFromBlock(Blocks.red_flower);
     }
 
-    private void dropItemRand(Item index, int par1) {
-        EntityItem var3 = new EntityItem(
+    private void dropItemRand(Item index, int n) {
+        EntityItem entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
-            new ItemStack(index, par1, 0));
-        this.worldObj.spawnEntityInWorld(var3);
+            new ItemStack(index, n, 0));
+        this.worldObj.spawnEntityInWorld(entityItem);
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
-        int var3 = 0;
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int roll = 0;
         if (this.isTamed()) {
-            var3 = this.rand.nextInt(5);
-            var3 += 2;
+            roll = this.rand.nextInt(5);
+            roll += 2;
 
-            for (int var4 = 0; var4 < var3; var4++) {
+            for (int i = 0; i < roll; i++) {
                 this.dropItem(Item.getItemFromBlock(Blocks.red_flower), 1);
             }
         }
@@ -1123,79 +1116,79 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
         Item v7 = OreSpawnMain.MyItemShoes_1;
         Item v8 = OreSpawnMain.MyItemShoes_2;
         Item v9 = OreSpawnMain.MyItemShoes_3;
-        var3 = this.rand.nextInt(16);
-        var3 += 4;
+        roll = this.rand.nextInt(16);
+        roll += 4;
 
-        for (int var4 = 0; var4 < var3; var4++) {
+        for (int i = 0; i < roll; i++) {
             this.dropItem(v6, 1);
         }
 
-        var3 = this.rand.nextInt(16);
-        var3 += 4;
+        roll = this.rand.nextInt(16);
+        roll += 4;
 
-        for (int var4 = 0; var4 < var3; var4++) {
+        for (int i = 0; i < roll; i++) {
             this.dropItem(v7, 1);
         }
 
-        var3 = this.rand.nextInt(16);
-        var3 += 4;
+        roll = this.rand.nextInt(16);
+        roll += 4;
 
-        for (int var4 = 0; var4 < var3; var4++) {
+        for (int i = 0; i < roll; i++) {
             this.dropItem(v8, 1);
         }
 
-        var3 = this.rand.nextInt(16);
-        var3 += 4;
+        roll = this.rand.nextInt(16);
+        roll += 4;
 
-        for (int var4 = 0; var4 < var3; var4++) {
+        for (int i = 0; i < roll; i++) {
             this.dropItem(v9, 1);
         }
 
         if (this.isTamed()) {
-            ItemStack var5 = this.getCurrentEquippedItem();
-            if (var5 != null && var5.stackSize > 0) {
-                this.dropItem(var5.getItem(), var5.stackSize);
+            ItemStack heldItem = this.getCurrentEquippedItem();
+            if (heldItem != null && heldItem.stackSize > 0) {
+                this.dropItem(heldItem.getItem(), heldItem.stackSize);
             }
 
-            var5 = this.getEquipmentInSlot(1);
-            if (var5 != null && var5.stackSize > 0) {
-                this.dropItem(var5.getItem(), var5.stackSize);
+            heldItem = this.getEquipmentInSlot(1);
+            if (heldItem != null && heldItem.stackSize > 0) {
+                this.dropItem(heldItem.getItem(), heldItem.stackSize);
             }
 
-            var5 = this.getEquipmentInSlot(2);
-            if (var5 != null && var5.stackSize > 0) {
-                this.dropItem(var5.getItem(), var5.stackSize);
+            heldItem = this.getEquipmentInSlot(2);
+            if (heldItem != null && heldItem.stackSize > 0) {
+                this.dropItem(heldItem.getItem(), heldItem.stackSize);
             }
 
-            var5 = this.getEquipmentInSlot(3);
-            if (var5 != null && var5.stackSize > 0) {
-                this.dropItem(var5.getItem(), var5.stackSize);
+            heldItem = this.getEquipmentInSlot(3);
+            if (heldItem != null && heldItem.stackSize > 0) {
+                this.dropItem(heldItem.getItem(), heldItem.stackSize);
             }
 
-            var5 = this.getEquipmentInSlot(4);
-            if (var5 != null && var5.stackSize > 0) {
-                this.dropItem(var5.getItem(), var5.stackSize);
+            heldItem = this.getEquipmentInSlot(4);
+            if (heldItem != null && heldItem.stackSize > 0) {
+                this.dropItem(heldItem.getItem(), heldItem.stackSize);
             }
         }
     }
 
-    public void attackEntityWithRangedAttack(EntityLivingBase par1EntityLiving) {
+    public void attackEntityWithRangedAttack(EntityLivingBase living) {
         ItemStack it = null;
         if (!this.isSwingInProgress) {
             it = this.getCurrentEquippedItem();
             if (it != null && it.getItem() == OreSpawnMain.MyUltimateBow) {
-                EntityArrow var8 = new UltimateArrow(this.worldObj, this, par1EntityLiving, 2.0F, 10.0F);
+                EntityArrow ultimateArrow = new UltimateArrow(this.worldObj, this, living, 2.0F, 10.0F);
                 if (this.worldObj.rand.nextInt(4) == 1) {
-                    var8.setIsCritical(true);
+                    ultimateArrow.setIsCritical(true);
                 }
 
-                int var10 = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, it);
-                if (var10 > 0) {
-                    var8.setKnockbackStrength(var10);
+                int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, it);
+                if (enchantmentLevel > 0) {
+                    ultimateArrow.setKnockbackStrength(enchantmentLevel);
                 }
 
                 if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, it) > 0) {
-                    var8.setFire(100);
+                    ultimateArrow.setFire(100);
                 }
 
                 it.damageItem(1, this);
@@ -1204,22 +1197,22 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
                     "random.bow",
                     1.0F,
                     1.0F / (this.worldObj.rand.nextFloat() * 0.4F + 1.2F) + 0.5F);
-                var8.canBePickedUp = 2;
-                this.worldObj.spawnEntityInWorld(var8);
+                ultimateArrow.canBePickedUp = 2;
+                this.worldObj.spawnEntityInWorld(ultimateArrow);
             } else {
-                Shoes var2 = new Shoes(this.worldObj, this, 2 + this.rand.nextInt(4));
-                double var3 = par1EntityLiving.posX - this.posX;
-                double var5 = par1EntityLiving.posY + par1EntityLiving.getEyeHeight() - 1.1 - var2.posY;
-                double var7 = par1EntityLiving.posZ - this.posZ;
-                float var9 = MathHelper.sqrt_double(var3 * var3 + var7 * var7) * 0.2F;
-                var2.setThrowableHeading(var3, var5 + var9, var7, 1.8F, 4.0F);
+                Shoes shoes = new Shoes(this.worldObj, this, 2 + this.rand.nextInt(4));
+                double dx = living.posX - this.posX;
+                double dy = living.posY + living.getEyeHeight() - 1.1 - shoes.posY;
+                double dz = living.posZ - this.posZ;
+                float f = MathHelper.sqrt_double(dx * dx + dz * dz) * 0.2F;
+                shoes.setThrowableHeading(dx, dy + f, dz, 1.8F, 4.0F);
                 this.worldObj.playSoundAtEntity(
                     this,
                     "random.bow",
                     0.75F,
                     1.0F / (this.getRNG()
                         .nextFloat() * 0.4F + 0.8F));
-                this.worldObj.spawnEntityInWorld(var2);
+                this.worldObj.spawnEntityInWorld(shoes);
             }
 
             this.swingItem();
@@ -1230,61 +1223,62 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
         return this.getEquipmentInSlot(0);
     }
 
-    public void attackTargetEntityWithCurrentItem(Entity par1Entity) {
+    public void attackTargetEntityWithCurrentItem(Entity entity) {
         ItemStack stack = this.getCurrentEquippedItem();
         if (stack != null) {
-            float var2 = 0.0F;
+            float amount = 0.0F;
             if (this.isPotionActive(Potion.damageBoost)) {
-                var2 += 3 << this.getActivePotionEffect(Potion.damageBoost)
+                amount += 3 << this.getActivePotionEffect(Potion.damageBoost)
                     .getAmplifier();
             }
 
             if (this.isPotionActive(Potion.weakness)) {
-                var2 -= 2 << this.getActivePotionEffect(Potion.weakness)
+                amount -= 2 << this.getActivePotionEffect(Potion.weakness)
                     .getAmplifier();
             }
 
-            int var3 = 0;
-            float var4 = (float) this.getEntityAttribute(SharedMonsterAttributes.attackDamage)
+            int n = 0;
+            float attributeValue = (float) this.getEntityAttribute(SharedMonsterAttributes.attackDamage)
                 .getAttributeValue();
-            if (par1Entity instanceof EntityLiving) {
-                var4 += EnchantmentHelper.getEnchantmentModifierLiving(this, (EntityLivingBase) par1Entity);
-                var3 += EnchantmentHelper.getKnockbackModifier(this, (EntityLiving) par1Entity);
+            if (entity instanceof EntityLiving) {
+                attributeValue += EnchantmentHelper.getEnchantmentModifierLiving(this, (EntityLivingBase) entity);
+                n += EnchantmentHelper.getKnockbackModifier(this, (EntityLiving) entity);
             }
 
             if (this.isSprinting()) {
-                var3++;
+                n++;
             }
 
-            if (var2 > 0.0F || var4 > 0.0F) {
-                boolean var5 = this.fallDistance > 0.0F && !this.onGround
+            if (amount > 0.0F || attributeValue > 0.0F) {
+                boolean flag = this.fallDistance > 0.0F && !this.onGround
                     && !this.isOnLadder()
                     && !this.isInWater()
                     && !this.handleLavaMovement()
                     && !this.isPotionActive(Potion.blindness)
                     && this.ridingEntity == null
-                    && par1Entity instanceof EntityLiving;
-                if (var5) {
-                    var2 += this.rand.nextInt((int) var2 / 2 + 2);
+                    && entity instanceof EntityLiving;
+                if (flag) {
+                    amount += this.rand.nextInt((int) amount / 2 + 2);
                 }
 
-                var2 += var4;
-                boolean var6 = par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), var2);
-                if (var6 && var3 > 0) {
-                    par1Entity.addVelocity(
-                        -MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F) * var3 * 0.5F,
+                amount += attributeValue;
+                boolean flag2 = entity.attackEntityFrom(DamageSource.causeMobDamage(this), amount);
+                if (flag2 && n > 0) {
+                    entity.addVelocity(
+                        -MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F) * n * 0.5F,
                         0.1,
-                        MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F) * var3 * 0.5F);
+                        MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F) * n * 0.5F);
                     this.motionX *= 0.6;
                     this.motionZ *= 0.6;
                     this.setSprinting(false);
                 }
 
-                ItemStack var7 = this.getCurrentEquippedItem();
-                if (par1Entity instanceof EntityLiving) {
-                    int var8 = EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, var7);
-                    if (var8 > 0 && var6) {
-                        par1Entity.setFire(var8 * 4);
+                ItemStack heldItem = this.getCurrentEquippedItem();
+                if (entity instanceof EntityLiving) {
+                    int enchantmentLevel = EnchantmentHelper
+                        .getEnchantmentLevel(Enchantment.fireAspect.effectId, heldItem);
+                    if (enchantmentLevel > 0 && flag2) {
+                        entity.setFire(enchantmentLevel * 4);
                     }
                 }
             }
@@ -1295,7 +1289,7 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
         return (this.voice - 5) * 0.02F + 1.0F;
     }
 
-    public EntityAgeable createChild(EntityAgeable var1) {
+    public EntityAgeable createChild(EntityAgeable partner) {
         return null;
     }
 
@@ -1303,22 +1297,22 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
         this.attackEntityWithRangedAttack(entityliving);
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        float p2 = par2;
-        if (par2 > 10.0F) {
+        float p2 = amount;
+        if (amount > 10.0F) {
             p2 = 10.0F;
         }
 
-        if (!par1DamageSource.getDamageType()
+        if (!source.getDamageType()
             .equals("cactus")) {
-            if (par1DamageSource.getDamageType()
+            if (source.getDamageType()
                 .equals("inWall") && OreSpawnMain.valentines_day != 0) {
                 return ret;
             }
 
             if (OreSpawnMain.valentines_day != 0 && !this.worldObj.isRemote && this.feelingBetter == 0) {
-                Entity e = par1DamageSource.getEntity();
+                Entity e = source.getEntity();
                 if (e != null && e instanceof EntityPlayer) {
                     EntityPlayer eb = (EntityPlayer) e;
                     ItemStack ist = eb.getCurrentEquippedItem();
@@ -1344,7 +1338,7 @@ public class Girlfriend extends EntityTameable implements IRangedAttackMob {
                 }
             }
 
-            ret = super.attackEntityFrom(par1DamageSource, p2);
+            ret = super.attackEntityFrom(source, p2);
         }
 
         return ret;

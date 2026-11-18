@@ -34,26 +34,26 @@ public class UltimateSword extends ItemSword {
     private int swingtimer = 0;
     private boolean leaf = false;
 
-    public UltimateSword(int par1, ToolMaterial par2EnumToolMaterial) {
-        super(par2EnumToolMaterial);
+    public UltimateSword(int n, ToolMaterial enumToolMaterial) {
+        super(enumToolMaterial);
         this.maxStackSize = 1;
         this.setMaxDamage(3000);
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
         if (this != OreSpawnMain.MyChainsaw) {
             if (this != OreSpawnMain.MyBattleAxe) {
-                par1ItemStack.addEnchantment(Enchantment.sharpness, OreSpawnMain.UltimateSwordMagic);
-                par1ItemStack.addEnchantment(Enchantment.smite, OreSpawnMain.UltimateSwordMagic);
-                par1ItemStack.addEnchantment(Enchantment.baneOfArthropods, OreSpawnMain.UltimateSwordMagic);
-                par1ItemStack.addEnchantment(Enchantment.knockback, 1 + OreSpawnMain.UltimateSwordMagic / 2);
-                par1ItemStack.addEnchantment(Enchantment.looting, 1 + OreSpawnMain.UltimateSwordMagic / 2);
-                par1ItemStack.addEnchantment(Enchantment.unbreaking, 1 + OreSpawnMain.UltimateSwordMagic / 2);
-                par1ItemStack.addEnchantment(Enchantment.fireAspect, 1 + OreSpawnMain.UltimateSwordMagic / 3);
+                stack.addEnchantment(Enchantment.sharpness, OreSpawnMain.UltimateSwordMagic);
+                stack.addEnchantment(Enchantment.smite, OreSpawnMain.UltimateSwordMagic);
+                stack.addEnchantment(Enchantment.baneOfArthropods, OreSpawnMain.UltimateSwordMagic);
+                stack.addEnchantment(Enchantment.knockback, 1 + OreSpawnMain.UltimateSwordMagic / 2);
+                stack.addEnchantment(Enchantment.looting, 1 + OreSpawnMain.UltimateSwordMagic / 2);
+                stack.addEnchantment(Enchantment.unbreaking, 1 + OreSpawnMain.UltimateSwordMagic / 2);
+                stack.addEnchantment(Enchantment.fireAspect, 1 + OreSpawnMain.UltimateSwordMagic / 3);
             } else {
-                par1ItemStack.addEnchantment(Enchantment.looting, 1 + OreSpawnMain.UltimateSwordMagic / 2);
-                par1ItemStack.addEnchantment(Enchantment.unbreaking, 1 + OreSpawnMain.UltimateSwordMagic / 2);
+                stack.addEnchantment(Enchantment.looting, 1 + OreSpawnMain.UltimateSwordMagic / 2);
+                stack.addEnchantment(Enchantment.unbreaking, 1 + OreSpawnMain.UltimateSwordMagic / 2);
             }
         }
     }
@@ -88,47 +88,47 @@ public class UltimateSword extends ItemSword {
         }
     }
 
-    public void onUpdate(ItemStack stack, World par2World, Entity par3Entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
         if (this == OreSpawnMain.MyChainsaw) {
             if (this.swingtimer > 0) {
                 this.swingtimer--;
             }
 
-            if (par2World.isRemote && this.swingtimer > 0) {
+            if (world.isRemote && this.swingtimer > 0) {
                 float f = 1.0F;
-                float dx = (float) (f * Math.cos(Math.toRadians(par3Entity.rotationYaw + 90.0F + 45.0F)));
-                float dz = (float) (f * Math.sin(Math.toRadians(par3Entity.rotationYaw + 90.0F + 45.0F)));
-                if (par2World.rand.nextInt(8) == 0) {
-                    par2World.spawnParticle(
+                float dx = (float) (f * Math.cos(Math.toRadians(entity.rotationYaw + 90.0F + 45.0F)));
+                float dz = (float) (f * Math.sin(Math.toRadians(entity.rotationYaw + 90.0F + 45.0F)));
+                if (world.rand.nextInt(8) == 0) {
+                    world.spawnParticle(
                         "flame",
-                        par3Entity.posX + dx,
-                        par3Entity.posY,
-                        par3Entity.posZ + dz,
-                        (par2World.rand.nextFloat() - par2World.rand.nextFloat()) / 20.0F,
-                        par2World.rand.nextFloat() / 10.0F,
-                        (par2World.rand.nextFloat() - par2World.rand.nextFloat()) / 20.0F);
+                        entity.posX + dx,
+                        entity.posY,
+                        entity.posZ + dz,
+                        (world.rand.nextFloat() - world.rand.nextFloat()) / 20.0F,
+                        world.rand.nextFloat() / 10.0F,
+                        (world.rand.nextFloat() - world.rand.nextFloat()) / 20.0F);
                 }
 
-                if (par2World.rand.nextInt(2) == 0) {
-                    par2World.spawnParticle(
+                if (world.rand.nextInt(2) == 0) {
+                    world.spawnParticle(
                         "smoke",
-                        par3Entity.posX + dx,
-                        par3Entity.posY,
-                        par3Entity.posZ + dz,
-                        (par2World.rand.nextFloat() - par2World.rand.nextFloat()) / 20.0F,
-                        par2World.rand.nextFloat() / 10.0F,
-                        (par2World.rand.nextFloat() - par2World.rand.nextFloat()) / 20.0F);
+                        entity.posX + dx,
+                        entity.posY,
+                        entity.posZ + dz,
+                        (world.rand.nextFloat() - world.rand.nextFloat()) / 20.0F,
+                        world.rand.nextFloat() / 10.0F,
+                        (world.rand.nextFloat() - world.rand.nextFloat()) / 20.0F);
                 }
 
-                if (par2World.rand.nextInt(10) == 0) {
-                    par2World.spawnParticle(
+                if (world.rand.nextInt(10) == 0) {
+                    world.spawnParticle(
                         "fireworksSpark",
-                        par3Entity.posX + dx,
-                        par3Entity.posY,
-                        par3Entity.posZ + dz,
-                        (par2World.rand.nextFloat() - par2World.rand.nextFloat()) / 20.0F,
-                        par2World.rand.nextFloat() / 5.0F,
-                        (par2World.rand.nextFloat() - par2World.rand.nextFloat()) / 20.0F);
+                        entity.posX + dx,
+                        entity.posY,
+                        entity.posZ + dz,
+                        (world.rand.nextFloat() - world.rand.nextFloat()) / 20.0F,
+                        world.rand.nextFloat() / 5.0F,
+                        (world.rand.nextFloat() - world.rand.nextFloat()) / 20.0F);
                 }
             }
         } else {
@@ -154,8 +154,8 @@ public class UltimateSword extends ItemSword {
         return "Uranium/Titanium";
     }
 
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLiving par2EntityLiving, EntityLiving par3EntityLiving) {
-        par1ItemStack.damageItem(1, par3EntityLiving);
+    public boolean hitEntity(ItemStack stack, EntityLiving target, EntityLiving attacker) {
+        stack.damageItem(1, attacker);
         return true;
     }
 
@@ -180,7 +180,7 @@ public class UltimateSword extends ItemSword {
         return false;
     }
 
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 9000;
     }
 
@@ -192,44 +192,43 @@ public class UltimateSword extends ItemSword {
     }
 
     private void findSomethingToHit(EntityPlayer player) {
-        List var5 = player.worldObj
+        List entities = player.worldObj
             .getEntitiesWithinAABB(EntityLivingBase.class, player.boundingBox.expand(5.0, 5.0, 5.0));
-        Iterator var2 = var5.iterator();
-        Entity var3 = null;
-        EntityLivingBase var4 = null;
+        Iterator iterator = entities.iterator();
+        Entity entity = null;
+        EntityLivingBase living = null;
 
-        while (var2.hasNext()) {
-            var3 = (Entity) var2.next();
-            var4 = (EntityLivingBase) var3;
-            if (this.isSuitableTarget(var4, false, player)) {
-                var4.attackEntityFrom(DamageSource.causePlayerDamage(player), OreSpawnMain.chainsaw_stats.damage);
+        while (iterator.hasNext()) {
+            entity = (Entity) iterator.next();
+            living = (EntityLivingBase) entity;
+            if (this.isSuitableTarget(living, false, player)) {
+                living.attackEntityFrom(DamageSource.causePlayerDamage(player), OreSpawnMain.chainsaw_stats.damage);
             }
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2, EntityPlayer player) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase living, boolean flag, EntityPlayer player) {
+        if (living == null) {
             return false;
-        } else if (par1EntityLiving == player) {
+        } else if (living == player) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!living.isEntityAlive()) {
             return false;
         } else {
             if (OreSpawnMain.ultimate_sword_pvp == 0) {
-                if (par1EntityLiving instanceof EntityPlayer || par1EntityLiving instanceof Girlfriend
-                    || par1EntityLiving instanceof Boyfriend) {
+                if (living instanceof EntityPlayer || living instanceof Girlfriend || living instanceof Boyfriend) {
                     return false;
                 }
 
-                if (par1EntityLiving instanceof EntityTameable) {
-                    EntityTameable t = (EntityTameable) par1EntityLiving;
+                if (living instanceof EntityTameable) {
+                    EntityTameable t = (EntityTameable) living;
                     if (t.isTamed()) {
                         return false;
                     }
                 }
             }
 
-            return this.MyCanSee(par1EntityLiving, player);
+            return this.MyCanSee(living, player);
         }
     }
 
@@ -295,8 +294,8 @@ public class UltimateSword extends ItemSword {
         return true;
     }
 
-    public boolean canHarvestBlock(Block par1Block) {
-        return this.canCrush(par1Block);
+    public boolean canHarvestBlock(Block block) {
+        return this.canCrush(block);
     }
 
     private boolean canCrush(Block blockID) {
@@ -369,61 +368,55 @@ public class UltimateSword extends ItemSword {
         }
     }
 
-    public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, Block par3, int par4, int par5, int par6,
-        EntityLivingBase par7EntityLivingBase) {
-        if (this == OreSpawnMain.MyChainsaw && !par2World.isRemote) {
+    public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z,
+        EntityLivingBase entity) {
+        if (this == OreSpawnMain.MyChainsaw && !world.isRemote) {
             for (int i = -5; i <= 5; i++) {
                 for (int j = -5; j <= 10; j++) {
                     for (int k = -5; k <= 5; k++) {
-                        Block bid = par2World.getBlock(par4 + i, par5 + j, par6 + k);
+                        Block bid = world.getBlock(x + i, y + j, z + k);
                         if (this.leaf) {
                             if (this.isLeaves(bid)) {
-                                this.dropItemRand(
-                                    par2World,
-                                    Item.getItemFromBlock(bid),
-                                    1,
-                                    par4 + i,
-                                    par5 + j,
-                                    par6 + k);
-                                par2World.setBlock(par4 + i, par5 + j, par6 + k, Blocks.air);
+                                this.dropItemRand(world, Item.getItemFromBlock(bid), 1, x + i, y + j, z + k);
+                                world.setBlock(x + i, y + j, z + k, Blocks.air);
                             }
                         } else if (this.canCrush(bid)) {
-                            this.dropItemRand(par2World, Item.getItemFromBlock(bid), 1, par4 + i, par5 + j, par6 + k);
-                            par2World.setBlock(par4 + i, par5 + j, par6 + k, Blocks.air);
+                            this.dropItemRand(world, Item.getItemFromBlock(bid), 1, x + i, y + j, z + k);
+                            world.setBlock(x + i, y + j, z + k, Blocks.air);
                         }
                     }
                 }
             }
         }
 
-        return super.onBlockDestroyed(par1ItemStack, par2World, par3, par4, par5, par6, par7EntityLivingBase);
+        return super.onBlockDestroyed(stack, world, block, x, y, z, entity);
     }
 
-    private ItemStack dropItemRand(World world, Item index, int par1, int x, int y, int z) {
-        EntityItem var3x = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3x = new EntityItem(
+    private ItemStack dropItemRand(World world, Item index, int n, int x, int y, int z) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             world,
             x + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
             y + 1.0 + world.rand.nextInt(5),
             z + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
             is);
-        if (var3x != null) {
-            world.spawnEntityInWorld(var3x);
+        if (entityItem != null) {
+            world.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    public float getStrVsBlock(ItemStack par1ItemStack, Block par2Block) {
-        if (par2Block != null && this == OreSpawnMain.MyChainsaw) {
-            this.leaf = this.isLeaves(par2Block);
-            if (par2Block.getMaterial() == Material.wood || par2Block.getMaterial() == Material.plants
-                || par2Block.getMaterial() == Material.vine) {
+    public float getStrVsBlock(ItemStack stack, Block block) {
+        if (block != null && this == OreSpawnMain.MyChainsaw) {
+            this.leaf = this.isLeaves(block);
+            if (block.getMaterial() == Material.wood || block.getMaterial() == Material.plants
+                || block.getMaterial() == Material.vine) {
                 return OreSpawnMain.chainsaw_stats.efficiency;
             }
 
-            if (this.canCrush(par2Block)) {
+            if (this.canCrush(block)) {
                 return OreSpawnMain.chainsaw_stats.efficiency;
             }
         }

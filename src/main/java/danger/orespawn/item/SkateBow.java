@@ -17,23 +17,22 @@ import danger.orespawn.entity.projectile.IrukandjiArrow;
 
 public class SkateBow extends Item {
 
-    public SkateBow(int par1) {
+    public SkateBow(int n) {
         this.maxStackSize = 1;
         this.setMaxDamage(300);
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {}
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {}
 
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {}
 
-    public void onPlayerStoppedUsing(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer,
-        int par4) {
-        int var6 = this.getMaxItemUseDuration(par1ItemStack) - par4;
-        boolean flag = par3EntityPlayer.capabilities.isCreativeMode
-            || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, par1ItemStack) > 0;
-        if (flag || par3EntityPlayer.inventory.hasItem(OreSpawnMain.MyIrukandjiArrow)) {
-            float f = var6 / 20.0F;
+    public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int timeLeft) {
+        int n = this.getMaxItemUseDuration(stack) - timeLeft;
+        boolean flag = player.capabilities.isCreativeMode
+            || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
+        if (flag || player.inventory.hasItem(OreSpawnMain.MyIrukandjiArrow)) {
+            float f = n / 20.0F;
             f = (f * f + f * 2.0F) / 3.0F;
             if (f < 0.1) {
                 return;
@@ -43,51 +42,47 @@ public class SkateBow extends Item {
                 f = 1.75F;
             }
 
-            IrukandjiArrow var8 = new IrukandjiArrow(par2World, par3EntityPlayer, f);
-            if (par2World.rand.nextInt(20) == 1) {
-                var8.setIsCritical(true);
+            IrukandjiArrow irukandjiArrow = new IrukandjiArrow(world, player, f);
+            if (world.rand.nextInt(20) == 1) {
+                irukandjiArrow.setIsCritical(true);
             }
 
-            int var10 = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, par1ItemStack);
-            if (var10 > 0) {
-                var8.setKnockbackStrength(var10);
+            int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, stack);
+            if (enchantmentLevel > 0) {
+                irukandjiArrow.setKnockbackStrength(enchantmentLevel);
             }
 
-            if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, par1ItemStack) > 0) {
-                var8.setFire(100);
+            if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, stack) > 0) {
+                irukandjiArrow.setFire(100);
             }
 
-            par1ItemStack.damageItem(1, par3EntityPlayer);
-            par2World.playSoundAtEntity(
-                par3EntityPlayer,
-                "random.bow",
-                1.0F,
-                1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + 0.5F);
+            stack.damageItem(1, player);
+            world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + 0.5F);
             if (!flag) {
-                par3EntityPlayer.inventory.consumeInventoryItem(OreSpawnMain.MyIrukandjiArrow);
+                player.inventory.consumeInventoryItem(OreSpawnMain.MyIrukandjiArrow);
             }
 
-            if (!par2World.isRemote) {
-                par2World.spawnEntityInWorld(var8);
+            if (!world.isRemote) {
+                world.spawnEntityInWorld(irukandjiArrow);
             }
         }
     }
 
-    public ItemStack onFoodEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        return par1ItemStack;
+    public ItemStack onFoodEaten(ItemStack stack, World world, EntityPlayer player) {
+        return stack;
     }
 
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 9000;
     }
 
-    public EnumAction getItemUseAction(ItemStack par1ItemStack) {
+    public EnumAction getItemUseAction(ItemStack stack) {
         return EnumAction.bow;
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        par3EntityPlayer.setItemInUse(par1ItemStack, this.getMaxItemUseDuration(par1ItemStack));
-        return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+        return stack;
     }
 
     public int getItemEnchantability() {

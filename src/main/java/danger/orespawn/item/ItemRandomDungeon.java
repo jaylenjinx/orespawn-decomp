@@ -27,8 +27,8 @@ public class ItemRandomDungeon extends Item {
         this.setCreativeTab(CreativeTabs.tabRedstone);
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        par1ItemStack.addEnchantment(Enchantment.fortune, 2);
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+        stack.addEnchantment(Enchantment.fortune, 2);
     }
 
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
@@ -38,14 +38,14 @@ public class ItemRandomDungeon extends Item {
         }
     }
 
-    public void onUpdate(ItemStack stack, World par2World, Entity par3Entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
         this.onUsingTick(stack, (EntityPlayer) null, 0);
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World world, int clickedX,
-        int clickedY, int clickedZ, int par7, float par8, float par9, float par10) {
-        Block var1x = world.getBlock(clickedX, clickedY, clickedZ);
-        if (var1x != Blocks.stone && var1x != Blocks.cobblestone && var1x != Blocks.grass && var1x != Blocks.dirt) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int clickedX, int clickedY,
+        int clickedZ, int side, float hitX, float hitY, float hitZ) {
+        Block block = world.getBlock(clickedX, clickedY, clickedZ);
+        if (block != Blocks.stone && block != Blocks.cobblestone && block != Blocks.grass && block != Blocks.dirt) {
             return false;
         } else if (clickedY < 40) {
             return false;
@@ -54,8 +54,8 @@ public class ItemRandomDungeon extends Item {
                 world.setBlock(clickedX, clickedY + 1, clickedZ, OreSpawnMain.MyDungeonSpawnerBlock, 0, 2);
             }
 
-            if (!par2EntityPlayer.capabilities.isCreativeMode) {
-                par1ItemStack.stackSize--;
+            if (!player.capabilities.isCreativeMode) {
+                stack.stackSize--;
             }
 
             return true;

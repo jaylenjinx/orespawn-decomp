@@ -11,14 +11,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class AmethystShovel extends ItemSpade {
 
-    public AmethystShovel(int par1, ToolMaterial par2) {
-        super(par2);
+    public AmethystShovel(int n, ToolMaterial toolMaterial) {
+        super(toolMaterial);
         this.maxStackSize = 1;
         this.setMaxDamage(2000);
         this.setCreativeTab(CreativeTabs.tabTools);
     }
 
-    public int getDamageVsEntity(Entity par1Entity) {
+    public int getDamageVsEntity(Entity entity) {
         return 5;
     }
 

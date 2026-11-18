@@ -646,21 +646,21 @@ public class ChunkOreGenerator {
         }
     }
 
-    public boolean generateBlockOre(World par1World, Random par2Random, int par3, int par4, int par5, Chunk chunk,
-        Block newbid, int numberOfBlocks) {
-        float f = par2Random.nextFloat() * (float) Math.PI;
-        double d0 = par3 + 8 + MathHelper.sin(f) * numberOfBlocks / 8.0F;
-        double d1 = par3 + 8 - MathHelper.sin(f) * numberOfBlocks / 8.0F;
-        double d2 = par5 + 8 + MathHelper.cos(f) * numberOfBlocks / 8.0F;
-        double d3 = par5 + 8 - MathHelper.cos(f) * numberOfBlocks / 8.0F;
-        double d4 = par4 + par2Random.nextInt(3) - 2;
-        double d5 = par4 + par2Random.nextInt(3) - 2;
+    public boolean generateBlockOre(World world, Random rand, int n, int n2, int n3, Chunk chunk, Block newbid,
+        int numberOfBlocks) {
+        float f = rand.nextFloat() * (float) Math.PI;
+        double d0 = n + 8 + MathHelper.sin(f) * numberOfBlocks / 8.0F;
+        double d1 = n + 8 - MathHelper.sin(f) * numberOfBlocks / 8.0F;
+        double d2 = n3 + 8 + MathHelper.cos(f) * numberOfBlocks / 8.0F;
+        double d3 = n3 + 8 - MathHelper.cos(f) * numberOfBlocks / 8.0F;
+        double d4 = n2 + rand.nextInt(3) - 2;
+        double d5 = n2 + rand.nextInt(3) - 2;
 
         for (int l = 0; l <= numberOfBlocks; l++) {
             double d6 = d0 + (d1 - d0) * l / numberOfBlocks;
             double d7 = d4 + (d5 - d4) * l / numberOfBlocks;
             double d8 = d2 + (d3 - d2) * l / numberOfBlocks;
-            double d9 = par2Random.nextDouble() * numberOfBlocks / 16.0;
+            double d9 = rand.nextDouble() * numberOfBlocks / 16.0;
             double d10 = (MathHelper.sin(l * (float) Math.PI / numberOfBlocks) + 1.0F) * d9 + 1.0;
             double d11 = (MathHelper.sin(l * (float) Math.PI / numberOfBlocks) + 1.0F) * d9 + 1.0;
             int i1 = MathHelper.floor_double(d6 - d10 / 2.0);

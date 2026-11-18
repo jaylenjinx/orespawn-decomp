@@ -18,8 +18,8 @@ public class EmeraldPickaxe extends ItemPickaxe {
 
     private int weaponDamage = 10;
 
-    public EmeraldPickaxe(int par1, ToolMaterial par2) {
-        super(par2);
+    public EmeraldPickaxe(int n, ToolMaterial toolMaterial) {
+        super(toolMaterial);
         this.maxStackSize = 1;
         this.setMaxDamage(1300);
         this.setCreativeTab(CreativeTabs.tabTools);
@@ -32,11 +32,11 @@ public class EmeraldPickaxe extends ItemPickaxe {
         }
     }
 
-    public void onUpdate(ItemStack stack, World par2World, Entity par3Entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
         this.onUsingTick(stack, (EntityPlayer) null, 0);
     }
 
-    public int getDamageVsEntity(Entity par1Entity) {
+    public int getDamageVsEntity(Entity entity) {
         return this.weaponDamage;
     }
 

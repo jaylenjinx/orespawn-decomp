@@ -44,8 +44,8 @@ public class Lizard extends EntityCannonFodder {
     private int ty = 0;
     private int tz = 0;
 
-    public Lizard(World par1World) {
-        super(par1World);
+    public Lizard(World world) {
+        super(world);
         this.moveSpeed = 0.3F;
         this.setSize(1.5F, 1.25F);
         this.getNavigator()
@@ -107,12 +107,12 @@ public class Lizard extends EntityCannonFodder {
         super.onLivingUpdate();
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        Entity e = par1DamageSource.getEntity();
-        if (!par1DamageSource.getDamageType()
+        Entity e = source.getEntity();
+        if (!source.getDamageType()
             .equals("cactus")) {
-            ret = super.attackEntityFrom(par1DamageSource, par2);
+            ret = super.attackEntityFrom(source, amount);
             if (e != null && e instanceof EntityLivingBase) {
                 this.setAttackTarget((EntityLivingBase) e);
             }
@@ -147,41 +147,40 @@ public class Lizard extends EntityCannonFodder {
     }
 
     @Override
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (super.interact(par1EntityPlayer)) {
+        if (super.interact(player)) {
             return true;
-        } else if (var2 != null && var2.getItem() == Items.dye && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
-            if (!this.worldObj.isRemote) {
-                this.buddy = par1EntityPlayer;
-                this.follow_time = 3000 + this.worldObj.rand.nextInt(2000);
-            }
-
-            this.playTameEffect(true);
-            if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                var2.stackSize--;
-                if (var2.stackSize <= 0) {
-                    par1EntityPlayer.inventory
-                        .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+        } else if (currentItem != null && currentItem.getItem() == Items.dye
+            && player.getDistanceSqToEntity(this) < 16.0) {
+                if (!this.worldObj.isRemote) {
+                    this.buddy = player;
+                    this.follow_time = 3000 + this.worldObj.rand.nextInt(2000);
                 }
-            }
 
-            return true;
-        } else {
-            if (!this.worldObj.isRemote) {
-                this.buddy = null;
-                this.follow_time = 0;
-            }
+                this.playTameEffect(true);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                    }
+                }
 
-            this.playTameEffect(false);
-            return true;
-        }
+                return true;
+            } else {
+                if (!this.worldObj.isRemote) {
+                    this.buddy = null;
+                    this.follow_time = 0;
+                }
+
+                this.playTameEffect(false);
+                return true;
+            }
     }
 
     private boolean scan_it(int x, int y, int z, int dx, int dy, int dz) {
@@ -215,26 +214,26 @@ public class Lizard extends EntityCannonFodder {
             }
         }
 
-        for (int var12 = -dx; var12 <= dx; var12++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dz; j <= dz; j++) {
-                Block bidx = this.worldObj.getBlock(x + var12, y + dy, z + j);
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y + dy;
                         this.tz = z + j;
                         found++;
                     }
                 }
 
-                bidx = this.worldObj.getBlock(x + var12, y - dy, z + j);
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y - dy;
                         this.tz = z + j;
                         found++;
@@ -243,26 +242,26 @@ public class Lizard extends EntityCannonFodder {
             }
         }
 
-        for (int var13 = -dx; var13 <= dx; var13++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dy; j <= dy; j++) {
-                Block bidxx = this.worldObj.getBlock(x + var13, y + j, z + dz);
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z + dz;
                         found++;
                     }
                 }
 
-                bidxx = this.worldObj.getBlock(x + var13, y + j, z - dz);
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z - dz;
                         found++;
@@ -346,35 +345,34 @@ public class Lizard extends EntityCannonFodder {
         }
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         float i = 6.0F;
-        return par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), i);
+        return target.attackEntityFrom(DamageSource.causeMobDamage(this), i);
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof AttackSquid) {
+            } else if (target instanceof AttackSquid) {
                 return true;
-            } else if (par1EntityLiving instanceof EntitySpider) {
+            } else if (target instanceof EntitySpider) {
                 return true;
-            } else if (par1EntityLiving instanceof EntityCaveSpider) {
+            } else if (target instanceof EntityCaveSpider) {
                 return true;
-            } else if (par1EntityLiving instanceof EntityChicken) {
+            } else if (target instanceof EntityChicken) {
                 return true;
             } else {
-                if (par1EntityLiving instanceof Lizard && this.worldObj.rand.nextInt(10) == 1
-                    && this.follow_time <= 0) {
-                    this.buddy = par1EntityLiving;
+                if (target instanceof Lizard && this.worldObj.rand.nextInt(10) == 1 && this.follow_time <= 0) {
+                    this.buddy = target;
                 }
 
                 return false;
@@ -385,12 +383,12 @@ public class Lizard extends EntityCannonFodder {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(12.0, 4.0, 12.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
             if (this.worldObj.rand.nextInt(100) == 0) {
                 this.setAttackTarget(null);
             }
@@ -401,11 +399,11 @@ public class Lizard extends EntityCannonFodder {
             } else {
                 this.setAttackTarget(null);
 
-                while (var2.hasNext()) {
-                    var3 = (Entity) var2.next();
-                    var4 = (EntityLivingBase) var3;
-                    if (this.isSuitableTarget(var4, false)) {
-                        return var4;
+                while (iterator.hasNext()) {
+                    entity = (Entity) iterator.next();
+                    target = (EntityLivingBase) entity;
+                    if (this.isSuitableTarget(target, false)) {
+                        return target;
                     }
                 }
 
@@ -418,8 +416,8 @@ public class Lizard extends EntityCannonFodder {
         return this.dataWatcher.getWatchableObjectByte(23);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(23, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(23, (byte) attacking);
     }
 
     public boolean getCanSpawnHere() {
@@ -442,15 +440,15 @@ public class Lizard extends EntityCannonFodder {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public Lizard spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public Lizard spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new Lizard(this.worldObj);
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.apple;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.apple;
     }
 
-    public boolean isBreedingItem(ItemStack par1ItemStack) {
-        return par1ItemStack.getItem() == OreSpawnMain.MyCrystalApple;
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
     }
 }

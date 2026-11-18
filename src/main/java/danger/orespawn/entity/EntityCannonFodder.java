@@ -34,8 +34,8 @@ public class EntityCannonFodder extends EntityTameable {
     private int py = 0;
     private GenericTargetSorter LocalTargetSorter = null;
 
-    public EntityCannonFodder(World par1World) {
-        super(par1World);
+    public EntityCannonFodder(World world) {
+        super(world);
         this.LocalTargetSorter = new GenericTargetSorter(this);
     }
 
@@ -65,53 +65,53 @@ public class EntityCannonFodder extends EntityTameable {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (super.interact(par1EntityPlayer)) {
+        if (super.interact(player)) {
             return true;
         } else {
             if (this.name_one != null && this.isTamed()) {
                 if (this.name_one.equals(
-                    par1EntityPlayer.getUniqueID()
+                    player.getUniqueID()
                         .toString())) {
                     if (this.name_two == null) {
                         this.name_two = this.name_one;
-                        this.name_one = par1EntityPlayer.getUniqueID()
+                        this.name_one = player.getUniqueID()
                             .toString();
                         this.func_152115_b(this.name_one);
                         this.is_activated = 2;
                     }
                 } else if (this.name_two != null) {
                     if (!this.name_two.equals(
-                        par1EntityPlayer.getUniqueID()
+                        player.getUniqueID()
                             .toString())) {
                         return true;
                     }
 
                     this.name_two = this.name_one;
-                    this.name_one = par1EntityPlayer.getUniqueID()
+                    this.name_one = player.getUniqueID()
                         .toString();
                     this.func_152115_b(this.name_one);
                     this.is_activated = 2;
                 } else {
                     this.name_two = this.name_one;
-                    this.name_one = par1EntityPlayer.getUniqueID()
+                    this.name_one = player.getUniqueID()
                         .toString();
                     this.func_152115_b(this.name_one);
                     this.is_activated = 2;
                 }
             }
 
-            if (var2 != null && var2.getItem() == Items.carrot && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+            if (currentItem != null && currentItem.getItem() == Items.carrot
+                && player.getDistanceSqToEntity(this) < 16.0) {
                 this.hat_color = 1;
                 if (this.name_one == null) {
-                    this.name_one = par1EntityPlayer.getUniqueID()
+                    this.name_one = player.getUniqueID()
                         .toString();
                 }
 
@@ -124,20 +124,19 @@ public class EntityCannonFodder extends EntityTameable {
                 this.playTameEffect(true);
                 this.heal(this.getMaxHealth() - this.getHealth());
                 this.func_110163_bv();
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
-            } else if (var2 != null && var2.getItem() == Items.potato
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+            } else if (currentItem != null && currentItem.getItem() == Items.potato
+                && player.getDistanceSqToEntity(this) < 16.0) {
                     this.hat_color = 3;
                     if (this.name_one == null) {
-                        this.name_one = par1EntityPlayer.getUniqueID()
+                        this.name_one = player.getUniqueID()
                             .toString();
                     }
 
@@ -150,20 +149,19 @@ public class EntityCannonFodder extends EntityTameable {
                     this.playTameEffect(true);
                     this.heal(this.getMaxHealth() - this.getHealth());
                     this.func_110163_bv();
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
-                } else if (var2 != null && var2.getItem() == OreSpawnMain.MyQuinoa
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+                } else if (currentItem != null && currentItem.getItem() == OreSpawnMain.MyQuinoa
+                    && player.getDistanceSqToEntity(this) < 16.0) {
                         this.hat_color = 2;
                         if (this.name_one == null) {
-                            this.name_one = par1EntityPlayer.getUniqueID()
+                            this.name_one = player.getUniqueID()
                                 .toString();
                         }
 
@@ -176,18 +174,18 @@ public class EntityCannonFodder extends EntityTameable {
                         this.playTameEffect(true);
                         this.heal(this.getMaxHealth() - this.getHealth());
                         this.func_110163_bv();
-                        if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                            var2.stackSize--;
-                            if (var2.stackSize <= 0) {
-                                par1EntityPlayer.inventory
-                                    .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                        if (!player.capabilities.isCreativeMode) {
+                            currentItem.stackSize--;
+                            if (currentItem.stackSize <= 0) {
+                                player.inventory
+                                    .setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                             }
                         }
 
                         return true;
-                    } else if (var2 != null && this.is_activated == 2
-                        && var2.getItem() == OreSpawnMain.MyCornCob
-                        && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+                    } else if (currentItem != null && this.is_activated == 2
+                        && currentItem.getItem() == OreSpawnMain.MyCornCob
+                        && player.getDistanceSqToEntity(this) < 16.0) {
                             String myname = "Ostrich";
                             if (this instanceof Lizard) {
                                 myname = "Lizard";
@@ -217,18 +215,17 @@ public class EntityCannonFodder extends EntityTameable {
                             }
 
                             this.playTameEffect(true);
-                            this.worldObj.playSoundAtEntity(par1EntityPlayer, "random.explode", 0.75F, 2.0F);
-                            if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                                var2.stackSize--;
-                                if (var2.stackSize <= 0) {
-                                    par1EntityPlayer.inventory.setInventorySlotContents(
-                                        par1EntityPlayer.inventory.currentItem,
-                                        (ItemStack) null);
+                            this.worldObj.playSoundAtEntity(player, "random.explode", 0.75F, 2.0F);
+                            if (!player.capabilities.isCreativeMode) {
+                                currentItem.stackSize--;
+                                if (currentItem.stackSize <= 0) {
+                                    player.inventory
+                                        .setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                                 }
                             }
 
                             return true;
-                        } else if (this.is_activated == 2 && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+                        } else if (this.is_activated == 2 && player.getDistanceSqToEntity(this) < 16.0) {
                             if (this.isSitting()) {
                                 this.setSitting(false);
                                 this.playTameEffect(true);
@@ -247,16 +244,16 @@ public class EntityCannonFodder extends EntityTameable {
         }
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
     public void setStuff(int hc, int ia, String s1, String s2) {
@@ -275,80 +272,80 @@ public class EntityCannonFodder extends EntityTameable {
         return this.is_activated;
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
         if (this.name_one == null) {
-            par1NBTTagCompound.setString("NameOne", "");
+            tag.setString("NameOne", "");
         } else {
-            par1NBTTagCompound.setString("NameOne", this.name_one);
+            tag.setString("NameOne", this.name_one);
         }
 
         if (this.name_two == null) {
-            par1NBTTagCompound.setString("NameTwo", "");
+            tag.setString("NameTwo", "");
         } else {
-            par1NBTTagCompound.setString("NameTwo", this.name_two);
+            tag.setString("NameTwo", this.name_two);
         }
 
-        par1NBTTagCompound.setInteger("IsActivated", this.is_activated);
-        par1NBTTagCompound.setInteger("HatColor", this.hat_color);
-        par1NBTTagCompound.setInteger("PatrolX", this.px);
-        par1NBTTagCompound.setInteger("PatrolY", this.py);
-        par1NBTTagCompound.setInteger("PatrolZ", this.pz);
+        tag.setInteger("IsActivated", this.is_activated);
+        tag.setInteger("HatColor", this.hat_color);
+        tag.setInteger("PatrolX", this.px);
+        tag.setInteger("PatrolY", this.py);
+        tag.setInteger("PatrolZ", this.pz);
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.name_one = par1NBTTagCompound.getString("NameOne");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.name_one = tag.getString("NameOne");
         if (this.name_one != null && this.name_one.equals("")) {
             this.name_one = null;
         }
 
-        this.name_two = par1NBTTagCompound.getString("NameTwo");
+        this.name_two = tag.getString("NameTwo");
         if (this.name_two != null && this.name_two.equals("")) {
             this.name_two = null;
         }
 
-        this.is_activated = par1NBTTagCompound.getInteger("IsActivated");
-        this.hat_color = par1NBTTagCompound.getInteger("HatColor");
-        this.px = par1NBTTagCompound.getInteger("PatrolX");
-        this.py = par1NBTTagCompound.getInteger("PatrolY");
-        this.pz = par1NBTTagCompound.getInteger("PatrolZ");
+        this.is_activated = tag.getInteger("IsActivated");
+        this.hat_color = tag.getInteger("HatColor");
+        this.px = tag.getInteger("PatrolX");
+        this.py = tag.getInteger("PatrolY");
+        this.pz = tag.getInteger("PatrolZ");
         if (this.name_one != null) {
             this.setTamed(true);
             this.func_152115_b(this.name_one);
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
             } else {
                 if (this.isSitting()) {
-                    double dx = this.px - par1EntityLiving.posX;
-                    double dy = this.py - par1EntityLiving.posY;
-                    double dz = this.pz - par1EntityLiving.posZ;
+                    double dx = this.px - target.posX;
+                    double dy = this.py - target.posY;
+                    double dz = this.pz - target.posZ;
                     if (dx * dx + dy * dy + dz * dz > 144.0) {
                         return false;
                     }
                 }
 
-                if (par1EntityLiving instanceof EntityMob) {
+                if (target instanceof EntityMob) {
                     return true;
-                } else if (par1EntityLiving instanceof EntityCannonFodder) {
-                    EntityCannonFodder cf = (EntityCannonFodder) par1EntityLiving;
+                } else if (target instanceof EntityCannonFodder) {
+                    EntityCannonFodder cf = (EntityCannonFodder) target;
                     int i = cf.getHatColor();
                     return i != 0 && i != this.hat_color;
-                } else if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                } else if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     } else {
@@ -366,18 +363,18 @@ public class EntityCannonFodder extends EntityTameable {
     }
 
     private EntityLivingBase findSomethingToAttack() {
-        List var5 = this.worldObj
+        List entities = this.worldObj
             .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(10.0, 4.0, 10.0));
-        Collections.sort(var5, this.LocalTargetSorter);
-        Iterator var2 = var5.iterator();
-        Entity var3 = null;
-        EntityLivingBase var4 = null;
+        Collections.sort(entities, this.LocalTargetSorter);
+        Iterator iterator = entities.iterator();
+        Entity entity = null;
+        EntityLivingBase target = null;
 
-        while (var2.hasNext()) {
-            var3 = (Entity) var2.next();
-            var4 = (EntityLivingBase) var3;
-            if (this.isSuitableTarget(var4, false)) {
-                return var4;
+        while (iterator.hasNext()) {
+            entity = (Entity) iterator.next();
+            target = (EntityLivingBase) entity;
+            if (this.isSuitableTarget(target, false)) {
+                return target;
             }
         }
 
@@ -388,8 +385,8 @@ public class EntityCannonFodder extends EntityTameable {
         return this.is_activated == 2 ? 3 : 0;
     }
 
-    public void attackEntityAsFodder(Entity par1Entity, float f) {
-        par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), f);
+    public void attackEntityAsFodder(Entity entity, float f) {
+        entity.attackEntityFrom(DamageSource.causeMobDamage(this), f);
     }
 
     protected void updateAITasks() {

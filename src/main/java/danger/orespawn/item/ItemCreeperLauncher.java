@@ -21,7 +21,7 @@ public class ItemCreeperLauncher extends Item {
 
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
         if (entity != null && entity instanceof EntityCreeper) {
-            for (int var3x = 0; var3x < 6; var3x++) {
+            for (int i = 0; i < 6; i++) {
                 float f1 = player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat();
                 float f2 = 0.25F + player.worldObj.rand.nextFloat() * 6.0F;
                 float f3 = player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat();

@@ -19,7 +19,7 @@ public class ItemZooKeeper extends Item {
     }
 
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
-        for (int var3x = 0; var3x < 8; var3x++) {
+        for (int i = 0; i < 8; i++) {
             float f1 = player.worldObj.rand.nextFloat() * 3.0F - player.worldObj.rand.nextFloat() * 3.0F;
             float f2 = 0.25F + player.worldObj.rand.nextFloat() * 2.0F;
             float f3 = player.worldObj.rand.nextFloat() * 3.0F - player.worldObj.rand.nextFloat() * 3.0F;

@@ -16,16 +16,16 @@ public class AmethystSword extends ItemSword {
     private int weaponDamage;
     private final ToolMaterial toolMaterial;
 
-    public AmethystSword(int par1, ToolMaterial par2EnumToolMaterial) {
-        super(par2EnumToolMaterial);
-        this.toolMaterial = par2EnumToolMaterial;
+    public AmethystSword(int n, ToolMaterial enumToolMaterial) {
+        super(enumToolMaterial);
+        this.toolMaterial = enumToolMaterial;
         this.weaponDamage = 18;
         this.maxStackSize = 1;
         this.setMaxDamage(2000);
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public int getDamageVsEntity(Entity par1Entity) {
+    public int getDamageVsEntity(Entity entity) {
         return this.weaponDamage;
     }
 
@@ -33,12 +33,12 @@ public class AmethystSword extends ItemSword {
         return "Amethyst";
     }
 
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLiving par2EntityLiving, EntityLiving par3EntityLiving) {
-        par1ItemStack.damageItem(1, par3EntityLiving);
+    public boolean hitEntity(ItemStack stack, EntityLiving target, EntityLiving attacker) {
+        stack.damageItem(1, attacker);
         return true;
     }
 
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 3500;
     }
 

@@ -16,27 +16,27 @@ import danger.orespawn.OreSpawnMain;
 
 public class BlockCrystalPlant extends BlockReed {
 
-    public BlockCrystalPlant(int par1) {
-        float var3 = 0.375F;
-        this.setBlockBounds(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, 1.0F, 0.5F + var3);
+    public BlockCrystalPlant(int n) {
+        float f = 0.375F;
+        this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, 1.0F, 0.5F + f);
         this.setTickRandomly(true);
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
 
-    public boolean canPlaceBlockAt(World par1World, int par2, int par3, int par4) {
-        Block bid = par1World.getBlock(par2, par3 - 1, par4);
+    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+        Block bid = world.getBlock(x, y - 1, z);
         return bid == Blocks.air ? false
             : bid == Blocks.grass || bid == Blocks.dirt || bid == Blocks.farmland || bid == OreSpawnMain.CrystalGrass;
     }
 
-    public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        if (par1World.rand.nextInt(30) == 1) {
+    public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
+        if (world.rand.nextInt(30) == 1) {
             for (int j1 = 0; j1 < 10; j1++) {
-                par1World.spawnParticle(
+                world.spawnParticle(
                     "happyVillager",
-                    par2 + par1World.rand.nextFloat(),
-                    (double) par3 + par1World.rand.nextFloat(),
-                    par4 + par1World.rand.nextFloat(),
+                    x + world.rand.nextFloat(),
+                    (double) y + world.rand.nextFloat(),
+                    z + world.rand.nextFloat(),
                     0.0,
                     0.0,
                     0.0);
@@ -44,26 +44,26 @@ public class BlockCrystalPlant extends BlockReed {
         }
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        if (!par1World.isRemote) {
-            if (par1World.rand.nextInt(5) == 1) {
-                par1World.setBlock(par2, par3, par4, Blocks.air, 0, 2);
+    public void updateTick(World world, int x, int y, int z, Random rand) {
+        if (!world.isRemote) {
+            if (world.rand.nextInt(5) == 1) {
+                world.setBlock(x, y, z, Blocks.air, 0, 2);
                 if (this == OreSpawnMain.MyCrystalPlant) {
-                    this.TallCrystalTree(par1World, par2, par3, par4);
+                    this.TallCrystalTree(world, x, y, z);
                 }
 
                 if (this == OreSpawnMain.MyCrystalPlant2) {
-                    this.ScragglyCrystalTreeWithBranches(par1World, par2, par3, par4);
+                    this.ScragglyCrystalTreeWithBranches(world, x, y, z);
                 }
 
                 if (this == OreSpawnMain.MyCrystalPlant3) {
-                    this.TallCrystalTreeBlue(par1World, par2, par3, par4);
+                    this.TallCrystalTreeBlue(world, x, y, z);
                 }
             }
         }
     }
 
-    public Item getItemDropped(int par1, Random par2Random, int par3) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         if (this == OreSpawnMain.MyCrystalPlant) {
             return Item.getItemFromBlock(OreSpawnMain.MyCrystalPlant);
         } else {
@@ -75,11 +75,11 @@ public class BlockCrystalPlant extends BlockReed {
         }
     }
 
-    public int quantityDropped(Random par1Random) {
+    public int quantityDropped(Random rand) {
         return 1;
     }
 
-    public int idPicked(World par1World, int par2, int par3, int par4) {
+    public int idPicked(World world, int x, int y, int z) {
         return 0;
     }
 
@@ -108,14 +108,14 @@ public class BlockCrystalPlant extends BlockReed {
 
         y += i - 1;
 
-        for (int var14 = i; var14 < j; var14++) {
+        for (int i2 = i; i2 < j; i2++) {
             Block bid = world.getBlock(x, ++y, z);
             if (bid != Blocks.air && bid != OreSpawnMain.MyCrystalTreeLog && bid != OreSpawnMain.MyCrystalLeaves) {
                 break;
             }
 
             OreSpawnMain.setBlockFast(world, x, y, z, OreSpawnMain.MyCrystalTreeLog, 0, 2);
-            if (var14 % 4 == 0) {
+            if (i2 % 4 == 0) {
                 for (int m = -1; m < 2; m++) {
                     for (int n = -1; n < 2; n++) {
                         if (world.rand.nextInt(2) == 1) {
@@ -142,22 +142,22 @@ public class BlockCrystalPlant extends BlockReed {
             }
         }
 
-        for (int var16 = -3; var16 < 4; var16++) {
+        for (int i2 = -3; i2 < 4; i2++) {
             for (int nxx = -3; nxx < 4; nxx++) {
-                Block bidx = world.getBlock(x + var16, y, z + nxx);
+                Block bidx = world.getBlock(x + i2, y, z + nxx);
                 if (bidx == Blocks.air) {
-                    OreSpawnMain.setBlockFast(world, x + var16, y, z + nxx, OreSpawnMain.MyCrystalLeaves, 0, 2);
+                    OreSpawnMain.setBlockFast(world, x + i2, y, z + nxx, OreSpawnMain.MyCrystalLeaves, 0, 2);
                 }
             }
         }
 
         y++;
 
-        for (int var17 = -1; var17 < 2; var17++) {
+        for (int i2 = -1; i2 < 2; i2++) {
             for (int nxxx = -1; nxxx < 2; nxxx++) {
-                Block bidx = world.getBlock(x + var17, y, z + nxxx);
+                Block bidx = world.getBlock(x + i2, y, z + nxxx);
                 if (bidx == Blocks.air) {
-                    OreSpawnMain.setBlockFast(world, x + var17, y, z + nxxx, OreSpawnMain.MyCrystalLeaves, 0, 2);
+                    OreSpawnMain.setBlockFast(world, x + i2, y, z + nxxx, OreSpawnMain.MyCrystalLeaves, 0, 2);
                 }
             }
         }
@@ -231,7 +231,7 @@ public class BlockCrystalPlant extends BlockReed {
 
         y += i - 1;
 
-        for (int var15 = i; var15 < j; var15++) {
+        for (int i2 = i; i2 < j; i2++) {
             int ix = world.rand.nextInt(2) - world.rand.nextInt(2);
             int iz = world.rand.nextInt(2) - world.rand.nextInt(2);
             int iy = world.rand.nextInt(4) > 0 ? 1 : 0;
@@ -250,7 +250,7 @@ public class BlockCrystalPlant extends BlockReed {
                     x,
                     y,
                     z,
-                    world.rand.nextInt(1 + j - var15),
+                    world.rand.nextInt(1 + j - i2),
                     world.rand.nextInt(2) - world.rand.nextInt(2),
                     world.rand.nextInt(2) - world.rand.nextInt(2));
             }
@@ -292,14 +292,14 @@ public class BlockCrystalPlant extends BlockReed {
 
         y += i - 1;
 
-        for (int var14 = i; var14 < j; var14++) {
+        for (int i2 = i; i2 < j; i2++) {
             Block bid = world.getBlock(x, ++y, z);
             if (bid != Blocks.air && bid != OreSpawnMain.MyCrystalTreeLog && bid != OreSpawnMain.MyCrystalLeaves3) {
                 break;
             }
 
             OreSpawnMain.setBlockFast(world, x, y, z, OreSpawnMain.MyCrystalTreeLog, 0, 2);
-            if (var14 % 3 == 0) {
+            if (i2 % 3 == 0) {
                 for (int m = -1; m < 2; m++) {
                     for (int n = -1; n < 2; n++) {
                         if (world.rand.nextInt(2) == 1) {
@@ -326,22 +326,22 @@ public class BlockCrystalPlant extends BlockReed {
             }
         }
 
-        for (int var16 = -3; var16 < 4; var16++) {
+        for (int i2 = -3; i2 < 4; i2++) {
             for (int nxx = -3; nxx < 4; nxx++) {
-                Block bidx = world.getBlock(x + var16, y, z + nxx);
+                Block bidx = world.getBlock(x + i2, y, z + nxx);
                 if (bidx == Blocks.air) {
-                    OreSpawnMain.setBlockFast(world, x + var16, y, z + nxx, OreSpawnMain.MyCrystalLeaves3, 0, 2);
+                    OreSpawnMain.setBlockFast(world, x + i2, y, z + nxx, OreSpawnMain.MyCrystalLeaves3, 0, 2);
                 }
             }
         }
 
         y++;
 
-        for (int var17 = -1; var17 < 2; var17++) {
+        for (int i2 = -1; i2 < 2; i2++) {
             for (int nxxx = -1; nxxx < 2; nxxx++) {
-                Block bidx = world.getBlock(x + var17, y, z + nxxx);
+                Block bidx = world.getBlock(x + i2, y, z + nxxx);
                 if (bidx == Blocks.air) {
-                    OreSpawnMain.setBlockFast(world, x + var17, y, z + nxxx, OreSpawnMain.MyCrystalLeaves3, 0, 2);
+                    OreSpawnMain.setBlockFast(world, x + i2, y, z + nxxx, OreSpawnMain.MyCrystalLeaves3, 0, 2);
                 }
             }
         }

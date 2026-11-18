@@ -55,8 +55,8 @@ public class Godzilla extends EntityMob {
     private int head_found = 0;
     private int large_unknown_detected = 0;
 
-    public Godzilla(World par1World) {
-        super(par1World);
+    public Godzilla(World world) {
+        super(world);
         if (OreSpawnMain.PlayNicely == 0) {
             this.setSize(9.9F, 25.0F);
         } else {
@@ -158,9 +158,9 @@ public class Godzilla extends EntityMob {
         super.onLivingUpdate();
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     protected String getLivingSound() {
         return this.worldObj.rand.nextInt(5) == 0 ? "orespawn:godzilla_living" : null;
@@ -235,10 +235,10 @@ public class Godzilla extends EntityMob {
         return d1 * d1 + d2 * d2;
     }
 
-    public double MygetDistanceSqToEntity(Entity par1Entity) {
-        double d0 = this.posX - par1Entity.posX;
-        double d1 = par1Entity.posY - this.posY;
-        double d2 = this.posZ - par1Entity.posZ;
+    public double MygetDistanceSqToEntity(Entity entity) {
+        double d0 = this.posX - entity.posX;
+        double d1 = entity.posY - this.posY;
+        double d2 = this.posZ - entity.posZ;
         if (d1 > 0.0 && d1 < 20.0) {
             d1 = 0.0;
         }
@@ -319,15 +319,15 @@ public class Godzilla extends EntityMob {
                     }
                 }
 
-                int var23 = 12;
+                int n = 12;
                 if (this.getAttacking() != 0) {
-                    var23 = 16;
+                    n = 16;
                 }
 
                 int k = -3 + this.ticker % 30;
                 if (OreSpawnMain.PlayNicely == 0) {
-                    for (int i = -var23; i <= var23; i++) {
-                        for (int j = -var23; j <= var23; j++) {
+                    for (int i = -n; i <= n; i++) {
+                        for (int j = -n; j <= n; j++) {
                             Block bid = this.worldObj
                                 .getBlock((int) this.posX + i, (int) this.posY + k, (int) this.posZ + j);
                             if (this.isCrushable(bid)) {
@@ -366,8 +366,8 @@ public class Godzilla extends EntityMob {
                 double dz = this.posZ - 16.0 * Math.cos(Math.toRadians(this.rotationYawHead));
                 k = -3 + this.ticker % 12;
                 if (OreSpawnMain.PlayNicely == 0) {
-                    for (int i = -var23; i <= var23; i++) {
-                        for (int jx = -var23; jx <= var23; jx++) {
+                    for (int i = -n; i <= n; i++) {
+                        for (int jx = -n; jx <= n; jx++) {
                             Block bid = this.worldObj.getBlock((int) dx + i, (int) this.posY + k, (int) dz + jx);
                             if (this.isCrushable(bid)) {
                                 this.worldObj.setBlock((int) dx + i, (int) this.posY + k, (int) dz + jx, Blocks.air);
@@ -479,48 +479,48 @@ public class Godzilla extends EntityMob {
         }
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
         }
 
-        return var8;
+        return entity;
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof Godzilla) {
+            } else if (target instanceof Godzilla) {
                 return false;
-            } else if (par1EntityLiving instanceof GodzillaHead) {
+            } else if (target instanceof GodzillaHead) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityCreeper) {
+            } else if (target instanceof EntityCreeper) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityZombie) {
+            } else if (target instanceof EntityZombie) {
                 return false;
-            } else if (par1EntityLiving instanceof EntitySpider) {
+            } else if (target instanceof EntitySpider) {
                 return false;
-            } else if (par1EntityLiving instanceof EntitySkeleton) {
+            } else if (target instanceof EntitySkeleton) {
                 return false;
-            } else if (par1EntityLiving instanceof Ghost) {
+            } else if (target instanceof Ghost) {
                 return false;
-            } else if (par1EntityLiving instanceof GhostSkelly) {
+            } else if (target instanceof GhostSkelly) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -530,51 +530,51 @@ public class Godzilla extends EntityMob {
             }
     }
 
-    private boolean isVillagerTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isVillagerTarget(EntityLivingBase living, boolean flag) {
+        if (living == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (living == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!living.isEntityAlive()) {
             return false;
         } else {
             return !this.getEntitySenses()
-                .canSee(par1EntityLiving) ? false : par1EntityLiving instanceof EntityVillager;
+                .canSee(living) ? false : living instanceof EntityVillager;
         }
     }
 
     private EntityLivingBase doJumpDamage(double X, double Y, double Z, double dist, double damage, int knock) {
         AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(X - dist, Y - 10.0, Z - dist, X + dist, Y + 10.0, Z + dist);
-        List var5x = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, bb);
-        Collections.sort(var5x, this.TargetSorter);
-        Iterator var2 = var5x.iterator();
-        Entity var3x = null;
-        EntityLivingBase var4 = null;
+        List entities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, bb);
+        Collections.sort(entities, this.TargetSorter);
+        Iterator iterator = entities.iterator();
+        Entity entity = null;
+        EntityLivingBase entity2 = null;
 
-        while (var2.hasNext()) {
-            var3x = (Entity) var2.next();
-            var4 = (EntityLivingBase) var3x;
-            if (var4 != null && var4 != this
-                && var4.isEntityAlive()
-                && !(var4 instanceof Godzilla)
-                && !(var4 instanceof GodzillaHead)
-                && !(var4 instanceof Ghost)
-                && !(var4 instanceof GhostSkelly)) {
-                DamageSource var21 = null;
-                var21 = DamageSource.setExplosionSource(null);
-                var21.setExplosion();
-                var4.attackEntityFrom(var21, (float) damage / 2.0F);
-                var4.attackEntityFrom(DamageSource.fall, (float) damage / 2.0F);
+        while (iterator.hasNext()) {
+            entity = (Entity) iterator.next();
+            entity2 = (EntityLivingBase) entity;
+            if (entity2 != null && entity2 != this
+                && entity2.isEntityAlive()
+                && !(entity2 instanceof Godzilla)
+                && !(entity2 instanceof GodzillaHead)
+                && !(entity2 instanceof Ghost)
+                && !(entity2 instanceof GhostSkelly)) {
+                DamageSource source = null;
+                source = DamageSource.setExplosionSource(null);
+                source.setExplosion();
+                entity2.attackEntityFrom(source, (float) damage / 2.0F);
+                entity2.attackEntityFrom(DamageSource.fall, (float) damage / 2.0F);
                 this.worldObj.playSoundAtEntity(
-                    var4,
+                    entity2,
                     "random.explode",
                     0.85F,
                     1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.5F);
                 if (knock != 0) {
                     double ks = 3.5;
                     double inair = 0.75;
-                    float f3 = (float) Math.atan2(var4.posZ - this.posZ, var4.posX - this.posX);
-                    var4.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+                    float f3 = (float) Math.atan2(entity2.posZ - this.posZ, entity2.posX - this.posX);
+                    entity2.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
                 }
             }
         }
@@ -587,35 +587,35 @@ public class Godzilla extends EntityMob {
             this.head_found = 1;
             return null;
         } else {
-            List var5 = null;
-            Iterator var2 = null;
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            List entities = null;
+            Iterator iterator = null;
+            Entity entity = null;
+            EntityLivingBase target = null;
             EntityLivingBase ret = null;
             int vf = 0;
-            var5 = this.worldObj
+            entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(64.0, 40.0, 64.0));
-            if (var5 == null) {
+            if (entities == null) {
                 return null;
             } else {
-                Collections.sort(var5, this.TargetSorter);
-                var2 = var5.iterator();
+                Collections.sort(entities, this.TargetSorter);
+                iterator = entities.iterator();
                 this.head_found = 0;
 
-                while (var2.hasNext()) {
-                    var3 = (Entity) var2.next();
-                    var4 = (EntityLivingBase) var3;
-                    if (var4 instanceof GodzillaHead) {
+                while (iterator.hasNext()) {
+                    entity = (Entity) iterator.next();
+                    target = (EntityLivingBase) entity;
+                    if (target instanceof GodzillaHead) {
                         this.head_found = 1;
                     }
 
-                    if (vf == 0 && this.isVillagerTarget(var4, false)) {
-                        ret = var4;
+                    if (vf == 0 && this.isVillagerTarget(target, false)) {
+                        ret = target;
                         vf = 1;
                     }
 
-                    if (ret == null && vf == 0 && this.isSuitableTarget(var4, false)) {
-                        ret = var4;
+                    if (ret == null && vf == 0 && this.isSuitableTarget(target, false)) {
+                        ret = target;
                     }
                 }
 
@@ -667,37 +667,37 @@ public class Godzilla extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(10) - OreSpawnMain.OreSpawnRand.nextInt(10),
             this.posY + 4.0 + this.worldObj.rand.nextInt(10),
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(10) - OreSpawnMain.OreSpawnRand.nextInt(10),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    private ItemStack dropItemRandAt(Item index, int par1, double dx, double dz) {
-        EntityItem var3x = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3x = new EntityItem(
+    private ItemStack dropItemRandAt(Item index, int n, double dx, double dz) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             dx + OreSpawnMain.OreSpawnRand.nextInt(10) - OreSpawnMain.OreSpawnRand.nextInt(10),
             this.posY + 4.0 + this.worldObj.rand.nextInt(6),
             dz + OreSpawnMain.OreSpawnRand.nextInt(10) - OreSpawnMain.OreSpawnRand.nextInt(10),
             is);
-        if (var3x != null) {
-            this.worldObj.spawnEntityInWorld(var3x);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
@@ -811,63 +811,63 @@ public class Godzilla extends EntityMob {
         }
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
-            float s = par1Entity.height * par1Entity.width;
-            if (s > 30.0F && !MyUtils.isRoyalty(par1Entity)
-                && !(par1Entity instanceof Godzilla)
-                && !(par1Entity instanceof GodzillaHead)
-                && !(par1Entity instanceof PitchBlack)
-                && !(par1Entity instanceof Kraken)) {
-                EntityLivingBase e = (EntityLivingBase) par1Entity;
+    public boolean attackEntityAsMob(Entity target) {
+        if (target != null && target instanceof EntityLivingBase) {
+            float s = target.height * target.width;
+            if (s > 30.0F && !MyUtils.isRoyalty(target)
+                && !(target instanceof Godzilla)
+                && !(target instanceof GodzillaHead)
+                && !(target instanceof PitchBlack)
+                && !(target instanceof Kraken)) {
+                EntityLivingBase e = (EntityLivingBase) target;
                 e.setHealth(e.getHealth() / 2.0F);
                 e.attackEntityFrom(DamageSource.causeMobDamage(this), OreSpawnMain.Godzilla_stats.attack * 10.0F);
                 this.large_unknown_detected = 1;
             }
         }
 
-        if (par1Entity != null && par1Entity instanceof EntityDragon) {
-            EntityDragon dr = (EntityDragon) par1Entity;
-            DamageSource var21 = null;
-            var21 = DamageSource.setExplosionSource(null);
-            var21.setExplosion();
+        if (target != null && target instanceof EntityDragon) {
+            EntityDragon dr = (EntityDragon) target;
+            DamageSource source = null;
+            source = DamageSource.setExplosionSource(null);
+            source.setExplosion();
             if (this.worldObj.rand.nextInt(6) == 1) {
-                dr.attackEntityFromPart(dr.dragonPartHead, var21, OreSpawnMain.Godzilla_stats.attack / 2.0F);
+                dr.attackEntityFromPart(dr.dragonPartHead, source, OreSpawnMain.Godzilla_stats.attack / 2.0F);
             } else {
-                dr.attackEntityFromPart(dr.dragonPartBody, var21, OreSpawnMain.Godzilla_stats.attack / 2.0F);
+                dr.attackEntityFromPart(dr.dragonPartBody, source, OreSpawnMain.Godzilla_stats.attack / 2.0F);
             }
         }
 
-        if (!super.attackEntityAsMob(par1Entity)) {
+        if (!super.attackEntityAsMob(target)) {
             return false;
         } else {
-            if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
+            if (target != null && target instanceof EntityLivingBase) {
                 double ks = 3.2;
                 double inair = 0.3;
-                float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-                if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+                float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+                if (target.isDead || target instanceof EntityPlayer) {
                     inair *= 2.0;
                 }
 
-                par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+                target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
             }
 
             return true;
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        float dm = par2;
+        float dm = amount;
         float s = 0.0F;
         if (this.hurt_timer > 0) {
             return false;
         } else {
-            if (par2 > 750.0F) {
+            if (amount > 750.0F) {
                 dm = 750.0F;
             }
 
-            Entity e = par1DamageSource.getEntity();
+            Entity e = source.getEntity();
             if (e != null && e instanceof EntityLivingBase) {
                 EntityLivingBase enl = (EntityLivingBase) e;
                 s = enl.height * enl.width;
@@ -882,11 +882,11 @@ public class Godzilla extends EntityMob {
                 }
             }
 
-            if (!par1DamageSource.getDamageType()
+            if (!source.getDamageType()
                 .equals("cactus")) {
-                ret = super.attackEntityFrom(par1DamageSource, dm);
+                ret = super.attackEntityFrom(source, dm);
                 this.hurt_timer = 20;
-                e = par1DamageSource.getEntity();
+                e = source.getEntity();
                 if (e != null && e instanceof EntityLivingBase
                     && !(e instanceof GodzillaHead)
                     && !(e instanceof Godzilla)) {
@@ -901,15 +901,15 @@ public class Godzilla extends EntityMob {
         }
     }
 
-    public void onStruckByLightning(EntityLightningBolt par1EntityLightningBolt) {}
+    public void onStruckByLightning(EntityLightningBolt lightning) {}
 
     private void doLightningAttack(EntityLivingBase e) {
         if (e != null) {
-            float var2 = 100.0F;
-            e.attackEntityFrom(DamageSource.causeMobDamage(this), var2);
+            float amount = 100.0F;
+            e.attackEntityFrom(DamageSource.causeMobDamage(this), amount);
             e.setFire(5);
 
-            for (int var3 = 0; var3 < 20; var3++) {
+            for (int i = 0; i < 20; i++) {
                 this.worldObj.spawnParticle(
                     "smoke",
                     e.posX + this.rand.nextFloat() - this.rand.nextFloat(),
@@ -958,32 +958,32 @@ public class Godzilla extends EntityMob {
         }
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         ItemStack is = null;
         this.dropItemRand(Items.item_frame, 1);
-        int var5 = 50 + this.worldObj.rand.nextInt(30);
+        int n = 50 + this.worldObj.rand.nextInt(30);
 
-        for (int var4 = 0; var4 < var5; var4++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(OreSpawnMain.MyGodzillaScale, 1);
         }
 
-        var5 = 100 + this.worldObj.rand.nextInt(160);
+        n = 100 + this.worldObj.rand.nextInt(160);
 
-        for (int var9 = 0; var9 < var5; var9++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(Items.beef, 1);
         }
 
-        var5 = 50 + this.worldObj.rand.nextInt(60);
+        n = 50 + this.worldObj.rand.nextInt(60);
 
-        for (int var10 = 0; var10 < var5; var10++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(Items.bone, 1);
         }
 
         int i = 25 + this.worldObj.rand.nextInt(15);
 
-        for (int var11 = 0; var11 < i; var11++) {
-            int var3 = this.worldObj.rand.nextInt(80);
-            switch (var3) {
+        for (int i2 = 0; i2 < i; i2++) {
+            int roll = this.worldObj.rand.nextInt(80);
+            switch (roll) {
                 case 0:
                     is = this.dropItemRand(OreSpawnMain.MyUltimateSword, 1);
                     break;
@@ -1501,16 +1501,16 @@ public class Godzilla extends EntityMob {
                     this.dropItemRand(Item.getItemFromBlock(Blocks.gold_block), 1);
                     break;
                 case 41:
-                    EntityItem var33 = null;
+                    EntityItem entityItem = null;
                     is = new ItemStack(Items.golden_apple, 1, 1);
-                    var33 = new EntityItem(
+                    entityItem = new EntityItem(
                         this.worldObj,
                         this.posX + OreSpawnMain.OreSpawnRand.nextInt(3) - OreSpawnMain.OreSpawnRand.nextInt(3),
                         this.posY + 1.0,
                         this.posZ + OreSpawnMain.OreSpawnRand.nextInt(3) - OreSpawnMain.OreSpawnRand.nextInt(3),
                         is);
-                    if (var33 != null) {
-                        this.worldObj.spawnEntityInWorld(var33);
+                    if (entityItem != null) {
+                        this.worldObj.spawnEntityInWorld(entityItem);
                     }
                     break;
                 case 42:

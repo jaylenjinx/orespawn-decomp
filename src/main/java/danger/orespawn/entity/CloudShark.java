@@ -27,8 +27,8 @@ public class CloudShark extends EntityMob {
     private ChunkCoordinates currentFlightTarget = null;
     private GenericTargetSorter TargetSorter = null;
 
-    public CloudShark(World par1World) {
-        super(par1World);
+    public CloudShark(World world) {
+        super(world);
         this.setSize(1.0F, 0.75F);
         this.experienceValue = 5;
         this.isImmuneToFire = false;
@@ -46,10 +46,10 @@ public class CloudShark extends EntityMob {
             .setBaseValue(OreSpawnMain.CloudShark_stats.attack);
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         float f = (float) this.getEntityAttribute(SharedMonsterAttributes.attackDamage)
             .getAttributeValue();
-        return par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), f);
+        return target.attackEntityFrom(DamageSource.causeMobDamage(this), f);
     }
 
     protected boolean canDespawn() {
@@ -80,7 +80,7 @@ public class CloudShark extends EntityMob {
         return true;
     }
 
-    protected void collideWithEntity(Entity par1Entity) {}
+    protected void collideWithEntity(Entity entity) {}
 
     public int mygetMaxHealth() {
         return OreSpawnMain.CloudShark_stats.health;
@@ -167,16 +167,16 @@ public class CloudShark extends EntityMob {
                 }
             }
 
-            double var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.5 - this.motionX) * 0.30000000149011613;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.7F - this.motionY) * 0.20000000149011612;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.5 - this.motionZ) * 0.30000000149011613;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx = this.currentFlightTarget.posX + 0.5 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx) * 0.5 - this.motionX) * 0.30000000149011613;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.7F - this.motionY) * 0.20000000149011612;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.5 - this.motionZ) * 0.30000000149011613;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 1.0F;
-            this.rotationYaw += var8 / 4.0F;
+            this.rotationYaw += f2 / 4.0F;
         }
     }
 
@@ -184,17 +184,17 @@ public class CloudShark extends EntityMob {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean doesEntityNotTriggerPressurePlate() {
         return false;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
-        boolean ret = super.attackEntityFrom(par1DamageSource, par2);
-        Entity e = par1DamageSource.getEntity();
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        boolean ret = super.attackEntityFrom(source, amount);
+        Entity e = source.getEntity();
         if (e != null && this.currentFlightTarget != null) {
             this.currentFlightTarget.set((int) e.posX, (int) e.posY, (int) e.posZ);
         }
@@ -206,37 +206,37 @@ public class CloudShark extends EntityMob {
         return true;
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof RockBase) {
+            } else if (target instanceof RockBase) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityAnt) {
+            } else if (target instanceof EntityAnt) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityButterfly) {
+            } else if (target instanceof EntityButterfly) {
                 return true;
-            } else if (par1EntityLiving instanceof Cockateil) {
+            } else if (target instanceof Cockateil) {
                 return true;
-            } else if (par1EntityLiving instanceof EntityMosquito) {
+            } else if (target instanceof EntityMosquito) {
                 return true;
-            } else if (par1EntityLiving instanceof Firefly) {
+            } else if (target instanceof Firefly) {
                 return true;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (!p.capabilities.isCreativeMode) {
                         return true;
                     }
                 }
 
-                return par1EntityLiving instanceof GoldFish ? true : par1EntityLiving instanceof CliffRacer;
+                return target instanceof GoldFish ? true : target instanceof CliffRacer;
             }
     }
 
@@ -244,18 +244,18 @@ public class CloudShark extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(12.0, 10.0, 12.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 

@@ -25,13 +25,13 @@ public class BlockPizza extends Block {
     @SideOnly(Side.CLIENT)
     private IIcon field_94382_c;
 
-    public BlockPizza(int par1) {
+    public BlockPizza(int n) {
         super(Material.cake);
         this.setTickRandomly(true);
     }
 
-    public void setBlockBoundsBasedOnState(IBlockAccess par1IBlockAccess, int par2, int par3, int par4) {
-        int l = par1IBlockAccess.getBlockMetadata(par2, par3, par4);
+    public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z) {
+        int l = blockAccess.getBlockMetadata(x, y, z);
         float f = 0.0625F;
         float f1 = (1 + l * 2) / 16.0F;
         float f2 = 0.25F;
@@ -44,12 +44,12 @@ public class BlockPizza extends Block {
         this.setBlockBounds(f, 0.0F, f, 1.0F - f, f1, 1.0F - f);
     }
 
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
-        int l = par1World.getBlockMetadata(par2, par3, par4);
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+        int l = world.getBlockMetadata(x, y, z);
         float f = 0.0625F;
         float f1 = (1 + l * 2) / 16.0F;
         float f2 = 0.25F;
-        return AxisAlignedBB.getBoundingBox(par2 + f1, par3, par4 + f, par2 + 1 - f, par3 + f2 - f, par4 + 1 - f);
+        return AxisAlignedBB.getBoundingBox(x + f1, y, z + f, x + 1 - f, y + f2 - f, z + 1 - f);
     }
 
     public boolean renderAsNormalBlock() {
@@ -57,32 +57,32 @@ public class BlockPizza extends Block {
     }
 
     @SideOnly(Side.CLIENT)
-    public AxisAlignedBB getSelectedBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
-        int l = par1World.getBlockMetadata(par2, par3, par4);
+    public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
+        int l = world.getBlockMetadata(x, y, z);
         float f = 0.0625F;
         float f1 = (1 + l * 2) / 16.0F;
         float f2 = 0.25F;
-        return AxisAlignedBB.getBoundingBox(par2 + f1, par3, par4 + f, par2 + 1 - f, par3 + f2, par4 + 1 - f);
+        return AxisAlignedBB.getBoundingBox(x + f1, y, z + f, x + 1 - f, y + f2, z + 1 - f);
     }
 
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int par1, int par2) {
-        return par1 == 1 ? this.pizzaTopIcon
-            : (par1 == 0 ? this.pizzaBottomIcon : (par2 > 0 && par1 == 4 ? this.field_94382_c : this.blockIcon));
+    public IIcon getIcon(int side, int meta) {
+        return side == 1 ? this.pizzaTopIcon
+            : (side == 0 ? this.pizzaBottomIcon : (meta > 0 && side == 4 ? this.field_94382_c : this.blockIcon));
     }
 
     @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister par1IIconRegister) {
-        this.blockIcon = par1IIconRegister.registerIcon(
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        this.blockIcon = iconRegister.registerIcon(
             "OreSpawn:" + this.getUnlocalizedName()
                 .substring(5) + "_side");
-        this.field_94382_c = par1IIconRegister.registerIcon(
+        this.field_94382_c = iconRegister.registerIcon(
             "OreSpawn:" + this.getUnlocalizedName()
                 .substring(5) + "_inner");
-        this.pizzaTopIcon = par1IIconRegister.registerIcon(
+        this.pizzaTopIcon = iconRegister.registerIcon(
             "OreSpawn:" + this.getUnlocalizedName()
                 .substring(5) + "_top");
-        this.pizzaBottomIcon = par1IIconRegister.registerIcon(
+        this.pizzaBottomIcon = iconRegister.registerIcon(
             "OreSpawn:" + this.getUnlocalizedName()
                 .substring(5) + "_bottom");
     }
@@ -91,50 +91,49 @@ public class BlockPizza extends Block {
         return false;
     }
 
-    public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer,
-        int par6, float par7, float par8, float par9) {
-        this.eatPizzaSlice(par1World, par2, par3, par4, par5EntityPlayer);
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
+        float hitY, float hitZ) {
+        this.eatPizzaSlice(world, x, y, z, player);
         return true;
     }
 
-    public void onBlockClicked(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer) {
-        this.eatPizzaSlice(par1World, par2, par3, par4, par5EntityPlayer);
+    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
+        this.eatPizzaSlice(world, x, y, z, player);
     }
 
-    private void eatPizzaSlice(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer) {
-        if (par5EntityPlayer.canEat(false)) {
-            par5EntityPlayer.getFoodStats()
+    private void eatPizzaSlice(World world, int x, int y, int z, EntityPlayer player) {
+        if (player.canEat(false)) {
+            player.getFoodStats()
                 .addStats(4, 0.2F);
-            int l = par1World.getBlockMetadata(par2, par3, par4) + 1;
+            int l = world.getBlockMetadata(x, y, z) + 1;
             if (l >= 6) {
-                par1World.setBlockToAir(par2, par3, par4);
+                world.setBlockToAir(x, y, z);
             } else {
-                par1World.setBlockMetadataWithNotify(par2, par3, par4, l, 2);
+                world.setBlockMetadataWithNotify(x, y, z, l, 2);
             }
         }
     }
 
-    public boolean canPlaceBlockAt(World par1World, int par2, int par3, int par4) {
-        return !super.canPlaceBlockAt(par1World, par2, par3, par4) ? false
-            : this.canBlockStay(par1World, par2, par3, par4);
+    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+        return !super.canPlaceBlockAt(world, x, y, z) ? false : this.canBlockStay(world, x, y, z);
     }
 
-    public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5) {
-        if (!this.canBlockStay(par1World, par2, par3, par4)) {
-            par1World.setBlockToAir(par2, par3, par4);
+    public void onNeighborBlockChange(World world, int x, int y, int z, int neighbor) {
+        if (!this.canBlockStay(world, x, y, z)) {
+            world.setBlockToAir(x, y, z);
         }
     }
 
-    public boolean canBlockStay(World par1World, int par2, int par3, int par4) {
-        return par1World.getBlock(par2, par3 - 1, par4)
+    public boolean canBlockStay(World world, int x, int y, int z) {
+        return world.getBlock(x, y - 1, z)
             .isNormalCube();
     }
 
-    public int quantityDropped(Random par1Random) {
+    public int quantityDropped(Random rand) {
         return 0;
     }
 
-    public Item getItemDropped(int par1, Random par2Random, int par3) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         return OreSpawnMain.MyPizzaItem;
     }
 }

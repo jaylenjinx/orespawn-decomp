@@ -37,8 +37,8 @@ public class Beaver extends EntityAnimal {
     private int ty = 0;
     private int tz = 0;
 
-    public Beaver(World par1World) {
-        super(par1World);
+    public Beaver(World world) {
+        super(world);
         this.setSize(0.6F, 0.8F);
         this.moveSpeed = 0.2F;
         this.fireResistance = 100;
@@ -114,26 +114,26 @@ public class Beaver extends EntityAnimal {
             }
         }
 
-        for (int var12 = -dx; var12 <= dx; var12++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dz; j <= dz; j++) {
-                Block bidx = this.worldObj.getBlock(x + var12, y + dy, z + j);
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
                 if (this.isWood(bidx)) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y + dy;
                         this.tz = z + j;
                         found++;
                     }
                 }
 
-                bidx = this.worldObj.getBlock(x + var12, y - dy, z + j);
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
                 if (this.isWood(bidx)) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y - dy;
                         this.tz = z + j;
                         found++;
@@ -142,26 +142,26 @@ public class Beaver extends EntityAnimal {
             }
         }
 
-        for (int var13 = -dx; var13 <= dx; var13++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dy; j <= dy; j++) {
-                Block bidxx = this.worldObj.getBlock(x + var13, y + j, z + dz);
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
                 if (this.isWood(bidxx)) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z + dz;
                         found++;
                     }
                 }
 
-                bidxx = this.worldObj.getBlock(x + var13, y + j, z - dz);
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
                 if (this.isWood(bidxx)) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z - dz;
                         found++;
@@ -173,41 +173,40 @@ public class Beaver extends EntityAnimal {
         return found != 0;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
             this.posY + 4.0 + this.worldObj.rand.nextInt(4),
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
     public void breakRecursor(World world, int x, int y, int z, int xf, int yf, int zf, int recursion) {
-        int var7x = 1;
+        int n = 1;
         if (recursion <= 200) {
-            for (int var9 = -var7x; var9 <= var7x; var9++) {
-                for (int var10 = -var7x; var10 <= var7x; var10++) {
-                    for (int var11 = -var7x; var11 <= var7x; var11++) {
-                        if ((var9 != 0 || var10 != 0 || var11 != 0)
-                            && (x + var9 != xf || y + var10 != yf || z + var11 != zf)
-                            && (recursion <= 0 || x + var9 < xf - var7x
-                                || x + var9 > xf + var7x
-                                || y + var10 < yf - var7x
-                                || y + var10 > yf + var7x
-                                || z + var11 < zf - var7x
-                                || z + var11 > zf + var7x)) {
-                            Block var12 = world.getBlock(x + var9, y + var10, z + var11);
-                            if (this.isWood(var12)) {
-                                world.setBlock(x + var9, y + var10, z + var11, Blocks.air, 0, 2);
-                                this.dropItemRand(Item.getItemFromBlock(var12), 1);
-                                this.breakRecursor(world, x + var9, y + var10, z + var11, x, y, z, recursion + 1);
+            for (int i = -n; i <= n; i++) {
+                for (int j = -n; j <= n; j++) {
+                    for (int k = -n; k <= n; k++) {
+                        if ((i != 0 || j != 0 || k != 0) && (x + i != xf || y + j != yf || z + k != zf)
+                            && (recursion <= 0 || x + i < xf - n
+                                || x + i > xf + n
+                                || y + j < yf - n
+                                || y + j > yf + n
+                                || z + k < zf - n
+                                || z + k > zf + n)) {
+                            Block block = world.getBlock(x + i, y + j, z + k);
+                            if (this.isWood(block)) {
+                                world.setBlock(x + i, y + j, z + k, Blocks.air, 0, 2);
+                                this.dropItemRand(Item.getItemFromBlock(block), 1);
+                                this.breakRecursor(world, x + i, y + j, z + k, x, y, z, recursion + 1);
                             }
                         }
                     }
@@ -242,7 +241,7 @@ public class Beaver extends EntityAnimal {
                     }
                 }
 
-                int var4 = 0;
+                int recursion = 0;
                 if (this.closest < 99999) {
                     this.getNavigator()
                         .tryMoveToXYZ(this.tx, this.ty, this.tz, 1.0);
@@ -258,7 +257,7 @@ public class Beaver extends EntityAnimal {
                                 this.tx,
                                 this.ty,
                                 this.tz,
-                                var4);
+                                recursion);
                         }
 
                         this.heal(1.0F);
@@ -280,14 +279,14 @@ public class Beaver extends EntityAnimal {
     }
 
     private Beaver findBuddy() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(Beaver.class, this.boundingBox.expand(16.0, 6.0, 16.0));
-        Collections.sort(var5, this.TargetSorter);
-        Iterator var2 = var5.iterator();
-        Entity var3 = null;
-        Beaver var4 = null;
-        if (var2.hasNext()) {
-            var3 = (Entity) var2.next();
-            return (Beaver) var3;
+        List entities = this.worldObj.getEntitiesWithinAABB(Beaver.class, this.boundingBox.expand(16.0, 6.0, 16.0));
+        Collections.sort(entities, this.TargetSorter);
+        Iterator iterator = entities.iterator();
+        Entity entity = null;
+        Beaver beaver = null;
+        if (iterator.hasNext()) {
+            entity = (Entity) iterator.next();
+            return (Beaver) entity;
         } else {
             return null;
         }
@@ -353,15 +352,15 @@ public class Beaver extends EntityAnimal {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public Beaver spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public Beaver spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new Beaver(this.worldObj);
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.apple;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.apple;
     }
 
-    public boolean isBreedingItem(ItemStack par1ItemStack) {
-        return par1ItemStack.getItem() == OreSpawnMain.MyCrystalApple;
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
     }
 }

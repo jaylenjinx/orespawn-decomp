@@ -16,36 +16,36 @@ public class RenderSpinner extends Render {
     public int spinItemIconIndex = 160;
     private static final ResourceLocation texture = new ResourceLocation("orespawn", "spinners.png");
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
         this.bindTexture(texture);
         GL11.glPushMatrix();
-        GL11.glTranslatef((float) par2, (float) par4, (float) par6);
+        GL11.glTranslatef((float) x, (float) y, (float) z);
         GL11.glEnable(32826);
         GL11.glScalef(0.5F, 0.5F, 0.5F);
-        Tessellator var10 = Tessellator.instance;
-        this.func_77026_a(var10, this.spinItemIconIndex, par1Entity.rotationPitch);
+        Tessellator tessellator = Tessellator.instance;
+        this.func_77026_a(tessellator, this.spinItemIconIndex, entity.rotationPitch);
         GL11.glDisable(32826);
         GL11.glPopMatrix();
     }
 
-    private void func_77026_a(Tessellator par1Tessellator, int par2, float par3) {
-        float var3x = (par2 % 16 * 16 + 0) / 256.0F;
-        float var4 = (par2 % 16 * 16 + 16) / 256.0F;
-        float var5 = (par2 / 16 * 16 + 0) / 256.0F;
-        float var6 = (par2 / 16 * 16 + 16) / 256.0F;
-        float var7 = 1.0F;
-        float var8 = 0.5F;
-        float var9 = 0.25F;
+    private void func_77026_a(Tessellator tessellator, int n, float angle) {
+        float f = (n % 16 * 16 + 0) / 256.0F;
+        float f2 = (n % 16 * 16 + 16) / 256.0F;
+        float f3 = (n / 16 * 16 + 0) / 256.0F;
+        float f4 = (n / 16 * 16 + 16) / 256.0F;
+        float f5 = 1.0F;
+        float f6 = 0.5F;
+        float f7 = 0.25F;
         GL11.glRotatef(180.0F - this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-        GL11.glRotatef(par3, 0.0F, 0.0F, 1.0F);
-        par1Tessellator.startDrawingQuads();
-        par1Tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        par1Tessellator.addVertexWithUV(0.0F - var8, 0.0F - var9, 0.0, var3x, var6);
-        par1Tessellator.addVertexWithUV(var7 - var8, 0.0F - var9, 0.0, var4, var6);
-        par1Tessellator.addVertexWithUV(var7 - var8, var7 - var9, 0.0, var4, var5);
-        par1Tessellator.addVertexWithUV(0.0F - var8, var7 - var9, 0.0, var3x, var5);
-        par1Tessellator.draw();
+        GL11.glRotatef(angle, 0.0F, 0.0F, 1.0F);
+        tessellator.startDrawingQuads();
+        tessellator.setNormal(0.0F, 1.0F, 0.0F);
+        tessellator.addVertexWithUV(0.0F - f6, 0.0F - f7, 0.0, f, f4);
+        tessellator.addVertexWithUV(f5 - f6, 0.0F - f7, 0.0, f2, f4);
+        tessellator.addVertexWithUV(f5 - f6, f5 - f7, 0.0, f2, f3);
+        tessellator.addVertexWithUV(0.0F - f6, f5 - f7, 0.0, f, f3);
+        tessellator.draw();
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

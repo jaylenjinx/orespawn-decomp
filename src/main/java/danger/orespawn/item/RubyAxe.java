@@ -13,14 +13,14 @@ public class RubyAxe extends ItemAxe {
 
     private int weaponDamage = 12;
 
-    public RubyAxe(int par1, ToolMaterial par2) {
-        super(par2);
+    public RubyAxe(int n, ToolMaterial toolMaterial) {
+        super(toolMaterial);
         this.maxStackSize = 1;
         this.setMaxDamage(1500);
         this.setCreativeTab(CreativeTabs.tabTools);
     }
 
-    public int getDamageVsEntity(Entity par1Entity) {
+    public int getDamageVsEntity(Entity entity) {
         return this.weaponDamage;
     }
 

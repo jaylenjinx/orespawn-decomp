@@ -27,39 +27,36 @@ public class CritterCage extends Item {
         this.setCreativeTab(CreativeTabs.tabMisc);
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         CritterCage cc = (CritterCage) OreSpawnMain.CageEmpty;
         if (this.cage_id == cc.cage_id) {
-            if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                par1ItemStack.stackSize--;
+            if (!player.capabilities.isCreativeMode) {
+                stack.stackSize--;
             }
 
-            par2World
-                .playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-            if (!par2World.isRemote) {
-                par2World.spawnEntityInWorld(new EntityCage(par2World, par3EntityPlayer, this.cage_id));
+            world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+            if (!world.isRemote) {
+                world.spawnEntityInWorld(new EntityCage(world, player, this.cage_id));
             }
         }
 
-        return par1ItemStack;
+        return stack;
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4,
-        int par5, int par6, int par7, float par8, float par9, float par10) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+        float hitX, float hitY, float hitZ) {
         CritterCage cc = (CritterCage) OreSpawnMain.CageEmpty;
         if (this.cage_id == cc.cage_id) {
             return false;
         } else {
-            for (int var3x = 0; var3x < 6; var3x++) {
-                par2EntityPlayer.worldObj.spawnParticle("smoke", par4 + 0.5F, par5 + 1.25F, par6 + 0.5F, 0.0, 0.0, 0.0);
-                par2EntityPlayer.worldObj
-                    .spawnParticle("explode", par4 + 0.5F, par5 + 1.25F, par6 + 0.5F, 0.0, 0.0, 0.0);
-                par2EntityPlayer.worldObj
-                    .spawnParticle("reddust", par4 + 0.5F, par5 + 1.25F, par6 + 0.5F, 0.0, 0.0, 0.0);
+            for (int i = 0; i < 6; i++) {
+                player.worldObj.spawnParticle("smoke", x + 0.5F, y + 1.25F, z + 0.5F, 0.0, 0.0, 0.0);
+                player.worldObj.spawnParticle("explode", x + 0.5F, y + 1.25F, z + 0.5F, 0.0, 0.0, 0.0);
+                player.worldObj.spawnParticle("reddust", x + 0.5F, y + 1.25F, z + 0.5F, 0.0, 0.0, 0.0);
             }
 
-            par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer, "random.explode", 1.0F, 1.5F);
-            if (par3World.isRemote) {
+            player.worldObj.playSoundAtEntity(player, "random.explode", 1.0F, 1.5F);
+            if (world.isRemote) {
                 return true;
             } else {
                 int entityID = 0;
@@ -532,7 +529,7 @@ public class CritterCage extends Item {
                     return false;
                 } else {
                     Entity ent = null;
-                    ent = spawnCreature(par3World, entityID, name, par4 + 0.5, par5 + 1.1, par6 + 0.5);
+                    ent = spawnCreature(world, entityID, name, x + 0.5, y + 1.1, z + 0.5);
                     if (ent != null) {
                         ent.dropItem(OreSpawnMain.CageEmpty, 1);
                         if (entityID == 51 && skelly_type != 0) {
@@ -540,13 +537,13 @@ public class CritterCage extends Item {
                             sk.setSkeletonType(skelly_type);
                         }
 
-                        if (ent instanceof EntityLiving && par1ItemStack.hasDisplayName()) {
-                            ((EntityLiving) ent).setCustomNameTag(par1ItemStack.getDisplayName());
+                        if (ent instanceof EntityLiving && stack.hasDisplayName()) {
+                            ((EntityLiving) ent).setCustomNameTag(stack.getDisplayName());
                         }
                     }
 
-                    if (!par2EntityPlayer.capabilities.isCreativeMode) {
-                        par1ItemStack.stackSize--;
+                    if (!player.capabilities.isCreativeMode) {
+                        stack.stackSize--;
                     }
 
                     return true;
@@ -555,26 +552,26 @@ public class CritterCage extends Item {
         }
     }
 
-    public static Entity spawnCreature(World par0World, int par1, String name, double par2, double par4, double par6) {
-        Entity var8 = null;
+    public static Entity spawnCreature(World world, int n, String name, double x, double y, double z) {
+        Entity entity = null;
         if (name == null) {
-            var8 = EntityList.createEntityByID(par1, par0World);
+            entity = EntityList.createEntityByID(n, world);
         } else {
-            var8 = EntityList.createEntityByName(name, par0World);
+            entity = EntityList.createEntityByName(name, world);
         }
 
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            if ((par1 == 100 || par1 == 120) && var8 instanceof EntityLiving) {
-                EntityLiving sk = (EntityLiving) var8;
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            if ((n == 100 || n == 120) && entity instanceof EntityLiving) {
+                EntityLiving sk = (EntityLiving) entity;
                 sk.onSpawnWithEgg((IEntityLivingData) null);
             }
 
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
     @SideOnly(Side.CLIENT)

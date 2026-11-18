@@ -9741,28 +9741,28 @@ public class OreSpawnMain {
         return pointedAt;
     }
 
-    public static boolean setBlockFast(World world, int par1, int par2, int par3, Block par4, int par5, int par6) {
-        if (par1 < -30000000 || par3 < -30000000 || par1 >= 30000000 || par3 >= 30000000) {
+    public static boolean setBlockFast(World world, int x, int y, int z, Block block, int n, int n2) {
+        if (x < -30000000 || z < -30000000 || x >= 30000000 || z >= 30000000) {
             return false;
-        } else if (par2 < 0) {
+        } else if (y < 0) {
             return false;
-        } else if (par2 >= 256) {
+        } else if (y >= 256) {
             return false;
         } else {
-            Chunk chunk = world.getChunkFromChunkCoords(par1 >> 4, par3 >> 4);
+            Chunk chunk = world.getChunkFromChunkCoords(x >> 4, z >> 4);
             Block k1 = Blocks.air;
-            if ((par6 & 1) != 0) {
-                k1 = chunk.getBlock(par1 & 15, par2, par3 & 15);
+            if ((n2 & 1) != 0) {
+                k1 = chunk.getBlock(x & 15, y, z & 15);
             }
 
-            boolean flag = setBlockIDWithMetadataFast(chunk, par1 & 15, par2, par3 & 15, par4, par5);
+            boolean flag = setBlockIDWithMetadataFast(chunk, x & 15, y, z & 15, block, n);
             if (flag) {
-                if ((par6 & 2) != 0 && (!world.isRemote || (par6 & 4) == 0)) {
-                    world.markBlockForUpdate(par1, par2, par3);
+                if ((n2 & 2) != 0 && (!world.isRemote || (n2 & 4) == 0)) {
+                    world.markBlockForUpdate(x, y, z);
                 }
 
-                if (!world.isRemote && (par6 & 1) != 0) {
-                    world.notifyBlockChange(par1, par2, par3, k1);
+                if (!world.isRemote && (n2 & 1) != 0) {
+                    world.notifyBlockChange(x, y, z, k1);
                 }
             }
 
@@ -9770,105 +9770,104 @@ public class OreSpawnMain {
         }
     }
 
-    public static boolean setBlockSuperFast(World world, int par1, int par2, int par3, Block par4, int par5, int par6,
+    public static boolean setBlockSuperFast(World world, int x, int y, int z, Block block, int n, int n2,
         Chunk refChunk) {
-        if (par1 < -30000000 || par3 < -30000000 || par1 >= 30000000 || par3 >= 30000000) {
+        if (x < -30000000 || z < -30000000 || x >= 30000000 || z >= 30000000) {
             return false;
-        } else if (par2 < 0) {
+        } else if (y < 0) {
             return false;
-        } else if (par2 >= 256) {
+        } else if (y >= 256) {
             return false;
         } else {
-            Chunk chunk = world.getChunkFromChunkCoords(par1 >> 4, par3 >> 4);
+            Chunk chunk = world.getChunkFromChunkCoords(x >> 4, z >> 4);
             boolean flag = true;
             if (chunk != refChunk) {
                 Block k1 = Blocks.air;
-                if ((par6 & 1) != 0) {
-                    k1 = chunk.getBlock(par1 & 15, par2, par3 & 15);
+                if ((n2 & 1) != 0) {
+                    k1 = chunk.getBlock(x & 15, y, z & 15);
                 }
 
-                flag = setBlockIDWithMetadataFast(chunk, par1 & 15, par2, par3 & 15, par4, par5);
+                flag = setBlockIDWithMetadataFast(chunk, x & 15, y, z & 15, block, n);
                 if (flag) {
-                    if ((par6 & 2) != 0 && (!world.isRemote || (par6 & 4) == 0)) {
-                        world.markBlockForUpdate(par1, par2, par3);
+                    if ((n2 & 2) != 0 && (!world.isRemote || (n2 & 4) == 0)) {
+                        world.markBlockForUpdate(x, y, z);
                     }
 
-                    if (!world.isRemote && (par6 & 1) != 0) {
-                        world.notifyBlockChange(par1, par2, par3, k1);
+                    if (!world.isRemote && (n2 & 1) != 0) {
+                        world.notifyBlockChange(x, y, z, k1);
                     }
                 }
             } else {
-                setBlockIDWithMetadataFast(chunk, par1 & 15, par2, par3 & 15, par4, par5);
+                setBlockIDWithMetadataFast(chunk, x & 15, y, z & 15, block, n);
             }
 
             return flag;
         }
     }
 
-    public static boolean setBlockIDWithMetadataFast(Chunk chunk, int par1, int par2, int par3, Block par4, int par5) {
-        if (par1 < -30000000 || par3 < -30000000 || par1 >= 30000000 || par3 >= 30000000) {
+    public static boolean setBlockIDWithMetadataFast(Chunk chunk, int n, int n2, int n3, Block block, int n4) {
+        if (n < -30000000 || n3 < -30000000 || n >= 30000000 || n3 >= 30000000) {
             return false;
-        } else if (par2 >= 0 && par2 <= 255) {
+        } else if (n2 >= 0 && n2 <= 255) {
             ExtendedBlockStorage[] mystorage = chunk.getBlockStorageArray();
-            ExtendedBlockStorage extendedblockstorage = mystorage[par2 >> 4];
+            ExtendedBlockStorage extendedblockstorage = mystorage[n2 >> 4];
             if (extendedblockstorage == null) {
-                if (par4 == Blocks.air) {
+                if (block == Blocks.air) {
                     return false;
                 }
 
-                extendedblockstorage = mystorage[par2 >> 4] = new ExtendedBlockStorage(
-                    par2 >> 4 << 4,
+                extendedblockstorage = mystorage[n2 >> 4] = new ExtendedBlockStorage(
+                    n2 >> 4 << 4,
                     !chunk.worldObj.provider.hasNoSky);
                 chunk.setStorageArrays(mystorage);
             }
 
-            extendedblockstorage.func_150818_a(par1, par2 & 15, par3, par4);
-            extendedblockstorage.setExtBlockMetadata(par1, par2 & 15, par3, par5);
+            extendedblockstorage.func_150818_a(n, n2 & 15, n3, block);
+            extendedblockstorage.setExtBlockMetadata(n, n2 & 15, n3, n4);
             return true;
         } else {
             return false;
         }
     }
 
-    public static Block getBlockIDInChunk(Chunk chunk, int par1, int par2, int par3) {
-        if (par1 >= -30000000 && par3 >= -30000000 && par1 < 30000000 && par3 < 30000000) {
-            if (par1 >> 4 != chunk.xPosition) {
+    public static Block getBlockIDInChunk(Chunk chunk, int n, int y, int n2) {
+        if (n >= -30000000 && n2 >= -30000000 && n < 30000000 && n2 < 30000000) {
+            if (n >> 4 != chunk.xPosition) {
                 return Blocks.air;
-            } else if (par3 >> 4 != chunk.zPosition) {
+            } else if (n2 >> 4 != chunk.zPosition) {
                 return Blocks.air;
             } else {
-                return par2 >= 0 && par2 <= 255 ? chunk.getBlock(par1 & 15, par2, par3 & 15) : Blocks.air;
+                return y >= 0 && y <= 255 ? chunk.getBlock(n & 15, y, n2 & 15) : Blocks.air;
             }
         } else {
             return Blocks.air;
         }
     }
 
-    public static boolean setBlockIDWithMetadataInChunk(Chunk chunk, int par1, int par2, int par3, Block par4,
-        int par5) {
-        if (par1 >= -30000000 && par3 >= -30000000 && par1 < 30000000 && par3 < 30000000) {
-            if (par1 >> 4 != chunk.xPosition) {
+    public static boolean setBlockIDWithMetadataInChunk(Chunk chunk, int n, int n2, int n3, Block block, int n4) {
+        if (n >= -30000000 && n3 >= -30000000 && n < 30000000 && n3 < 30000000) {
+            if (n >> 4 != chunk.xPosition) {
                 return false;
-            } else if (par3 >> 4 != chunk.zPosition) {
+            } else if (n3 >> 4 != chunk.zPosition) {
                 return false;
-            } else if (par2 >= 0 && par2 <= 255) {
+            } else if (n2 >= 0 && n2 <= 255) {
                 ExtendedBlockStorage[] mystorage = chunk.getBlockStorageArray();
-                ExtendedBlockStorage extendedblockstorage = mystorage[par2 >> 4];
-                par1 &= 15;
-                par3 &= 15;
+                ExtendedBlockStorage extendedblockstorage = mystorage[n2 >> 4];
+                n &= 15;
+                n3 &= 15;
                 if (extendedblockstorage == null) {
-                    if (par4 == Blocks.air || par4 == null) {
+                    if (block == Blocks.air || block == null) {
                         return false;
                     }
 
-                    extendedblockstorage = mystorage[par2 >> 4] = new ExtendedBlockStorage(
-                        par2 >> 4 << 4,
+                    extendedblockstorage = mystorage[n2 >> 4] = new ExtendedBlockStorage(
+                        n2 >> 4 << 4,
                         !chunk.worldObj.provider.hasNoSky);
                     chunk.setStorageArrays(mystorage);
                 }
 
-                extendedblockstorage.func_150818_a(par1, par2 & 15, par3, par4);
-                extendedblockstorage.setExtBlockMetadata(par1, par2 & 15, par3, par5);
+                extendedblockstorage.func_150818_a(n, n2 & 15, n3, block);
+                extendedblockstorage.setExtBlockMetadata(n, n2 & 15, n3, n4);
                 return true;
             } else {
                 return false;

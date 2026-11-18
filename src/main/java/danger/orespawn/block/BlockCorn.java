@@ -17,14 +17,14 @@ public class BlockCorn extends BlockReed {
 
     private int myMaxHeight = 0;
 
-    public BlockCorn(int par1) {
-        float var3 = 0.375F;
-        this.setBlockBounds(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, 1.0F, 0.5F + var3);
+    public BlockCorn(int n) {
+        float f = 0.375F;
+        this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, 1.0F, 0.5F + f);
         this.setTickRandomly(true);
     }
 
-    public boolean canPlaceBlockAt(World par1World, int par2, int par3, int par4) {
-        Block bid = par1World.getBlock(par2, par3 - 1, par4);
+    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+        Block bid = world.getBlock(x, y - 1, z);
         return bid == Blocks.air ? false
             : bid == OreSpawnMain.MyCornPlant1 || bid == OreSpawnMain.MyCornPlant2
                 || bid == OreSpawnMain.MyCornPlant3
@@ -34,22 +34,22 @@ public class BlockCorn extends BlockReed {
                 || bid == Blocks.farmland;
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
+    public void updateTick(World world, int x, int y, int z, Random rand) {
         int Height = 1;
         int dontGrow = 0;
-        if (!par1World.isRemote) {
+        if (!world.isRemote) {
             if (this == OreSpawnMain.MyCornPlant1 || this == OreSpawnMain.MyCornPlant2) {
-                int var7 = par1World.getBlockMetadata(par2, par3, par4);
-                this.myMaxHeight = var7 >> 8;
-                var7 &= 255;
+                int meta = world.getBlockMetadata(x, y, z);
+                this.myMaxHeight = meta >> 8;
+                meta &= 255;
                 if (this.myMaxHeight == 0) {
                     this.myMaxHeight = 4 + OreSpawnMain.OreSpawnRand.nextInt(4);
                 }
 
-                Block bid = par1World.getBlock(par2, par3 + 1, par4);
+                Block bid = world.getBlock(x, y + 1, z);
                 if (bid == Blocks.air) {
-                    for (int var6 = 1; var6 < 10; var6++) {
-                        bid = par1World.getBlock(par2, par3 - var6, par4);
+                    for (int i = 1; i < 10; i++) {
+                        bid = world.getBlock(x, y - i, z);
                         if (bid != OreSpawnMain.MyCornPlant1 && bid != OreSpawnMain.MyCornPlant2
                             && bid != OreSpawnMain.MyCornPlant3
                             && bid != OreSpawnMain.MyCornPlant4) {
@@ -66,55 +66,42 @@ public class BlockCorn extends BlockReed {
                         this.myMaxHeight = Height;
                     }
 
-                    if (var7 >= 6 - this.myMaxHeight / 3) {
+                    if (meta >= 6 - this.myMaxHeight / 3) {
                         if (Height < this.myMaxHeight) {
-                            par1World
-                                .setBlock(par2, par3 + 1, par4, OreSpawnMain.MyCornPlant1, this.myMaxHeight << 8, 2);
-                            par1World.setBlock(par2, par3, par4, OreSpawnMain.MyCornPlant2, this.myMaxHeight << 8, 2);
+                            world.setBlock(x, y + 1, z, OreSpawnMain.MyCornPlant1, this.myMaxHeight << 8, 2);
+                            world.setBlock(x, y, z, OreSpawnMain.MyCornPlant2, this.myMaxHeight << 8, 2);
                         } else {
                             for (int i = 1; i < this.myMaxHeight - 1; i++) {
-                                bid = par1World.getBlock(par2, par3 - i, par4);
+                                bid = world.getBlock(x, y - i, z);
                                 if (bid == OreSpawnMain.MyCornPlant2) {
-                                    par1World.setBlock(
-                                        par2,
-                                        par3 - i,
-                                        par4,
-                                        OreSpawnMain.MyCornPlant3,
-                                        this.myMaxHeight << 8,
-                                        2);
+                                    world.setBlock(x, y - i, z, OreSpawnMain.MyCornPlant3, this.myMaxHeight << 8, 2);
                                 } else if (bid == OreSpawnMain.MyCornPlant3) {
-                                    par1World.setBlock(
-                                        par2,
-                                        par3 - i,
-                                        par4,
-                                        OreSpawnMain.MyCornPlant4,
-                                        this.myMaxHeight << 8,
-                                        2);
+                                    world.setBlock(x, y - i, z, OreSpawnMain.MyCornPlant4, this.myMaxHeight << 8, 2);
                                 }
                             }
 
-                            bid = par1World.getBlock(par2, par3, par4);
-                            par1World.setBlock(par2, par3, par4, bid, this.myMaxHeight << 8, 2);
+                            bid = world.getBlock(x, y, z);
+                            world.setBlock(x, y, z, bid, this.myMaxHeight << 8, 2);
                         }
                     } else {
-                        bid = par1World.getBlock(par2, par3, par4);
-                        par1World.setBlock(par2, par3, par4, bid, this.myMaxHeight << 8 | var7 + 1, 2);
+                        bid = world.getBlock(x, y, z);
+                        world.setBlock(x, y, z, bid, this.myMaxHeight << 8 | meta + 1, 2);
                     }
                 }
             }
         }
     }
 
-    public Item getItemDropped(int par1, Random par2Random, int par3) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         return OreSpawnMain.MyCornCob;
     }
 
-    public Item getItem(int par1, Random par2Random, int par3) {
+    public Item getItem(int n, Random rand, int n2) {
         return OreSpawnMain.MyCornCob;
     }
 
-    public int quantityDropped(Random par1Random) {
-        return this == OreSpawnMain.MyCornPlant4 ? 1 + par1Random.nextInt(2) : 0;
+    public int quantityDropped(Random rand) {
+        return this == OreSpawnMain.MyCornPlant4 ? 1 + rand.nextInt(2) : 0;
     }
 
     @SideOnly(Side.CLIENT)

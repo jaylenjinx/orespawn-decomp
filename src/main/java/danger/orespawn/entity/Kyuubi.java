@@ -34,8 +34,8 @@ public class Kyuubi extends EntityMob {
     private GenericTargetSorter TargetSorter = null;
     private float moveSpeed = 0.25F;
 
-    public Kyuubi(World par1World) {
-        super(par1World);
+    public Kyuubi(World world) {
+        super(world);
         this.setSize(0.5F, 1.25F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -104,7 +104,7 @@ public class Kyuubi extends EntityMob {
         }
     }
 
-    public int getAttackStrength(Entity par1Entity) {
+    public int getAttackStrength(Entity entity) {
         return 3;
     }
 
@@ -141,7 +141,7 @@ public class Kyuubi extends EntityMob {
 
     public void initCreature() {}
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
@@ -160,13 +160,13 @@ public class Kyuubi extends EntityMob {
                         .tryMoveToEntityLiving(e, 1.25);
                     if (this.getDistanceSqToEntity(e) < 64.0
                         && (this.rand.nextInt(6) == 0 || this.rand.nextInt(8) == 1)) {
-                        EntitySmallFireball var2 = new EntitySmallFireball(
+                        EntitySmallFireball fireball = new EntitySmallFireball(
                             this.worldObj,
                             this,
                             e.posX - this.posX,
                             e.posY + 0.75 - (this.posY + 1.25),
                             e.posZ - this.posZ);
-                        var2.setLocationAndAngles(
+                        fireball.setLocationAndAngles(
                             this.posX,
                             this.posY + 1.25,
                             this.posZ,
@@ -178,32 +178,32 @@ public class Kyuubi extends EntityMob {
                             0.75F,
                             1.0F / (this.getRNG()
                                 .nextFloat() * 0.4F + 0.8F));
-                        this.worldObj.spawnEntityInWorld(var2);
+                        this.worldObj.spawnEntityInWorld(fireball);
                     }
                 }
             }
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityMob) {
+            } else if (target instanceof EntityMob) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityPigZombie) {
+            } else if (target instanceof EntityPigZombie) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -217,18 +217,18 @@ public class Kyuubi extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(12.0, 4.0, 12.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -240,26 +240,26 @@ public class Kyuubi extends EntityMob {
         return true;
     }
 
-    private void dropItemRand(Item index, int par1) {
-        EntityItem var3 = new EntityItem(
+    private void dropItemRand(Item index, int n) {
+        EntityItem entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
-            new ItemStack(index, par1, 0));
-        this.worldObj.spawnEntityInWorld(var3);
+            new ItemStack(index, n, 0));
+        this.worldObj.spawnEntityInWorld(entityItem);
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
-        for (int var4 = 0; var4 < 10; var4++) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        for (int i = 0; i < 10; i++) {
             this.dropItemRand(Items.coal, 1);
         }
 
-        for (int var41 = 0; var41 < 3; var41++) {
+        for (int i = 0; i < 3; i++) {
             this.dropItemRand(Item.getItemFromBlock(Blocks.redstone_block), 1);
         }
 
-        for (int var5 = 0; var5 < 4; var5++) {
+        for (int i = 0; i < 4; i++) {
             this.dropItemRand(Item.getItemFromBlock(Blocks.quartz_block), 1);
         }
     }

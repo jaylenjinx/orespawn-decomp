@@ -22,22 +22,21 @@ public class OreRuby extends Block {
         this.setCreativeTab(CreativeTabs.tabBlock);
     }
 
-    public void dropBlockAsItemWithChance(World par1World, int par2, int par3, int par4, int par5, float par6,
-        int par7) {
-        super.dropBlockAsItemWithChance(par1World, par2, par3, par4, par5, par6, par7);
-        int j1 = 5 + par1World.rand.nextInt(5) + par1World.rand.nextInt(5);
-        this.dropXpOnBlockBreak(par1World, par2, par3, par4, j1);
+    public void dropBlockAsItemWithChance(World world, int x, int y, int z, int meta, float chance, int fortune) {
+        super.dropBlockAsItemWithChance(world, x, y, z, meta, chance, fortune);
+        int j1 = 5 + world.rand.nextInt(5) + world.rand.nextInt(5);
+        this.dropXpOnBlockBreak(world, x, y, z, j1);
     }
 
-    public Item getItemDropped(int par1, Random par2Random, int par3) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         return OreSpawnMain.MyRuby;
     }
 
-    public int quantityDroppedWithBonus(int par1, Random par2Random) {
-        return 1 + par2Random.nextInt(2);
+    public int quantityDroppedWithBonus(int fortune, Random rand) {
+        return 1 + rand.nextInt(2);
     }
 
-    public int quantityDropped(Random par1Random) {
+    public int quantityDropped(Random rand) {
         return 1;
     }
 

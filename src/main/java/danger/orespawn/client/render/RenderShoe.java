@@ -7,12 +7,12 @@ import danger.orespawn.entity.projectile.Shoes;
 public class RenderShoe extends RenderSpinner {
 
     @Override
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        if (par1Entity instanceof Shoes) {
-            Shoes var2x = (Shoes) par1Entity;
-            this.spinItemIconIndex = var2x.getShoeId();
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        if (entity instanceof Shoes) {
+            Shoes shoes = (Shoes) entity;
+            this.spinItemIconIndex = shoes.getShoeId();
         }
 
-        super.doRender(par1Entity, par2, par4, par6, par8, par9);
+        super.doRender(entity, x, y, z, yaw, partialTicks);
     }
 }

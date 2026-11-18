@@ -18,17 +18,17 @@ public class CrystalWorkbenchGUI extends GuiContainer {
     private static final ResourceLocation craftingTableGuiTextures = new ResourceLocation(
         "textures/gui/container/crafting_table.png");
 
-    public CrystalWorkbenchGUI(InventoryPlayer par1InventoryPlayer, World par2World, int par3, int par4, int par5) {
-        super(new ContainerCrystalWorkbench(par1InventoryPlayer, par2World, par3, par4, par5));
+    public CrystalWorkbenchGUI(InventoryPlayer playerInventory, World world, int x, int y, int z) {
+        super(new ContainerCrystalWorkbench(playerInventory, world, x, y, z));
     }
 
-    protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         this.fontRendererObj.drawString(I18n.format("container.crafting", new Object[0]), 28, 6, 4210752);
         this.fontRendererObj
             .drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
     }
 
-    protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager()
             .bindTexture(craftingTableGuiTextures);

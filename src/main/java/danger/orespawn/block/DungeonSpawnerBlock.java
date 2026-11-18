@@ -14,28 +14,28 @@ import danger.orespawn.OreSpawnMain;
 
 public class DungeonSpawnerBlock extends BlockReed {
 
-    public DungeonSpawnerBlock(int par1) {
-        float var3 = 0.375F;
-        this.setBlockBounds(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, 1.0F, 0.5F + var3);
+    public DungeonSpawnerBlock(int n) {
+        float f = 0.375F;
+        this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, 1.0F, 0.5F + f);
         this.setTickRandomly(true);
     }
 
-    public boolean canPlaceBlockAt(World par1World, int par2, int par3, int par4) {
-        return par1World.getBlock(par2, par3 - 1, par4)
+    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+        return world.getBlock(x, y - 1, z)
             .getMaterial()
             .isSolid();
     }
 
-    public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random par5Random) {
+    public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
         for (int j1 = 0; j1 < 5; j1++) {
-            par1World.spawnParticle(
+            world.spawnParticle(
                 "fireworksSpark",
-                par2 + par1World.rand.nextFloat(),
-                (double) par3 + par1World.rand.nextFloat(),
-                par4 + par1World.rand.nextFloat(),
-                (par1World.rand.nextFloat() - par1World.rand.nextFloat()) / 4.0,
-                par1World.rand.nextFloat() / 2.0,
-                (par1World.rand.nextFloat() - par1World.rand.nextFloat()) / 4.0);
+                x + world.rand.nextFloat(),
+                (double) y + world.rand.nextFloat(),
+                z + world.rand.nextFloat(),
+                (world.rand.nextFloat() - world.rand.nextFloat()) / 4.0,
+                world.rand.nextFloat() / 2.0,
+                (world.rand.nextFloat() - world.rand.nextFloat()) / 4.0);
         }
     }
 
@@ -45,11 +45,11 @@ public class DungeonSpawnerBlock extends BlockReed {
         }
     }
 
-    public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {
-        super.onBlockDestroyedByPlayer(par1World, par2, par3, par4, par5);
+    public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta) {
+        super.onBlockDestroyedByPlayer(world, x, y, z, meta);
     }
 
-    public void updateTick(World world, int clickedX, int clickedY, int clickedZ, Random par5Random) {
+    public void updateTick(World world, int clickedX, int clickedY, int clickedZ, Random rand) {
         if (!world.isRemote) {
             world.setBlock(clickedX, clickedY, clickedZ, Blocks.air, 0, 2);
             world.setBlock(clickedX, clickedY + 1, clickedZ, Blocks.air, 0, 2);
@@ -257,19 +257,19 @@ public class DungeonSpawnerBlock extends BlockReed {
     }
 
     @SideOnly(Side.CLIENT)
-    public Item getItem(World p_149694_1_, int p_149694_2_, int p_149694_3_, int p_149694_4_) {
+    public Item getItem(World world, int x, int y, int z) {
         return OreSpawnMain.RandomDungeon;
     }
 
-    public Item getItemDropped(int par1, Random par2Random, int par3) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         return OreSpawnMain.RandomDungeon;
     }
 
-    public int quantityDropped(Random par1Random) {
+    public int quantityDropped(Random rand) {
         return 1;
     }
 
-    public boolean canBlockStay(World par1World, int par2, int par3, int par4) {
+    public boolean canBlockStay(World world, int x, int y, int z) {
         return true;
     }
 

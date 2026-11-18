@@ -28,10 +28,10 @@ public class IslandToo extends EntityAnimal {
     private int dirchange = 0;
     private int blocktype = 0;
 
-    public IslandToo(World par1World) {
-        super(par1World);
+    public IslandToo(World world) {
+        super(world);
         this.setSize(0.5F, 0.5F);
-        this.ticker = par1World.rand.nextInt(50);
+        this.ticker = world.rand.nextInt(50);
         this.dirchange = this.worldObj.rand.nextInt(5000);
     }
 
@@ -98,46 +98,46 @@ public class IslandToo extends EntityAnimal {
 
     protected void updateAITasks() {}
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
     protected boolean canDespawn() {
         return false;
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.just_spawned = par1NBTTagCompound.getInteger("JustSpawned");
-        this.width = par1NBTTagCompound.getInteger("Iwidth");
-        this.depth = par1NBTTagCompound.getInteger("Idepth");
-        this.length = par1NBTTagCompound.getInteger("Ilength");
-        this.speed = par1NBTTagCompound.getFloat("Ispeed");
-        this.dir = par1NBTTagCompound.getInteger("Idir");
-        this.blocktype = par1NBTTagCompound.getInteger("Iblocktype");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.just_spawned = tag.getInteger("JustSpawned");
+        this.width = tag.getInteger("Iwidth");
+        this.depth = tag.getInteger("Idepth");
+        this.length = tag.getInteger("Ilength");
+        this.speed = tag.getFloat("Ispeed");
+        this.dir = tag.getInteger("Idir");
+        this.blocktype = tag.getInteger("Iblocktype");
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("JustSpawned", this.just_spawned);
-        par1NBTTagCompound.setInteger("Iwidth", this.width);
-        par1NBTTagCompound.setInteger("Idepth", this.depth);
-        par1NBTTagCompound.setInteger("Ilength", this.length);
-        par1NBTTagCompound.setFloat("Ispeed", this.speed);
-        par1NBTTagCompound.setInteger("Idir", this.dir);
-        par1NBTTagCompound.setInteger("Iblocktype", this.blocktype);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("JustSpawned", this.just_spawned);
+        tag.setInteger("Iwidth", this.width);
+        tag.setInteger("Idepth", this.depth);
+        tag.setInteger("Ilength", this.length);
+        tag.setFloat("Ispeed", this.speed);
+        tag.setInteger("Idir", this.dir);
+        tag.setInteger("Iblocktype", this.blocktype);
     }
 
     public EntityAgeable createChild(EntityAgeable entityageable) {
         return null;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
         int xoff = 0;
         int zoff = 0;
         int ix = (int) this.posX;
         int iz = (int) this.posZ;
         if (ix < 0) {
-            boolean var8 = true;
+            boolean flag = true;
             this.posX = ix;
             this.posX -= 0.5;
         } else {
@@ -146,7 +146,7 @@ public class IslandToo extends EntityAnimal {
         }
 
         if (iz < 0) {
-            boolean var9 = true;
+            boolean flag = true;
             this.posZ = iz;
             this.posZ -= 0.5;
         } else {
@@ -154,7 +154,7 @@ public class IslandToo extends EntityAnimal {
             this.posZ += 0.5;
         }
 
-        super.attackEntityFrom(par1DamageSource, par2);
+        super.attackEntityFrom(source, amount);
         return ret;
     }
 
@@ -319,30 +319,30 @@ public class IslandToo extends EntityAnimal {
         int px = (int) this.posX;
         int pz = (int) this.posZ;
         if (mx != px || mz != pz) {
-            byte var26;
-            byte var28;
-            byte var30;
-            byte var32;
+            byte n;
+            byte n2;
+            byte n3;
+            byte n4;
             if (this.dir == 0) {
-                var30 = 1;
-                var32 = 1;
-                var26 = -1;
-                var28 = 1;
+                n3 = 1;
+                n4 = 1;
+                n = -1;
+                n2 = 1;
             } else if (this.dir == 1) {
-                var30 = -1;
-                var32 = -1;
-                var26 = -1;
-                var28 = 1;
+                n3 = -1;
+                n4 = -1;
+                n = -1;
+                n2 = 1;
             } else if (this.dir == 2) {
-                var30 = -1;
-                var32 = 1;
-                var26 = -1;
-                var28 = -1;
+                n3 = -1;
+                n4 = 1;
+                n = -1;
+                n2 = -1;
             } else {
-                var30 = -1;
-                var32 = 1;
-                var26 = 1;
-                var28 = 1;
+                n3 = -1;
+                n4 = 1;
+                n = 1;
+                n2 = 1;
             }
 
             if (this.posX < 0.0) {
@@ -359,8 +359,8 @@ public class IslandToo extends EntityAnimal {
                     il = 1;
                 }
 
-                for (int j = var30 * il; j <= var32 * il; j++) {
-                    for (int k = var26 * il; k <= var28 * il; k++) {
+                for (int j = n3 * il; j <= n4 * il; j++) {
+                    for (int k = n * il; k <= n2 * il; k++) {
                         int ix = (int) this.posX + k - xoff;
                         int iz = (int) this.posZ + j - zoff;
                         if (i == this.depth) {
@@ -414,76 +414,76 @@ public class IslandToo extends EntityAnimal {
             }
 
             if (this.dir == 0) {
-                var30 = -1;
-                var32 = -1;
-                var26 = -1;
-                var28 = 1;
+                n3 = -1;
+                n4 = -1;
+                n = -1;
+                n2 = 1;
             } else if (this.dir == 1) {
-                var30 = 1;
-                var32 = 1;
-                var26 = -1;
-                var28 = 1;
+                n3 = 1;
+                n4 = 1;
+                n = -1;
+                n2 = 1;
             } else if (this.dir == 2) {
-                var30 = -1;
-                var32 = 1;
-                var26 = 1;
-                var28 = 1;
+                n3 = -1;
+                n4 = 1;
+                n = 1;
+                n2 = 1;
             } else {
-                var30 = -1;
-                var32 = 1;
-                var26 = -1;
-                var28 = -1;
+                n3 = -1;
+                n4 = 1;
+                n = -1;
+                n2 = -1;
             }
 
-            int var38 = 0;
-            int var37 = 0;
+            int n5 = 0;
+            int n6 = 0;
             if (this.posX < 0.0) {
-                var37 = 1;
+                n6 = 1;
             }
 
             if (this.posZ < 0.0) {
-                var38 = 1;
+                n5 = 1;
             }
 
-            this.worldObj.setBlock((int) this.posX - var37, (int) this.posY, (int) this.posZ - var38, Blocks.air);
+            this.worldObj.setBlock((int) this.posX - n6, (int) this.posY, (int) this.posZ - n5, Blocks.air);
 
-            for (int var23 = 0; var23 <= this.depth; var23++) {
-                int il = this.length / (this.depth - var23 + 1);
+            for (int i = 0; i <= this.depth; i++) {
+                int il = this.length / (this.depth - i + 1);
                 if (il < 1) {
                     il = 1;
                 }
 
-                for (int j = var30 * il; j <= var32 * il; j++) {
-                    for (int k = var26 * il; k <= var28 * il; k++) {
-                        int ix = (int) this.posX + k - var37;
-                        int iz = (int) this.posZ + j - var38;
-                        if (var23 == this.depth) {
+                for (int j = n3 * il; j <= n4 * il; j++) {
+                    for (int k = n * il; k <= n2 * il; k++) {
+                        int ix = (int) this.posX + k - n6;
+                        int iz = (int) this.posZ + j - n5;
+                        if (i == this.depth) {
                             Block bidx;
-                            if ((bidx = this.worldObj.getBlock(ix, (int) this.posY + var23, iz)) == Blocks.air) {
+                            if ((bidx = this.worldObj.getBlock(ix, (int) this.posY + i, iz)) == Blocks.air) {
                                 if (this.worldObj.rand.nextInt(5000) == 1) {
-                                    this.worldObj.setBlock(ix, (int) this.posY + var23, iz, Blocks.water);
+                                    this.worldObj.setBlock(ix, (int) this.posY + i, iz, Blocks.water);
                                 } else {
-                                    this.FastSetBlock(ix, (int) this.posY + var23, iz, Blocks.grass);
+                                    this.FastSetBlock(ix, (int) this.posY + i, iz, Blocks.grass);
                                     if (this.worldObj.rand.nextInt(30) == 1) {
-                                        if (this.worldObj.getBlock(ix, (int) this.posY + var23 + 1, iz) == Blocks.air) {
+                                        if (this.worldObj.getBlock(ix, (int) this.posY + i + 1, iz) == Blocks.air) {
                                             if (this.worldObj.rand.nextInt(2) == 1) {
                                                 this.worldObj.setBlock(
                                                     ix,
-                                                    (int) this.posY + var23 + 1,
+                                                    (int) this.posY + i + 1,
                                                     iz,
                                                     OreSpawnMain.MyFlowerPinkBlock);
                                             } else {
                                                 this.worldObj.setBlock(
                                                     ix,
-                                                    (int) this.posY + var23 + 1,
+                                                    (int) this.posY + i + 1,
                                                     iz,
                                                     OreSpawnMain.MyFlowerBlueBlock);
                                             }
                                         }
                                     } else if (this.worldObj.rand.nextInt(100) == 1
-                                        && this.worldObj.getBlock(ix, (int) this.posY + var23 + 1, iz) == Blocks.air) {
+                                        && this.worldObj.getBlock(ix, (int) this.posY + i + 1, iz) == Blocks.air) {
                                             OreSpawnMain.OreSpawnTrees
-                                                .SmallTree(this.worldObj, ix, (int) this.posY + var23 + 1, iz);
+                                                .SmallTree(this.worldObj, ix, (int) this.posY + i + 1, iz);
                                         }
                                 }
                             } else if (bidx == Blocks.bedrock) {
@@ -491,20 +491,20 @@ public class IslandToo extends EntityAnimal {
                                 return;
                             }
                         } else {
-                            Block bidx = this.worldObj.getBlock(ix, (int) this.posY + var23, iz);
+                            Block bidx = this.worldObj.getBlock(ix, (int) this.posY + i, iz);
                             if (bidx == Blocks.end_stone) {
                                 if (!this.worldObj.isRemote) {
-                                    this.worldObj.createExplosion(this, ix, this.posY + var23, iz, 5.0F, true);
+                                    this.worldObj.createExplosion(this, ix, this.posY + i, iz, 5.0F, true);
                                 }
                             } else {
-                                this.mySetBlock(ix, (int) this.posY + var23, iz);
+                                this.mySetBlock(ix, (int) this.posY + i, iz);
                             }
                         }
                     }
                 }
             }
 
-            this.worldObj.setBlock((int) this.posX - var37, (int) this.posY, (int) this.posZ - var38, Blocks.air);
+            this.worldObj.setBlock((int) this.posX - n6, (int) this.posY, (int) this.posZ - n5, Blocks.air);
         }
     }
 

@@ -35,8 +35,8 @@ public class Triffid extends EntityMob {
     private int hurt_timer = 0;
     private float moveSpeed = 0.13F;
 
-    public Triffid(World par1World) {
-        super(par1World);
+    public Triffid(World world) {
+        super(world);
         this.setSize(2.0F, 4.0F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -104,14 +104,14 @@ public class Triffid extends EntityMob {
                 }
             }
 
-            for (int var7 = -5; var7 <= 5; var7++) {
-                Block bid = this.worldObj.getBlock((int) this.posX + var7, (int) this.posY - 1, (int) this.posZ);
+            for (int i = -5; i <= 5; i++) {
+                Block bid = this.worldObj.getBlock((int) this.posX + i, (int) this.posY - 1, (int) this.posZ);
                 if (bid != Blocks.air) {
-                    if (var7 < 0) {
+                    if (i < 0) {
                         ix--;
                     }
 
-                    if (var7 > 0) {
+                    if (i > 0) {
                         ix++;
                     }
                 }
@@ -196,26 +196,26 @@ public class Triffid extends EntityMob {
         return i == 0 ? Items.gold_nugget : null;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(3) - OreSpawnMain.OreSpawnRand.nextInt(3),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(3) - OreSpawnMain.OreSpawnRand.nextInt(3),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         int i = 4 + this.worldObj.rand.nextInt(6);
 
-        for (int var4 = 0; var4 < i; var4++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(OreSpawnMain.GreenGoo, 1);
         }
 
@@ -226,14 +226,14 @@ public class Triffid extends EntityMob {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        return super.attackEntityAsMob(par1Entity);
+    public boolean attackEntityAsMob(Entity target) {
+        return super.attackEntityAsMob(target);
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
         if (this.hurt_timer <= 0 && this.getOpenClosed() != 0) {
-            ret = super.attackEntityFrom(par1DamageSource, par2);
+            ret = super.attackEntityFrom(source, amount);
             this.hurt_timer = 300;
             this.setOpenClosed(0);
             this.setAttacking(0);
@@ -290,35 +290,35 @@ public class Triffid extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityCreeper) {
+            } else if (target instanceof EntityCreeper) {
                 return false;
-            } else if (par1EntityLiving instanceof EnderReaper) {
+            } else if (target instanceof EnderReaper) {
                 return false;
-            } else if (par1EntityLiving instanceof Triffid) {
+            } else if (target instanceof Triffid) {
                 return false;
-            } else if (par1EntityLiving instanceof TerribleTerror) {
+            } else if (target instanceof TerribleTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof LurkingTerror) {
+            } else if (target instanceof LurkingTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof PitchBlack) {
+            } else if (target instanceof PitchBlack) {
                 return false;
-            } else if (par1EntityLiving instanceof Dragon) {
+            } else if (target instanceof Dragon) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -332,18 +332,18 @@ public class Triffid extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(10.0, 8.0, 10.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -355,16 +355,16 @@ public class Triffid extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public final int getOpenClosed() {
         return this.dataWatcher.getWatchableObjectByte(21);
     }
 
-    public final void setOpenClosed(int par1) {
-        this.dataWatcher.updateObject(21, (byte) par1);
+    public final void setOpenClosed(int n) {
+        this.dataWatcher.updateObject(21, (byte) n);
     }
 
     public boolean getCanSpawnHere() {

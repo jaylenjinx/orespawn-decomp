@@ -59,7 +59,7 @@ public class ModelRotator extends ModelBase {
         newangle = 0.0F;
         GL11.glRotatef(ri.rf1, 0.0F, 1.0F, 0.0F);
 
-        for (int var15 = 0; var15 < 8; var15++) {
+        for (int i = 0; i < 8; i++) {
             this.Shape2.rotateAngleZ = newangle;
             this.Shape2.render(f5);
             newangle += (float) (Math.PI / 4);
@@ -69,7 +69,7 @@ public class ModelRotator extends ModelBase {
         newangle = 0.0F;
         GL11.glRotatef(ri.rf1, 0.0F, 0.0F, 1.0F);
 
-        for (int var16 = 0; var16 < 8; var16++) {
+        for (int i = 0; i < 8; i++) {
             this.Shape3.rotateAngleZ = newangle;
             this.Shape3.render(f5);
             newangle += (float) (Math.PI / 4);
@@ -90,8 +90,8 @@ public class ModelRotator extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6,
-        Entity par7Entity) {
-        super.setRotationAngles(par1, par2, par3, par4, par5, par6, par7Entity);
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
+        float headPitch, float scale, Entity entity) {
+        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
     }
 }

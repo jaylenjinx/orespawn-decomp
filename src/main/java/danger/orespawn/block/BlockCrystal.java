@@ -10,7 +10,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCrystal extends Block {
 
-    public BlockCrystal(int par1) {
+    public BlockCrystal(int n) {
         super(Material.rock);
         this.setHardness(4.0F);
         this.setResistance(4.0F);

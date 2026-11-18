@@ -22,54 +22,54 @@ public class BlockMothPlant extends BlockCrops {
     @SideOnly(Side.CLIENT)
     private IIcon[] field_94364_a;
 
-    public BlockMothPlant(int par1) {
+    public BlockMothPlant(int n) {
         this.setTickRandomly(true);
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        super.updateTick(par1World, par2, par3, par4, par5Random);
-        if (!par1World.isRemote) {
-            if (!par1World.isRaining()) {
-                int rate = par1World.getBlockMetadata(par2, par3, par4);
+    public void updateTick(World world, int x, int y, int z, Random rand) {
+        super.updateTick(world, x, y, z, rand);
+        if (!world.isRemote) {
+            if (!world.isRaining()) {
+                int rate = world.getBlockMetadata(x, y, z);
                 rate &= 7;
                 rate = 7 - rate;
                 if (rate <= 1 || OreSpawnMain.OreSpawnRand.nextInt(rate) == 0) {
-                    Block bid = par1World.getBlock(par2, par3 + 1, par4);
-                    if (bid == Blocks.air && !par1World.isDaytime() && OreSpawnMain.MothEnable != 0) {
-                        spawnCreature(par1World, "Moth", par2 + 0.5, par3 + 1.01, par4 + 0.5);
+                    Block bid = world.getBlock(x, y + 1, z);
+                    if (bid == Blocks.air && !world.isDaytime() && OreSpawnMain.MothEnable != 0) {
+                        spawnCreature(world, "Moth", x + 0.5, y + 1.01, z + 0.5);
                     }
                 }
             }
         }
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int par1, int par2) {
-        if (par2 < 7) {
-            if (par2 >= 6) {
-                par2 = 4;
+    public IIcon getIcon(int side, int meta) {
+        if (meta < 7) {
+            if (meta >= 6) {
+                meta = 4;
             }
 
-            return this.field_94364_a[par2 >> 1];
+            return this.field_94364_a[meta >> 1];
         } else {
             return this.field_94364_a[3];
         }
     }
 
-    public int quantityDropped(Random par1Random) {
-        return 1 + par1Random.nextInt(5);
+    public int quantityDropped(Random rand) {
+        return 1 + rand.nextInt(5);
     }
 
     protected Item func_149866_i() {
@@ -81,11 +81,11 @@ public class BlockMothPlant extends BlockCrops {
     }
 
     @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister par1IIconRegister) {
+    public void registerBlockIcons(IIconRegister iconRegister) {
         this.field_94364_a = new IIcon[4];
 
         for (int i = 0; i < this.field_94364_a.length; i++) {
-            this.field_94364_a[i] = par1IIconRegister.registerIcon("OreSpawn:moth_" + i);
+            this.field_94364_a[i] = iconRegister.registerIcon("OreSpawn:moth_" + i);
         }
     }
 }

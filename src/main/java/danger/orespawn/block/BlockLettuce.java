@@ -15,14 +15,14 @@ import danger.orespawn.OreSpawnMain;
 
 public class BlockLettuce extends BlockReed {
 
-    public BlockLettuce(int par1) {
-        float var3 = 0.375F;
-        this.setBlockBounds(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, 1.0F, 0.5F + var3);
+    public BlockLettuce(int n) {
+        float f = 0.375F;
+        this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, 1.0F, 0.5F + f);
         this.setTickRandomly(true);
     }
 
-    public boolean canPlaceBlockAt(World par1World, int par2, int par3, int par4) {
-        Block bid = par1World.getBlock(par2, par3 - 1, par4);
+    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+        Block bid = world.getBlock(x, y - 1, z);
         return bid == Blocks.air ? false
             : bid == OreSpawnMain.MyLettucePlant1 || bid == OreSpawnMain.MyLettucePlant2
                 || bid == OreSpawnMain.MyLettucePlant3
@@ -32,33 +32,33 @@ public class BlockLettuce extends BlockReed {
                 || bid == Blocks.farmland;
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
+    public void updateTick(World world, int x, int y, int z, Random rand) {
         int dontGrow = 0;
-        if (!par1World.isRemote) {
-            int var7 = par1World.getBlockMetadata(par2, par3, par4);
-            var7 &= 255;
-            if (var7 >= 4) {
-                Block bid = par1World.getBlock(par2, par3, par4);
+        if (!world.isRemote) {
+            int meta = world.getBlockMetadata(x, y, z);
+            meta &= 255;
+            if (meta >= 4) {
+                Block bid = world.getBlock(x, y, z);
                 if (bid == OreSpawnMain.MyLettucePlant1) {
-                    par1World.setBlock(par2, par3, par4, OreSpawnMain.MyLettucePlant2, 0, 2);
+                    world.setBlock(x, y, z, OreSpawnMain.MyLettucePlant2, 0, 2);
                 } else if (bid == OreSpawnMain.MyLettucePlant2) {
-                    par1World.setBlock(par2, par3, par4, OreSpawnMain.MyLettucePlant3, 0, 2);
+                    world.setBlock(x, y, z, OreSpawnMain.MyLettucePlant3, 0, 2);
                 } else if (bid == OreSpawnMain.MyLettucePlant3) {
-                    par1World.setBlock(par2, par3, par4, OreSpawnMain.MyLettucePlant4, 0, 2);
+                    world.setBlock(x, y, z, OreSpawnMain.MyLettucePlant4, 0, 2);
                 }
             } else {
-                Block bid = par1World.getBlock(par2, par3, par4);
-                par1World.setBlock(par2, par3, par4, bid, var7 + 1, 2);
+                Block bid = world.getBlock(x, y, z);
+                world.setBlock(x, y, z, bid, meta + 1, 2);
             }
         }
     }
 
-    public Item getItemDropped(int par1, Random par2Random, int par3) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         return OreSpawnMain.MyLettuce;
     }
 
-    public int quantityDropped(Random par1Random) {
-        return this == OreSpawnMain.MyLettucePlant4 ? 2 + par1Random.nextInt(3) : 0;
+    public int quantityDropped(Random rand) {
+        return this == OreSpawnMain.MyLettucePlant4 ? 2 + rand.nextInt(3) : 0;
     }
 
     @SideOnly(Side.CLIENT)

@@ -13,14 +13,14 @@ public class CrystalSword extends ItemSword {
 
     private final ToolMaterial toolMaterial;
 
-    public CrystalSword(int par1, ToolMaterial par2EnumToolMaterial) {
-        super(par2EnumToolMaterial);
-        this.toolMaterial = par2EnumToolMaterial;
+    public CrystalSword(int n, ToolMaterial enumToolMaterial) {
+        super(enumToolMaterial);
+        this.toolMaterial = enumToolMaterial;
         this.maxStackSize = 1;
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 300;
     }
 

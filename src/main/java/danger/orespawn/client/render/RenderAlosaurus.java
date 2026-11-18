@@ -17,31 +17,31 @@ public class RenderAlosaurus extends RenderLiving {
     private float scale = 1.0F;
     private static final ResourceLocation texture = new ResourceLocation("orespawn", "alosaurus.png");
 
-    public RenderAlosaurus(ModelAlosaurus par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderAlosaurus(ModelAlosaurus modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelAlosaurus) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderAlosaurus(Alosaurus par1EntityAlosaurus, double par2, double par4, double par6, float par8,
-        float par9) {
-        super.doRender(par1EntityAlosaurus, par2, par4, par6, par8, par9);
+    public void renderAlosaurus(Alosaurus entityAlosaurus, double x, double y, double z, float yaw,
+        float partialTicks) {
+        super.doRender(entityAlosaurus, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderAlosaurus((Alosaurus) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderAlosaurus((Alosaurus) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderAlosaurus((Alosaurus) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderAlosaurus((Alosaurus) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(Alosaurus par1Entity, float par2) {
+    protected void preRenderScale(Alosaurus entity, float f) {
         GL11.glScalef(this.scale, this.scale, this.scale);
     }
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
-        this.preRenderScale((Alosaurus) par1EntityLiving, par2);
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((Alosaurus) entity, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

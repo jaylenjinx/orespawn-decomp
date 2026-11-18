@@ -22,21 +22,21 @@ public class MoleDirtBlock extends Block {
         this.setTickRandomly(true);
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        if (!par1World.isRemote) {
-            par1World.setBlock(par2, par3, par4, Blocks.air, 0, 2);
+    public void updateTick(World world, int x, int y, int z, Random rand) {
+        if (!world.isRemote) {
+            world.setBlock(x, y, z, Blocks.air, 0, 2);
         }
     }
 
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
         float f = 0.125F;
-        return AxisAlignedBB.getBoundingBox(par2, par3, par4, par2 + 1, par3 + 1 - f, par4 + 1);
+        return AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 1 - f, z + 1);
     }
 
-    public void onEntityCollidedWithBlock(World par1World, int par2, int par3, int par4, Entity par5Entity) {
-        if (par5Entity != null) {
-            par5Entity.motionX *= 0.3;
-            par5Entity.motionZ *= 0.3;
+    public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
+        if (entity != null) {
+            entity.motionX *= 0.3;
+            entity.motionZ *= 0.3;
         }
     }
 

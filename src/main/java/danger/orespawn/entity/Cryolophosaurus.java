@@ -28,8 +28,8 @@ public class Cryolophosaurus extends EntityMob {
     private GenericTargetSorter TargetSorter = null;
     private float moveSpeed = 0.25F;
 
-    public Cryolophosaurus(World par1World) {
-        super(par1World);
+    public Cryolophosaurus(World world) {
+        super(world);
         this.setSize(0.75F, 0.75F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -118,7 +118,7 @@ public class Cryolophosaurus extends EntityMob {
 
     public void initCreature() {}
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
@@ -143,41 +143,41 @@ public class Cryolophosaurus extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof Alosaurus) {
+            } else if (target instanceof Alosaurus) {
                 return false;
-            } else if (par1EntityLiving instanceof TRex) {
+            } else if (target instanceof TRex) {
                 return false;
-            } else if (par1EntityLiving instanceof Cryolophosaurus) {
+            } else if (target instanceof Cryolophosaurus) {
                 return false;
-            } else if (par1EntityLiving instanceof Ghost) {
+            } else if (target instanceof Ghost) {
                 return false;
-            } else if (par1EntityLiving instanceof GhostSkelly) {
+            } else if (target instanceof GhostSkelly) {
                 return false;
-            } else if (par1EntityLiving instanceof CaveFisher) {
+            } else if (target instanceof CaveFisher) {
                 return false;
-            } else if (par1EntityLiving instanceof GammaMetroid) {
+            } else if (target instanceof GammaMetroid) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityButterfly) {
+            } else if (target instanceof EntityButterfly) {
                 return false;
-            } else if (par1EntityLiving instanceof Firefly) {
+            } else if (target instanceof Firefly) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityMosquito) {
+            } else if (target instanceof EntityMosquito) {
                 return false;
-            } else if (par1EntityLiving instanceof RockBase) {
+            } else if (target instanceof RockBase) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -191,18 +191,18 @@ public class Cryolophosaurus extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(9.0, 2.0, 9.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 

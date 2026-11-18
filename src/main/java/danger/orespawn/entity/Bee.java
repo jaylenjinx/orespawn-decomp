@@ -37,8 +37,8 @@ public class Bee extends EntityMob {
     private int lastZ = 0;
     private Entity rt = null;
 
-    public Bee(World par1World) {
-        super(par1World);
+    public Bee(World world) {
+        super(world);
         this.setSize(1.5F, 2.5F);
         this.getNavigator()
             .setAvoidsWater(false);
@@ -71,8 +71,8 @@ public class Bee extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     protected float getSoundVolume() {
@@ -99,7 +99,7 @@ public class Bee extends EntityMob {
         return true;
     }
 
-    protected void collideWithEntity(Entity par1Entity) {}
+    protected void collideWithEntity(Entity entity) {}
 
     public int mygetMaxHealth() {
         return OreSpawnMain.Bee_stats.health;
@@ -109,38 +109,38 @@ public class Bee extends EntityMob {
         return Item.getItemFromBlock(Blocks.yellow_flower);
     }
 
-    private void dropItemRand(Item index, int par1) {
-        EntityItem var3 = new EntityItem(
+    private void dropItemRand(Item index, int n) {
+        EntityItem entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
-            new ItemStack(index, par1, 0));
-        this.worldObj.spawnEntityInWorld(var3);
+            new ItemStack(index, n, 0));
+        this.worldObj.spawnEntityInWorld(entityItem);
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
-        int var4 = 2 + this.worldObj.rand.nextInt(10);
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int n = 2 + this.worldObj.rand.nextInt(10);
 
-        for (int i = 0; i < var4; i++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(Items.gold_nugget, 1);
         }
 
-        var4 = 2 + this.worldObj.rand.nextInt(10);
+        n = 2 + this.worldObj.rand.nextInt(10);
 
-        for (int var8 = 0; var8 < var4; var8++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(OreSpawnMain.MyButterCandy, 1);
         }
 
-        var4 = 2 + this.worldObj.rand.nextInt(10);
+        n = 2 + this.worldObj.rand.nextInt(10);
 
-        for (int var9 = 0; var9 < var4; var9++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(Item.getItemFromBlock(Blocks.yellow_flower), 1);
         }
 
-        var4 = 2 + this.worldObj.rand.nextInt(10);
+        n = 2 + this.worldObj.rand.nextInt(10);
 
-        for (int var10 = 0; var10 < var4; var10++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(Items.sugar, 1);
         }
     }
@@ -157,13 +157,13 @@ public class Bee extends EntityMob {
         }
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        boolean var4 = par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), OreSpawnMain.Bee_stats.attack);
-        if (this.worldObj.rand.nextInt(3) == 1 && par1Entity != null) {
-            ((EntityLivingBase) par1Entity).addPotionEffect(new PotionEffect(Potion.poison.id, 50, 0));
+    public boolean attackEntityAsMob(Entity target) {
+        boolean flag = target.attackEntityFrom(DamageSource.causeMobDamage(this), OreSpawnMain.Bee_stats.attack);
+        if (this.worldObj.rand.nextInt(3) == 1 && target != null) {
+            ((EntityLivingBase) target).addPotionEffect(new PotionEffect(Potion.poison.id, 50, 0));
         }
 
-        return var4;
+        return flag;
     }
 
     public boolean canSeeTarget(double pX, double pY, double pZ) {
@@ -246,16 +246,16 @@ public class Bee extends EntityMob {
                 }
             }
 
-            double var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.5 - this.motionX) * 0.30000000149011613;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.7F - this.motionY) * 0.20000000149011612;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.5 - this.motionZ) * 0.30000000149011613;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx = this.currentFlightTarget.posX + 0.5 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx) * 0.5 - this.motionX) * 0.30000000149011613;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.7F - this.motionY) * 0.20000000149011612;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.5 - this.motionZ) * 0.30000000149011613;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 1.0F;
-            this.rotationYaw += var8 / 4.0F;
+            this.rotationYaw += f2 / 4.0F;
         }
     }
 
@@ -263,17 +263,17 @@ public class Bee extends EntityMob {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean doesEntityNotTriggerPressurePlate() {
         return false;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
-        boolean ret = super.attackEntityFrom(par1DamageSource, par2);
-        Entity e = par1DamageSource.getEntity();
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        boolean ret = super.attackEntityFrom(source, amount);
+        Entity e = source.getEntity();
         if (e != null && e instanceof EntityLivingBase && this.currentFlightTarget != null) {
             this.rt = e;
             this.currentFlightTarget.set((int) e.posX, (int) e.posY, (int) e.posZ);
@@ -305,11 +305,11 @@ public class Bee extends EntityMob {
                 }
             }
 
-            for (int var10 = -1; var10 < 2; var10++) {
+            for (int i = -1; i < 2; i++) {
                 for (int j = -1; j < 2; j++) {
                     for (int ix = 1; ix < 5; ix++) {
                         Block bid = this.worldObj
-                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + var10);
+                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
                         if (bid != Blocks.air) {
                             return false;
                         }
@@ -327,25 +327,25 @@ public class Bee extends EntityMob {
 
     public void initCreature() {}
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving.isInWater()) {
+            } else if (target.isInWater()) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (target instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) target;
                 return !p.capabilities.isCreativeMode;
-            } else if (par1EntityLiving instanceof EntityVillager) {
+            } else if (target instanceof EntityVillager) {
                 return true;
             } else {
-                return par1EntityLiving instanceof Girlfriend ? true : par1EntityLiving instanceof Boyfriend;
+                return target instanceof Girlfriend ? true : target instanceof Boyfriend;
             }
     }
 
@@ -353,18 +353,18 @@ public class Bee extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(10.0, 6.0, 10.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 

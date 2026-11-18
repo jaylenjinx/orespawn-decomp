@@ -19,39 +19,39 @@ public class RenderButterfly extends RenderLiving {
     private float scale = 1.0F;
     private static final ResourceLocation texture = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
 
-    public RenderButterfly(ModelButterfly par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderButterfly(ModelButterfly modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelButterfly) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderButterfly(EntityButterfly par1EntityButterfly, double par2, double par4, double par6, float par8,
-        float par9) {
-        super.doRender(par1EntityButterfly, par2, par4, par6, par8, par9);
+    public void renderButterfly(EntityButterfly entityButterfly, double x, double y, double z, float yaw,
+        float partialTicks) {
+        super.doRender(entityButterfly, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderButterfly((EntityButterfly) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderButterfly((EntityButterfly) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderButterfly((EntityButterfly) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderButterfly((EntityButterfly) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(EntityButterfly par1Entity, float par2) {
+    protected void preRenderScale(EntityButterfly entity, float f) {
         GL11.glScalef(this.scale, this.scale, this.scale);
     }
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
-        this.preRenderScale((EntityButterfly) par1EntityLiving, par2);
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((EntityButterfly) entity, partialTicks);
     }
 
-    public int shouldRenderPass(EntityLivingBase par1EntityLiving, int par2, float par3) {
+    public int shouldRenderPass(EntityLivingBase entity, int pass, float partialTicks) {
         int doit = 0;
-        if (par1EntityLiving instanceof Mothra) {
+        if (entity instanceof Mothra) {
             doit++;
-        } else if (par1EntityLiving instanceof EntityLunaMoth) {
-            EntityLunaMoth e = (EntityLunaMoth) par1EntityLiving;
+        } else if (entity instanceof EntityLunaMoth) {
+            EntityLunaMoth e = (EntityLunaMoth) entity;
             if (e.moth_type == 0) {
                 doit++;
             }
@@ -59,25 +59,25 @@ public class RenderButterfly extends RenderLiving {
 
         if (doit != 0) {
             GL11.glDepthMask(true);
-            if (par2 == 1) {
-                float var4 = par1EntityLiving.ticksExisted + par3;
+            if (pass == 1) {
+                float f = entity.ticksExisted + partialTicks;
                 this.bindTexture(texture);
                 GL11.glMatrixMode(5890);
                 GL11.glLoadIdentity();
-                float var5 = var4 * 0.01F;
-                float var6 = var4 * 0.01F;
-                GL11.glTranslatef(var5, var6, 0.0F);
+                float x = f * 0.01F;
+                float y = f * 0.01F;
+                GL11.glTranslatef(x, y, 0.0F);
                 this.setRenderPassModel(this.model);
                 GL11.glMatrixMode(5888);
                 GL11.glEnable(3042);
-                float var7 = 0.5F;
-                GL11.glColor4f(var7, var7, var7, 1.0F);
+                float f2 = 0.5F;
+                GL11.glColor4f(f2, f2, f2, 1.0F);
                 GL11.glDisable(2896);
                 GL11.glBlendFunc(1, 1);
                 return 1;
             }
 
-            if (par2 == 2) {
+            if (pass == 2) {
                 GL11.glMatrixMode(5890);
                 GL11.glLoadIdentity();
                 GL11.glMatrixMode(5888);

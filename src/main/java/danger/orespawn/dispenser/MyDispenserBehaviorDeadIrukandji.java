@@ -9,7 +9,7 @@ import danger.orespawn.entity.projectile.DeadIrukandji;
 
 public final class MyDispenserBehaviorDeadIrukandji extends BehaviorProjectileDispense {
 
-    protected IProjectile getProjectileEntity(World par1World, IPosition par2IPosition) {
-        return new DeadIrukandji(par1World, par2IPosition.getX(), par2IPosition.getY(), par2IPosition.getZ());
+    protected IProjectile getProjectileEntity(World world, IPosition position) {
+        return new DeadIrukandji(world, position.getX(), position.getY(), position.getZ());
     }
 }

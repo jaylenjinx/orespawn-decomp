@@ -9,7 +9,7 @@ import danger.orespawn.entity.projectile.SunspotUrchin;
 
 public final class MyDispenserBehaviorSunspotUrchin extends BehaviorProjectileDispense {
 
-    protected IProjectile getProjectileEntity(World par1World, IPosition par2IPosition) {
-        return new SunspotUrchin(par1World, par2IPosition.getX(), par2IPosition.getY(), par2IPosition.getZ());
+    protected IProjectile getProjectileEntity(World world, IPosition position) {
+        return new SunspotUrchin(world, position.getX(), position.getY(), position.getZ());
     }
 }

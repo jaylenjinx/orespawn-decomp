@@ -15,9 +15,9 @@ public class MantisClaw extends ItemSword {
     private int weaponDamage;
     private final ToolMaterial toolMaterial;
 
-    public MantisClaw(int par1, ToolMaterial par2EnumToolMaterial) {
-        super(par2EnumToolMaterial);
-        this.toolMaterial = par2EnumToolMaterial;
+    public MantisClaw(int n, ToolMaterial enumToolMaterial) {
+        super(enumToolMaterial);
+        this.toolMaterial = enumToolMaterial;
         this.weaponDamage = 10;
         this.maxStackSize = 1;
         this.setMaxDamage(1000);
@@ -28,19 +28,18 @@ public class MantisClaw extends ItemSword {
         return "AMETHYST";
     }
 
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLiving,
-        EntityLivingBase par3EntityLiving) {
-        int var2x = 5;
-        if (par2EntityLiving != null && par3EntityLiving != null && !par2EntityLiving.worldObj.isRemote) {
-            par2EntityLiving.heal(-1.0F);
-            par3EntityLiving.heal(1.0F);
+    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+        int n = 5;
+        if (target != null && attacker != null && !target.worldObj.isRemote) {
+            target.heal(-1.0F);
+            attacker.heal(1.0F);
         }
 
-        par1ItemStack.damageItem(1, par3EntityLiving);
+        stack.damageItem(1, attacker);
         return true;
     }
 
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 3000;
     }
 

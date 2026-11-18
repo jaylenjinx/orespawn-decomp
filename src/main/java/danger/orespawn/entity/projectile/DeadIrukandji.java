@@ -7,28 +7,28 @@ public class DeadIrukandji extends LaserBall {
 
     private int my_index = 86;
 
-    public DeadIrukandji(World par1World) {
-        super(par1World);
+    public DeadIrukandji(World world) {
+        super(world);
         super.setIrukandji();
     }
 
-    public DeadIrukandji(World par1World, int par2) {
-        super(par1World);
+    public DeadIrukandji(World world, int n) {
+        super(world);
         super.setIrukandji();
     }
 
-    public DeadIrukandji(World par1World, EntityLivingBase par2EntityLiving) {
-        super(par1World, par2EntityLiving);
+    public DeadIrukandji(World world, EntityLivingBase living) {
+        super(world, living);
         super.setIrukandji();
     }
 
-    public DeadIrukandji(World par1World, EntityLivingBase par2EntityLiving, int par3) {
-        super(par1World, par2EntityLiving);
+    public DeadIrukandji(World world, EntityLivingBase living, int n) {
+        super(world, living);
         super.setIrukandji();
     }
 
-    public DeadIrukandji(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public DeadIrukandji(World world, double x, double y, double z) {
+        super(world, x, y, z);
         super.setIrukandji();
     }
 

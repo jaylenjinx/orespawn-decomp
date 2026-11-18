@@ -35,8 +35,8 @@ public class EnderReaper extends EntityMob {
     private int stareTimer;
     private Entity lastEntityToAttack;
 
-    public EnderReaper(World par1World) {
-        super(par1World);
+    public EnderReaper(World world) {
+        super(world);
         this.setSize(0.7F, 2.9F);
         this.stepHeight = 1.0F;
     }
@@ -56,12 +56,12 @@ public class EnderReaper extends EntityMob {
         this.dataWatcher.addObject(18, new Byte((byte) 0));
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
     }
 
     protected Entity findPlayerToAttack() {
@@ -91,21 +91,21 @@ public class EnderReaper extends EntityMob {
         }
     }
 
-    private boolean shouldAttackPlayer(EntityPlayer par1EntityPlayer) {
-        ItemStack itemstack = par1EntityPlayer.inventory.armorInventory[3];
+    private boolean shouldAttackPlayer(EntityPlayer player) {
+        ItemStack itemstack = player.inventory.armorInventory[3];
         if (itemstack != null && itemstack.getItem() == Item.getItemFromBlock(Blocks.pumpkin)) {
             return false;
         } else {
-            Vec3 vec3 = par1EntityPlayer.getLook(1.0F)
+            Vec3 vec3 = player.getLook(1.0F)
                 .normalize();
             Vec3 vec31 = Vec3.createVectorHelper(
-                this.posX - par1EntityPlayer.posX,
-                this.boundingBox.minY + this.height / 2.0F - (par1EntityPlayer.posY + par1EntityPlayer.getEyeHeight()),
-                this.posZ - par1EntityPlayer.posZ);
+                this.posX - player.posX,
+                this.boundingBox.minY + this.height / 2.0F - (player.posY + player.getEyeHeight()),
+                this.posZ - player.posZ);
             double d0 = vec31.lengthVector();
             vec31 = vec31.normalize();
             double d1 = vec3.dotProduct(vec31);
-            return d1 > 1.0 - 0.025 / d0 ? par1EntityPlayer.canEntityBeSeen(this) : false;
+            return d1 > 1.0 - 0.025 / d0 ? player.canEntityBeSeen(this) : false;
         }
     }
 
@@ -186,11 +186,11 @@ public class EnderReaper extends EntityMob {
         return this.teleportTo(d0, d1, d2);
     }
 
-    protected boolean teleportToEntity(Entity par1Entity) {
+    protected boolean teleportToEntity(Entity entity) {
         Vec3 vec3 = Vec3.createVectorHelper(
-            this.posX - par1Entity.posX,
-            this.boundingBox.minY + this.height / 2.0F - par1Entity.posY + par1Entity.getEyeHeight(),
-            this.posZ - par1Entity.posZ);
+            this.posX - entity.posX,
+            this.boundingBox.minY + this.height / 2.0F - entity.posY + entity.getEyeHeight(),
+            this.posZ - entity.posZ);
         vec3 = vec3.normalize();
         double d0 = 16.0;
         double d1 = this.posX + (this.rand.nextDouble() - 0.5) * 8.0 - vec3.xCoord * d0;
@@ -199,13 +199,13 @@ public class EnderReaper extends EntityMob {
         return this.teleportTo(d1, d2, d3);
     }
 
-    protected boolean teleportTo(double par1, double par3, double par5) {
+    protected boolean teleportTo(double x, double y, double z) {
         double d3 = this.posX;
         double d4 = this.posY;
         double d5 = this.posZ;
-        this.posX = par1;
-        this.posY = par3;
-        this.posZ = par5;
+        this.posX = x;
+        this.posY = y;
+        this.posZ = z;
         boolean flag = false;
         int i = MathHelper.floor_double(this.posX);
         int j = MathHelper.floor_double(this.posY);
@@ -276,10 +276,10 @@ public class EnderReaper extends EntityMob {
         return OreSpawnMain.EnderReaper_stats.defense;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         Item j = this.getDropItem();
         if (j != null) {
-            int k = this.rand.nextInt(2 + par2);
+            int k = this.rand.nextInt(2 + lootingLevel);
 
             for (int l = 0; l < k; l++) {
                 this.dropItem(j, 1);
@@ -287,21 +287,21 @@ public class EnderReaper extends EntityMob {
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         if (this.isEntityInvulnerable()) {
             return false;
         } else {
             this.setScreaming(true);
-            if (par1DamageSource instanceof EntityDamageSourceIndirect) {
+            if (source instanceof EntityDamageSourceIndirect) {
                 for (int i = 0; i < 16; i++) {
                     if (this.teleportRandomly()) {
                         return true;
                     }
                 }
 
-                return super.attackEntityFrom(par1DamageSource, par2);
+                return super.attackEntityFrom(source, amount);
             } else {
-                return super.attackEntityFrom(par1DamageSource, par2);
+                return super.attackEntityFrom(source, amount);
             }
         }
     }
@@ -343,7 +343,7 @@ public class EnderReaper extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(18) > 0;
     }
 
-    public void setScreaming(boolean par1) {
-        this.dataWatcher.updateObject(18, (byte) (par1 ? 1 : 0));
+    public void setScreaming(boolean flag) {
+        this.dataWatcher.updateObject(18, (byte) (flag ? 1 : 0));
     }
 }

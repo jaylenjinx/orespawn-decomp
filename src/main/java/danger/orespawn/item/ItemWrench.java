@@ -30,7 +30,7 @@ public class ItemWrench extends Item {
             e.setDead();
             this.dropItem(player.worldObj, e, OreSpawnMain.SpiderRobotKit, 1, (int) h);
 
-            for (int var3x = 0; var3x < 8; var3x++) {
+            for (int i = 0; i < 8; i++) {
                 float f1 = player.worldObj.rand.nextFloat() * 3.0F - player.worldObj.rand.nextFloat() * 3.0F;
                 float f2 = 0.25F + player.worldObj.rand.nextFloat() * 2.0F;
                 float f3 = player.worldObj.rand.nextFloat() * 3.0F - player.worldObj.rand.nextFloat() * 3.0F;
@@ -85,7 +85,7 @@ public class ItemWrench extends Item {
             e.setDead();
             this.dropItem(player.worldObj, e, OreSpawnMain.AntRobotKit, 1, (int) h);
 
-            for (int var3x = 0; var3x < 8; var3x++) {
+            for (int i = 0; i < 8; i++) {
                 float f1 = player.worldObj.rand.nextFloat() * 3.0F - player.worldObj.rand.nextFloat() * 3.0F;
                 float f2 = 0.25F + player.worldObj.rand.nextFloat() * 2.0F;
                 float f3 = player.worldObj.rand.nextFloat() * 3.0F - player.worldObj.rand.nextFloat() * 3.0F;
@@ -132,12 +132,12 @@ public class ItemWrench extends Item {
         return true;
     }
 
-    private void dropItem(World world, EntityLiving e, Item index, int par1, int par2) {
+    private void dropItem(World world, EntityLiving e, Item index, int n, int n2) {
         if (!world.isRemote) {
-            ItemStack is = new ItemStack(index, par1, 0);
-            is.setItemDamage(par2);
-            EntityItem var3x = new EntityItem(world, e.posX, e.posY + 1.0, e.posZ, is);
-            world.spawnEntityInWorld(var3x);
+            ItemStack is = new ItemStack(index, n, 0);
+            is.setItemDamage(n2);
+            EntityItem entityItem = new EntityItem(world, e.posX, e.posY + 1.0, e.posZ, is);
+            world.spawnEntityInWorld(entityItem);
         }
     }
 

@@ -44,8 +44,8 @@ public class Mothra extends EntityButterfly implements IMob {
     private GenericTargetSorter TargetSorter = null;
     private float moveSpeed = 0.35F;
 
-    public Mothra(World par1World) {
-        super(par1World);
+    public Mothra(World world) {
+        super(world);
         this.setSize(5.0F, 2.0F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -119,7 +119,7 @@ public class Mothra extends EntityButterfly implements IMob {
     }
 
     @Override
-    protected void collideWithEntity(Entity par1Entity) {}
+    protected void collideWithEntity(Entity entity) {}
 
     @Override
     protected void collideWithNearbyEntities() {}
@@ -215,20 +215,20 @@ public class Mothra extends EntityButterfly implements IMob {
                 }
 
                 for (Block bid = Blocks.stone; bid != Blocks.air && keep_trying != 0; keep_trying--) {
-                    int var19 = 1;
-                    int var20 = 1;
+                    int n = 1;
+                    int n2 = 1;
                     if (this.rand.nextInt(2) == 0) {
-                        var19 = -1;
+                        n = -1;
                     }
 
                     if (this.rand.nextInt(2) == 0) {
-                        var20 = -1;
+                        n2 = -1;
                     }
 
                     int newz = this.rand.nextInt(20) + 8;
-                    newz *= var20;
+                    newz *= n2;
                     int newx = this.rand.nextInt(20) + 8;
-                    newx *= var19;
+                    newx *= n;
                     this.currentFlightTarget.set(
                         (int) this.posX + newx,
                         (int) this.posY + this.rand.nextInt(7) - 1 - down,
@@ -280,16 +280,16 @@ public class Mothra extends EntityButterfly implements IMob {
                     }
                 }
 
-            double var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.5 - this.motionX) * 0.30001;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.7 - this.motionY) * 0.20001;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.5 - this.motionZ) * 0.30001;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx = this.currentFlightTarget.posX + 0.5 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx) * 0.5 - this.motionX) * 0.30001;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.7 - this.motionY) * 0.20001;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.5 - this.motionZ) * 0.30001;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 1.0F;
-            this.rotationYaw += var8 / 4.0F;
+            this.rotationYaw += f2 / 4.0F;
         }
     }
 
@@ -299,23 +299,23 @@ public class Mothra extends EntityButterfly implements IMob {
     }
 
     @Override
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
     @Override
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     @Override
     public boolean doesEntityNotTriggerPressurePlate() {
         return true;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        Entity e = par1DamageSource.getEntity();
+        Entity e = source.getEntity();
         if (e != null && e instanceof Mothra) {
             return false;
         } else {
-            ret = super.attackEntityFrom(par1DamageSource, par2);
+            ret = super.attackEntityFrom(source, amount);
             if (e != null && this.currentFlightTarget != null) {
                 this.currentFlightTarget.set((int) e.posX, (int) e.posY + 2, (int) e.posZ);
             }
@@ -325,13 +325,13 @@ public class Mothra extends EntityButterfly implements IMob {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
     }
 
     @Override
@@ -359,11 +359,11 @@ public class Mothra extends EntityButterfly implements IMob {
         } else if (this.worldObj.isDaytime()) {
             return false;
         } else {
-            for (int var10 = -4; var10 < 4; var10++) {
+            for (int i = -4; i < 4; i++) {
                 for (int j = -3; j < 3; j++) {
                     for (int ix = 1; ix < 10; ix++) {
                         Block bid = this.worldObj
-                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + var10);
+                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
                         if (bid != Blocks.air) {
                             return false;
                         }
@@ -381,69 +381,63 @@ public class Mothra extends EntityButterfly implements IMob {
     @Override
     public void initCreature() {}
 
-    private void dropItemRand(Item index, int par1) {
-        EntityItem var3 = new EntityItem(
+    private void dropItemRand(Item index, int n) {
+        EntityItem entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(8) - OreSpawnMain.OreSpawnRand.nextInt(8),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(8) - OreSpawnMain.OreSpawnRand.nextInt(8),
-            new ItemStack(index, par1, 0));
-        this.worldObj.spawnEntityInWorld(var3);
+            new ItemStack(index, n, 0));
+        this.worldObj.spawnEntityInWorld(entityItem);
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         this.dropItemRand(Items.item_frame, 1);
 
         for (int i = 0; i < 20; i++) {
-            float var1x = (this.rand.nextFloat() - 0.5F) * 8.0F;
-            float var2x = (this.rand.nextFloat() - 0.5F) * 4.0F;
-            float var3 = (this.rand.nextFloat() - 0.5F) * 8.0F;
-            this.worldObj.spawnParticle(
-                "largeexplode",
-                this.posX + var1x,
-                this.posY + 2.0 + var2x,
-                this.posZ + var3,
-                0.0,
-                0.0,
-                0.0);
+            float f = (this.rand.nextFloat() - 0.5F) * 8.0F;
+            float f2 = (this.rand.nextFloat() - 0.5F) * 4.0F;
+            float f3 = (this.rand.nextFloat() - 0.5F) * 8.0F;
+            this.worldObj
+                .spawnParticle("largeexplode", this.posX + f, this.posY + 2.0 + f2, this.posZ + f3, 0.0, 0.0, 0.0);
         }
 
-        for (int var4 = 0; var4 < 53; var4++) {
+        for (int i = 0; i < 53; i++) {
             this.dropItemRand(Items.gold_nugget, 1);
         }
 
-        for (int var8 = 0; var8 < 25; var8++) {
+        for (int i = 0; i < 25; i++) {
             this.dropItemRand(OreSpawnMain.MyMothScale, 1);
         }
 
-        for (int var9 = 0; var9 < 3; var9++) {
+        for (int i = 0; i < 3; i++) {
             this.dropItemRand(Items.blaze_rod, 1);
         }
 
         this.dropItemRand(Items.nether_star, 1);
 
-        for (int var10 = 0; var10 < 20; var10++) {
+        for (int i = 0; i < 20; i++) {
             spawnCreature(this.worldObj, "Moth", this.posX + 0.5, this.posY + 1.0, this.posZ + 0.5);
         }
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        if (par0World == null) {
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        if (world == null) {
             return null;
         } else {
-            var8 = EntityList.createEntityByName(par1, par0World);
-            if (var8 != null) {
-                var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-                par0World.spawnEntityInWorld(var8);
-                ((EntityLiving) var8).playLivingSound();
+            entity = EntityList.createEntityByName(str, world);
+            if (entity != null) {
+                entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+                world.spawnEntityInWorld(entity);
+                ((EntityLiving) entity).playLivingSound();
             }
 
-            return var8;
+            return entity;
         }
     }
 
-    private void attackWithSomething(EntityLivingBase par1) {
+    private void attackWithSomething(EntityLivingBase living) {
         double xzoff = 2.25;
         double yoff = 0.0;
         if (OreSpawnMain.MothraPeaceful == 0) {
@@ -454,9 +448,9 @@ public class Mothra extends EntityButterfly implements IMob {
                     EntitySmallFireball sf = new EntitySmallFireball(
                         this.worldObj,
                         this,
-                        par1.posX - cx,
-                        par1.posY + 0.55 - (this.posY + yoff),
-                        par1.posZ - cz);
+                        living.posX - cx,
+                        living.posY + 0.55 - (this.posY + yoff),
+                        living.posZ - cz);
                     sf.setLocationAndAngles(cx, this.posY + yoff, cz, this.rotationYaw, 0.0F);
                     sf.setPosition(cx, this.posY + yoff, cz);
                     this.worldObj.playSoundAtEntity(
@@ -471,9 +465,9 @@ public class Mothra extends EntityButterfly implements IMob {
                         EntitySmallFireball sf = new EntitySmallFireball(
                             this.worldObj,
                             this,
-                            par1.posX - cx,
-                            par1.posY + 0.55 - (this.posY + yoff),
-                            par1.posZ - cz);
+                            living.posX - cx,
+                            living.posY + 0.55 - (this.posY + yoff),
+                            living.posZ - cz);
                         sf.setLocationAndAngles(cx, this.posY + yoff, cz, this.rotationYaw, 0.0F);
                         sf.setPosition(cx, this.posY + yoff, cz);
                         this.worldObj.playSoundAtEntity(
@@ -487,9 +481,9 @@ public class Mothra extends EntityButterfly implements IMob {
                         BetterFireball bf = new BetterFireball(
                             this.worldObj,
                             this,
-                            par1.posX - cx,
-                            par1.posY + 0.55 - (this.posY + yoff),
-                            par1.posZ - cz);
+                            living.posX - cx,
+                            living.posY + 0.55 - (this.posY + yoff),
+                            living.posZ - cz);
                         bf.setLocationAndAngles(cx, this.posY + yoff, cz, this.rotationYaw, 0.0F);
                         bf.setPosition(cx, this.posY + yoff, cz);
                         bf.setNotMe();
@@ -505,9 +499,9 @@ public class Mothra extends EntityButterfly implements IMob {
                     BetterFireball bf = new BetterFireball(
                         this.worldObj,
                         this,
-                        par1.posX - cx,
-                        par1.posY + 0.55 - (this.posY + yoff),
-                        par1.posZ - cz);
+                        living.posX - cx,
+                        living.posY + 0.55 - (this.posY + yoff),
+                        living.posZ - cz);
                     bf.setLocationAndAngles(cx, this.posY + yoff, cz, this.rotationYaw, 0.0F);
                     bf.setPosition(cx, this.posY + yoff, cz);
                     bf.setNotMe();
@@ -527,45 +521,45 @@ public class Mothra extends EntityButterfly implements IMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof Mothra) {
+            } else if (target instanceof Mothra) {
                 return false;
-            } else if (par1EntityLiving instanceof Brutalfly) {
+            } else if (target instanceof Brutalfly) {
                 return false;
-            } else if (par1EntityLiving instanceof Vortex) {
+            } else if (target instanceof Vortex) {
                 return false;
-            } else if (par1EntityLiving instanceof VelocityRaptor) {
+            } else if (target instanceof VelocityRaptor) {
                 return false;
-            } else if (par1EntityLiving instanceof Cryolophosaurus) {
+            } else if (target instanceof Cryolophosaurus) {
                 return false;
-            } else if (par1EntityLiving instanceof TerribleTerror) {
+            } else if (target instanceof TerribleTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof LurkingTerror) {
+            } else if (target instanceof LurkingTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof CloudShark) {
+            } else if (target instanceof CloudShark) {
                 return false;
-            } else if (par1EntityLiving instanceof Rotator) {
+            } else if (target instanceof Rotator) {
                 return false;
-            } else if (par1EntityLiving instanceof Bee) {
+            } else if (target instanceof Bee) {
                 return false;
-            } else if (par1EntityLiving instanceof Mantis) {
+            } else if (target instanceof Mantis) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -579,18 +573,18 @@ public class Mothra extends EntityButterfly implements IMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(15.0, 20.0, 15.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 

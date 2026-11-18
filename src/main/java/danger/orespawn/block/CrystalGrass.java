@@ -22,7 +22,7 @@ public class CrystalGrass extends Block {
     @SideOnly(Side.CLIENT)
     private IIcon[] field_94364_a;
 
-    public CrystalGrass(int par1, float f1, float f2) {
+    public CrystalGrass(int n, float f1, float f2) {
         super(Material.grass);
         this.setHardness(f1);
         this.setResistance(f2);
@@ -35,26 +35,26 @@ public class CrystalGrass extends Block {
     }
 
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int par1, int par2) {
+    public IIcon getIcon(int side, int meta) {
         if (this.field_94364_a == null) {
             return null;
         } else {
-            return par1 == 1 ? this.field_94364_a[0] : (par1 == 0 ? this.field_94364_a[1] : this.field_94364_a[2]);
+            return side == 1 ? this.field_94364_a[0] : (side == 0 ? this.field_94364_a[1] : this.field_94364_a[2]);
         }
     }
 
     @SideOnly(Side.CLIENT)
-    public IIcon getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
+    public IIcon getBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int n) {
         if (this.field_94364_a == null) {
             return null;
-        } else if (par5 == 1) {
+        } else if (n == 1) {
             return this.field_94364_a[0];
         } else {
-            return par5 == 0 ? this.field_94364_a[1] : this.field_94364_a[2];
+            return n == 0 ? this.field_94364_a[1] : this.field_94364_a[2];
         }
     }
 
-    public Item getItemDropped(int par1, Random par2Random, int par3) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         return Item.getItemFromBlock(this);
     }
 
@@ -72,10 +72,10 @@ public class CrystalGrass extends Block {
     }
 
     @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister par1IIconRegister) {
+    public void registerBlockIcons(IIconRegister iconRegister) {
         this.field_94364_a = new IIcon[3];
-        this.field_94364_a[0] = par1IIconRegister.registerIcon("OreSpawn:crystalgrass_top");
-        this.field_94364_a[1] = par1IIconRegister.registerIcon("OreSpawn:crystalgrass_bottom");
-        this.field_94364_a[2] = par1IIconRegister.registerIcon("OreSpawn:crystalgrass_side");
+        this.field_94364_a[0] = iconRegister.registerIcon("OreSpawn:crystalgrass_top");
+        this.field_94364_a[1] = iconRegister.registerIcon("OreSpawn:crystalgrass_bottom");
+        this.field_94364_a[2] = iconRegister.registerIcon("OreSpawn:crystalgrass_side");
     }
 }

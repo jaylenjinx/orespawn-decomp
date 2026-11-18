@@ -15,9 +15,9 @@ public class BigHammer extends ItemSword {
     private int weaponDamage;
     private final ToolMaterial toolMaterial;
 
-    public BigHammer(int par1, ToolMaterial par2EnumToolMaterial) {
-        super(par2EnumToolMaterial);
-        this.toolMaterial = par2EnumToolMaterial;
+    public BigHammer(int n, ToolMaterial enumToolMaterial) {
+        super(enumToolMaterial);
+        this.toolMaterial = enumToolMaterial;
         this.weaponDamage = 15;
         this.maxStackSize = 1;
         this.setMaxDamage(9000);
@@ -28,18 +28,17 @@ public class BigHammer extends ItemSword {
         return "AMETHYST";
     }
 
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLiving,
-        EntityLivingBase par3EntityLiving) {
-        int var2x = 5;
-        if (par2EntityLiving != null && !par2EntityLiving.worldObj.isRemote) {
-            par2EntityLiving.addVelocity(0.0, Math.abs(par2EntityLiving.worldObj.rand.nextFloat() * 2.0F / 3.0F), 0.0);
+    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+        int n = 5;
+        if (target != null && !target.worldObj.isRemote) {
+            target.addVelocity(0.0, Math.abs(target.worldObj.rand.nextFloat() * 2.0F / 3.0F), 0.0);
         }
 
-        par1ItemStack.damageItem(1, par3EntityLiving);
+        stack.damageItem(1, attacker);
         return true;
     }
 
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 3000;
     }
 

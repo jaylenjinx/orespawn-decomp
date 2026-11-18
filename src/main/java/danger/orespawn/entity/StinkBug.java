@@ -34,8 +34,8 @@ public class StinkBug extends EntityAnimal {
 
     private float moveSpeed = 0.15F;
 
-    public StinkBug(World par1World) {
-        super(par1World);
+    public StinkBug(World world) {
+        super(world);
         this.setSize(0.55F, 0.55F);
         this.fireResistance = 10;
         this.getNavigator()
@@ -87,12 +87,12 @@ public class StinkBug extends EntityAnimal {
         return true;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
         if (this.isDead) {
             return false;
         } else {
-            ret = super.attackEntityFrom(par1DamageSource, par2);
+            ret = super.attackEntityFrom(source, amount);
             if (this.getHealth() <= 0.0F || this.isDead) {
                 AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(
                     this.posX - 8.0,
@@ -101,14 +101,14 @@ public class StinkBug extends EntityAnimal {
                     this.posX + 8.0,
                     this.posY + 10.0,
                     this.posZ + 8.0);
-                List var5 = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, bb);
-                Iterator var2x = var5.iterator();
-                EntityLivingBase var3 = null;
+                List entities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, bb);
+                Iterator iterator = entities.iterator();
+                EntityLivingBase living = null;
 
-                while (var2x.hasNext()) {
-                    var3 = (EntityLivingBase) var2x.next();
-                    if (var3 != null) {
-                        var3.addPotionEffect(new PotionEffect(Potion.confusion.id, 300, 0));
+                while (iterator.hasNext()) {
+                    living = (EntityLivingBase) iterator.next();
+                    if (living != null) {
+                        living.addPotionEffect(new PotionEffect(Potion.confusion.id, 300, 0));
                     }
                 }
             }
@@ -180,15 +180,15 @@ public class StinkBug extends EntityAnimal {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public StinkBug spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public StinkBug spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new StinkBug(this.worldObj);
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.fish;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.fish;
     }
 
-    public boolean isBreedingItem(ItemStack par1ItemStack) {
-        return par1ItemStack.getItem() == OreSpawnMain.MyCrystalApple;
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
     }
 }

@@ -17,14 +17,14 @@ public class BlockQuinoa extends BlockReed {
 
     private int myMaxHeight = 0;
 
-    public BlockQuinoa(int par1) {
-        float var3 = 0.375F;
-        this.setBlockBounds(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, 1.0F, 0.5F + var3);
+    public BlockQuinoa(int n) {
+        float f = 0.375F;
+        this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, 1.0F, 0.5F + f);
         this.setTickRandomly(true);
     }
 
-    public boolean canPlaceBlockAt(World par1World, int par2, int par3, int par4) {
-        Block bid = par1World.getBlock(par2, par3 - 1, par4);
+    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+        Block bid = world.getBlock(x, y - 1, z);
         return bid == Blocks.air ? false
             : bid == OreSpawnMain.MyQuinoaPlant1 || bid == OreSpawnMain.MyQuinoaPlant2
                 || bid == OreSpawnMain.MyQuinoaPlant3
@@ -35,22 +35,22 @@ public class BlockQuinoa extends BlockReed {
                 || bid == OreSpawnMain.CrystalGrass;
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
+    public void updateTick(World world, int x, int y, int z, Random rand) {
         int Height = 1;
         int dontGrow = 0;
-        if (!par1World.isRemote) {
+        if (!world.isRemote) {
             if (this == OreSpawnMain.MyQuinoaPlant1 || this == OreSpawnMain.MyQuinoaPlant3) {
-                int var7 = par1World.getBlockMetadata(par2, par3, par4);
-                this.myMaxHeight = var7 >> 8;
-                var7 &= 255;
+                int meta = world.getBlockMetadata(x, y, z);
+                this.myMaxHeight = meta >> 8;
+                meta &= 255;
                 if (this.myMaxHeight == 0) {
                     this.myMaxHeight = 2 + OreSpawnMain.OreSpawnRand.nextInt(3);
                 }
 
-                Block bid = par1World.getBlock(par2, par3 + 1, par4);
+                Block bid = world.getBlock(x, y + 1, z);
                 if (bid == Blocks.air) {
-                    for (int var6 = 1; var6 < 10; var6++) {
-                        bid = par1World.getBlock(par2, par3 - var6, par4);
+                    for (int i = 1; i < 10; i++) {
+                        bid = world.getBlock(x, y - i, z);
                         if (bid != OreSpawnMain.MyQuinoaPlant1 && bid != OreSpawnMain.MyQuinoaPlant2
                             && bid != OreSpawnMain.MyQuinoaPlant3
                             && bid != OreSpawnMain.MyQuinoaPlant4) {
@@ -67,42 +67,39 @@ public class BlockQuinoa extends BlockReed {
                         this.myMaxHeight = Height;
                     }
 
-                    if (var7 >= 5 - this.myMaxHeight / 3) {
+                    if (meta >= 5 - this.myMaxHeight / 3) {
                         if (Height < this.myMaxHeight) {
-                            par1World
-                                .setBlock(par2, par3 + 1, par4, OreSpawnMain.MyQuinoaPlant1, this.myMaxHeight << 8, 2);
-                            par1World.setBlock(par2, par3, par4, OreSpawnMain.MyQuinoaPlant2, this.myMaxHeight << 8, 2);
+                            world.setBlock(x, y + 1, z, OreSpawnMain.MyQuinoaPlant1, this.myMaxHeight << 8, 2);
+                            world.setBlock(x, y, z, OreSpawnMain.MyQuinoaPlant2, this.myMaxHeight << 8, 2);
                         } else {
-                            bid = par1World.getBlock(par2, par3, par4);
+                            bid = world.getBlock(x, y, z);
                             if (bid == OreSpawnMain.MyQuinoaPlant1) {
-                                par1World
-                                    .setBlock(par2, par3, par4, OreSpawnMain.MyQuinoaPlant3, this.myMaxHeight << 8, 2);
+                                world.setBlock(x, y, z, OreSpawnMain.MyQuinoaPlant3, this.myMaxHeight << 8, 2);
                             } else if (bid == OreSpawnMain.MyQuinoaPlant3) {
-                                par1World
-                                    .setBlock(par2, par3, par4, OreSpawnMain.MyQuinoaPlant4, this.myMaxHeight << 8, 2);
+                                world.setBlock(x, y, z, OreSpawnMain.MyQuinoaPlant4, this.myMaxHeight << 8, 2);
                             }
 
-                            bid = par1World.getBlock(par2, par3, par4);
-                            par1World.setBlock(par2, par3, par4, bid, this.myMaxHeight << 8, 2);
+                            bid = world.getBlock(x, y, z);
+                            world.setBlock(x, y, z, bid, this.myMaxHeight << 8, 2);
                         }
                     } else {
-                        bid = par1World.getBlock(par2, par3, par4);
-                        par1World.setBlock(par2, par3, par4, bid, this.myMaxHeight << 8 | var7 + 1, 2);
+                        bid = world.getBlock(x, y, z);
+                        world.setBlock(x, y, z, bid, this.myMaxHeight << 8 | meta + 1, 2);
                     }
                 }
             }
         }
     }
 
-    public Item getItemDropped(int par1, Random par2Random, int par3) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         return OreSpawnMain.MyQuinoa;
     }
 
-    public int quantityDropped(Random par1Random) {
-        return this == OreSpawnMain.MyQuinoaPlant4 ? 3 + par1Random.nextInt(3) : 0;
+    public int quantityDropped(Random rand) {
+        return this == OreSpawnMain.MyQuinoaPlant4 ? 3 + rand.nextInt(3) : 0;
     }
 
-    public Item itemPicked(World par1World, int par2, int par3, int par4) {
+    public Item itemPicked(World world, int x, int y, int z) {
         return OreSpawnMain.MyQuinoa;
     }
 

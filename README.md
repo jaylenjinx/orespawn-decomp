@@ -18,22 +18,40 @@ This tree is for personal study and modding.
 4. Sources were formatted with the project's Spotless rules.
 
 The rebuilt release jar contains exactly the same set of classes and resources as the original.
-Local variable names (`var12`, …) are decompiler-generated and can be renamed as you go.
+Decompiler-generated local and parameter names (`var12`, `par1`, `p_70097_1_`) were replaced with
+descriptive ones, inferred from overridden Minecraft/Forge signatures, initialisers and how each variable is
+used. The compiled bytecode is instruction-for-instruction identical to the unrenamed tree. Some names are
+still generic (`n`, `f`, `i2`) where nothing better could be inferred; rename them as you go.
 
-Layout: all code is in `src/main/java/danger/orespawn` (`OreSpawnMain` is the `@Mod` class);
-textures, models and sounds are in `src/main/resources/assets/orespawn`.
+## Layout
+
+Code is in `src/main/java/danger/orespawn` (`OreSpawnMain` is the `@Mod` class); textures, models and
+sounds are in `src/main/resources/assets/orespawn`.
+
+| Package | Contents |
+| --- | --- |
+| `danger.orespawn` | `@Mod` class, common proxy, config/stat tables, sounds, GUI handler, utilities |
+| `block` | blocks and tile entities |
+| `item` | items, tools, armour, food |
+| `entity` | mobs and other entities; `entity.ai` AI tasks and sorters; `entity.projectile` thrown and shot entities |
+| `client` | client proxy and key handler; `client.render` entity/tile renderers (`client.render.item` item renderers); `client.model` models; `client.gui` screens |
+| `inventory` | containers |
+| `network` | packets (rider controls) |
+| `dispenser` | dispenser behaviours |
+| `world.dimension` | dimension providers, biomes, chunk providers, teleporters |
+| `world.gen` | ore and structure generation, trees, dungeons, mazes |
 
 ## Requirements
 
-- **JDK 21** to run Gradle (the mod still compiles to Java 8 bytecode via Jabel; Gradle
+- **JDK 25** to run Gradle (the mod still compiles to Java 8 bytecode via Jabel; Gradle
   downloads the toolchain it needs).
 - IntelliJ IDEA (Community is fine).
 
 ## IntelliJ IDEA setup
 
 1. **File → Open…** and pick this folder (open the folder, not `build.gradle.kts`). Trust the project.
-2. **Settings → Build, Execution, Deployment → Build Tools → Gradle**: set **Gradle JVM** to a JDK 21.
-3. **File → Project Structure → Project**: SDK = the same JDK 21, language level 8.
+2. **Settings → Build, Execution, Deployment → Build Tools → Gradle**: set **Gradle JVM** to a JDK 25.
+3. **File → Project Structure → Project**: SDK = the same JDK 25, language level 8.
 4. Let the Gradle sync finish (first time takes several minutes: it downloads and decompiles
    Minecraft). The sync generates run configurations: `1.7.10 Client`, `1.7.10 Server`, and the
    modern-Java variants.

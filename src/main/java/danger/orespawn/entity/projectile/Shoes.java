@@ -17,32 +17,32 @@ public class Shoes extends EntityThrowable {
     public int ShoeId = 0;
     private float my_rotation = 0.0F;
 
-    public Shoes(World par1World) {
-        super(par1World);
+    public Shoes(World world) {
+        super(world);
         this.ShoeId = this.rand.nextInt(4) + 2;
         this.dataWatcher.addObject(20, this.ShoeId);
     }
 
-    public Shoes(World par1World, int par2) {
-        super(par1World);
-        this.ShoeId = par2;
+    public Shoes(World world, int n) {
+        super(world);
+        this.ShoeId = n;
         this.dataWatcher.addObject(20, this.ShoeId);
     }
 
-    public Shoes(World par1World, EntityLivingBase par2EntityLiving) {
-        super(par1World, par2EntityLiving);
+    public Shoes(World world, EntityLivingBase living) {
+        super(world, living);
         this.ShoeId = this.rand.nextInt(4) + 2;
         this.dataWatcher.addObject(20, this.ShoeId);
     }
 
-    public Shoes(World par1World, EntityLivingBase par2EntityLiving, int par3) {
-        super(par1World, par2EntityLiving);
-        this.ShoeId = par3;
+    public Shoes(World world, EntityLivingBase living, int n) {
+        super(world, living);
+        this.ShoeId = n;
         this.dataWatcher.addObject(20, this.ShoeId);
     }
 
-    public Shoes(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public Shoes(World world, double x, double y, double z) {
+        super(world, x, y, z);
         this.ShoeId = this.rand.nextInt(4) + 2;
         this.dataWatcher.addObject(20, this.ShoeId);
     }
@@ -51,38 +51,37 @@ public class Shoes extends EntityThrowable {
         return this.dataWatcher.getWatchableObjectInt(20);
     }
 
-    protected void onImpact(MovingObjectPosition par1MovingObjectPosition) {
-        if (par1MovingObjectPosition.entityHit != null) {
-            float var2 = 2.0F;
+    protected void onImpact(MovingObjectPosition hit) {
+        if (hit.entityHit != null) {
+            float amount = 2.0F;
             if (this.getShoeId() == 6) {
-                var2 = 6.0F;
+                amount = 6.0F;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityCreeper) {
-                var2 += 4.0F;
+            if (hit.entityHit instanceof EntityCreeper) {
+                amount += 4.0F;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Girlfriend) {
-                var2 = 1.0F;
+            if (hit.entityHit instanceof Girlfriend) {
+                amount = 1.0F;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Boyfriend) {
-                var2 = 1.0F;
+            if (hit.entityHit instanceof Boyfriend) {
+                amount = 1.0F;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityPlayer) {
-                var2 = 0.0F;
+            if (hit.entityHit instanceof EntityPlayer) {
+                amount = 0.0F;
             }
 
             if (OreSpawnMain.valentines_day != 0) {
-                var2 = 10.0F;
+                amount = 10.0F;
             }
 
-            par1MovingObjectPosition.entityHit
-                .attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), var2);
+            hit.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), amount);
         }
 
-        for (int var3 = 0; var3 < 4; var3++) {
+        for (int i = 0; i < 4; i++) {
             this.worldObj.spawnParticle("snowballpoof", this.posX, this.posY, this.posZ, 0.0, 0.0, 0.0);
             this.worldObj.spawnParticle("reddust", this.posX, this.posY, this.posZ, 0.0, 0.0, 0.0);
         }

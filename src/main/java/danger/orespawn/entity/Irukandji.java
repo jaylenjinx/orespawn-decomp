@@ -34,8 +34,8 @@ public class Irukandji extends EntityMob {
     private int ty = 0;
     private int tz = 0;
 
-    public Irukandji(World par1World) {
-        super(par1World);
+    public Irukandji(World world) {
+        super(world);
         this.setSize(0.25F, 0.25F);
         this.getNavigator()
             .setAvoidsWater(false);
@@ -95,7 +95,7 @@ public class Irukandji extends EntityMob {
         super.onLivingUpdate();
     }
 
-    public int getAttackStrength(Entity par1Entity) {
+    public int getAttackStrength(Entity entity) {
         return 2;
     }
 
@@ -125,20 +125,20 @@ public class Irukandji extends EntityMob {
 
     public void initCreature() {}
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        if (par1EntityPlayer != null && par1EntityPlayer.getCurrentEquippedItem() == null) {
-            par1EntityPlayer.attackEntityFrom(DamageSource.causeMobDamage(this), 200.0F);
+    public boolean interact(EntityPlayer player) {
+        if (player != null && player.getCurrentEquippedItem() == null) {
+            player.attackEntityFrom(DamageSource.causeMobDamage(this), 200.0F);
         }
 
         return false;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
         if (this.isDead) {
             return false;
         } else {
-            Entity e = par1DamageSource.getEntity();
+            Entity e = source.getEntity();
             if (e != null && e instanceof EntityPlayer) {
                 EntityPlayer p = (EntityPlayer) e;
                 if (p.getCurrentEquippedItem() == null) {
@@ -159,7 +159,7 @@ public class Irukandji extends EntityMob {
                 ret = true;
             }
 
-            return super.attackEntityFrom(par1DamageSource, par2);
+            return super.attackEntityFrom(source, amount);
         }
     }
 
@@ -194,26 +194,26 @@ public class Irukandji extends EntityMob {
             }
         }
 
-        for (int var12 = -dx; var12 <= dx; var12++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dz; j <= dz; j++) {
-                Block bidx = this.worldObj.getBlock(x + var12, y + dy, z + j);
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y + dy;
                         this.tz = z + j;
                         found++;
                     }
                 }
 
-                bidx = this.worldObj.getBlock(x + var12, y - dy, z + j);
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y - dy;
                         this.tz = z + j;
                         found++;
@@ -222,26 +222,26 @@ public class Irukandji extends EntityMob {
             }
         }
 
-        for (int var13 = -dx; var13 <= dx; var13++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dy; j <= dy; j++) {
-                Block bidxx = this.worldObj.getBlock(x + var13, y + j, z + dz);
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z + dz;
                         found++;
                     }
                 }
 
-                bidxx = this.worldObj.getBlock(x + var13, y + j, z - dz);
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z - dz;
                         found++;
@@ -309,18 +309,18 @@ public class Irukandji extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (target instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) target;
                 return !p.capabilities.isCreativeMode;
             } else {
                 return false;
@@ -331,23 +331,23 @@ public class Irukandji extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(6.0, 4.0, 6.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
             EntityLivingBase e = this.getAttackTarget();
             if (e != null && e.isEntityAlive()) {
                 return e;
             } else {
                 this.setAttackTarget(null);
 
-                while (var2.hasNext()) {
-                    var3 = (Entity) var2.next();
-                    var4 = (EntityLivingBase) var3;
-                    if (this.isSuitableTarget(var4, false)) {
-                        return var4;
+                while (iterator.hasNext()) {
+                    entity = (Entity) iterator.next();
+                    target = (EntityLivingBase) entity;
+                    if (this.isSuitableTarget(target, false)) {
+                        return target;
                     }
                 }
 
@@ -360,13 +360,13 @@ public class Irukandji extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     private int findBuddies() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(Irukandji.class, this.boundingBox.expand(16.0, 8.0, 16.0));
-        return var5.size();
+        List entities = this.worldObj.getEntitiesWithinAABB(Irukandji.class, this.boundingBox.expand(16.0, 8.0, 16.0));
+        return entities.size();
     }
 
     public boolean getCanSpawnHere() {

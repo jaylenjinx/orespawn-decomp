@@ -16,30 +16,30 @@ public class RenderGirlfriend extends RenderBiped {
 
     protected ModelBiped model = (ModelBiped) this.mainModel;
 
-    public RenderGirlfriend(ModelBiped par1ModelBase, float par2) {
-        super(par1ModelBase, par2);
+    public RenderGirlfriend(ModelBiped modelBase, float f) {
+        super(modelBase, f);
     }
 
-    public void renderGirlfriend(Girlfriend par1EntityGirlfriend, double par2, double par4, double par6, float par8,
-        float par9) {
-        super.doRender(par1EntityGirlfriend, par2, par4, par6, par8, par9);
+    public void renderGirlfriend(Girlfriend entityGirlfriend, double x, double y, double z, float yaw,
+        float partialTicks) {
+        super.doRender(entityGirlfriend, x, y, z, yaw, partialTicks);
     }
 
-    public void preRenderCallback(EntityLivingBase p_77041_1_, float p_77041_2_) {
-        if (OreSpawnMain.valentines_day != 0 && p_77041_1_ != null && p_77041_1_ instanceof Girlfriend) {
-            Girlfriend gf = (Girlfriend) p_77041_1_;
+    public void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        if (OreSpawnMain.valentines_day != 0 && entity != null && entity instanceof Girlfriend) {
+            Girlfriend gf = (Girlfriend) entity;
             if (gf.feelingBetter == 0) {
                 GL11.glScalef(5.0F, 5.0F, 5.0F);
             }
         }
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderGirlfriend((Girlfriend) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderGirlfriend((Girlfriend) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderGirlfriend((Girlfriend) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderGirlfriend((Girlfriend) entity, x, y, z, yaw, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

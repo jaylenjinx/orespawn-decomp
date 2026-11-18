@@ -39,8 +39,8 @@ public class BandP extends EntityMob {
     public ItemStack[] MymainInventory = new ItemStack[100];
     int got_stuff = 0;
 
-    public BandP(World par1World) {
-        super(par1World);
+    public BandP(World world) {
+        super(world);
         this.setSize(0.75F, 1.75F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -125,59 +125,58 @@ public class BandP extends EntityMob {
         return Items.emerald;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
         if (index == null) {
             return null;
         } else {
-            ItemStack is = new ItemStack(index, par1, 0);
-            var3 = new EntityItem(
+            ItemStack is = new ItemStack(index, n, 0);
+            entityItem = new EntityItem(
                 this.worldObj,
                 this.posX + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
                 this.posY + 1.0,
                 this.posZ + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
                 is);
-            if (var3 != null) {
-                this.worldObj.spawnEntityInWorld(var3);
+            if (entityItem != null) {
+                this.worldObj.spawnEntityInWorld(entityItem);
             }
 
             return is;
         }
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
-        int var4 = 10 + this.worldObj.rand.nextInt(5);
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int n = 10 + this.worldObj.rand.nextInt(5);
 
-        for (int i = 0; i < var4; i++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(Items.emerald, 1);
         }
 
         if (this.getWhat() == 0) {
-            var4 = 2 + this.worldObj.rand.nextInt(3);
+            n = 2 + this.worldObj.rand.nextInt(3);
 
-            for (int var7 = 0; var7 < var4; var7++) {
+            for (int i = 0; i < n; i++) {
                 this.dropItemRand(OreSpawnMain.UraniumNugget, 1);
                 this.dropItemRand(OreSpawnMain.TitaniumNugget, 1);
             }
         }
 
-        for (int var8 = 0; var8 < this.MymainInventory.length; var8++) {
-            if (this.MymainInventory[var8] != null && this.MymainInventory[var8].stackSize != 0) {
-                ItemStack is = this
-                    .dropItemRand(this.MymainInventory[var8].getItem(), this.MymainInventory[var8].stackSize);
-                if (this.MymainInventory[var8].stackSize == 1) {
-                    is.setItemDamage(this.MymainInventory[var8].getItemDamage());
+        for (int i = 0; i < this.MymainInventory.length; i++) {
+            if (this.MymainInventory[i] != null && this.MymainInventory[i].stackSize != 0) {
+                ItemStack is = this.dropItemRand(this.MymainInventory[i].getItem(), this.MymainInventory[i].stackSize);
+                if (this.MymainInventory[i].stackSize == 1) {
+                    is.setItemDamage(this.MymainInventory[i].getItemDamage());
                 }
             }
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        return super.attackEntityAsMob(par1Entity);
+    public boolean attackEntityAsMob(Entity target) {
+        return super.attackEntityAsMob(target);
     }
 
     protected void updateAITasks() {
@@ -202,9 +201,9 @@ public class BandP extends EntityMob {
                             }
 
                             if (k >= 0) {
-                                for (int var6 = p.inventory.armorInventory.length - 1; var6 >= 0; var6--) {
-                                    if (p.inventory.armorInventory[var6] != null) {
-                                        kp = var6;
+                                for (int i = p.inventory.armorInventory.length - 1; i >= 0; i--) {
+                                    if (p.inventory.armorInventory[i] != null) {
+                                        kp = i;
                                         break;
                                     }
                                 }
@@ -216,9 +215,9 @@ public class BandP extends EntityMob {
                                 }
 
                                 if (kp < 0) {
-                                    for (int var7 = p.inventory.mainInventory.length - 1; var7 >= 0; var7--) {
-                                        if (p.inventory.mainInventory[var7] != null) {
-                                            kp = var7;
+                                    for (int i = p.inventory.mainInventory.length - 1; i >= 0; i--) {
+                                        if (p.inventory.mainInventory[i] != null) {
+                                            kp = i;
                                             break;
                                         }
                                     }
@@ -240,23 +239,23 @@ public class BandP extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (target instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) target;
                 return !p.capabilities.isCreativeMode;
-            } else if (par1EntityLiving instanceof EntityVillager) {
+            } else if (target instanceof EntityVillager) {
                 return true;
             } else {
-                return par1EntityLiving instanceof Girlfriend ? true : par1EntityLiving instanceof Boyfriend;
+                return target instanceof Girlfriend ? true : target instanceof Boyfriend;
             }
     }
 
@@ -264,18 +263,18 @@ public class BandP extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(20.0, 6.0, 20.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -287,8 +286,8 @@ public class BandP extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public void setWhat(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public void setWhat(int n) {
+        this.dataWatcher.updateObject(20, (byte) n);
     }
 
     public boolean getCanSpawnHere() {
@@ -331,42 +330,42 @@ public class BandP extends EntityMob {
         }
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
         if (this.got_stuff != 0) {
-            par1NBTTagCompound.setTag("Inventory", this.writeToNBT(new NBTTagList()));
+            tag.setTag("Inventory", this.writeToNBT(new NBTTagList()));
         }
 
-        par1NBTTagCompound.setInteger("GotStuff", this.got_stuff);
+        tag.setInteger("GotStuff", this.got_stuff);
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.got_stuff = par1NBTTagCompound.getInteger("GotStuff");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.got_stuff = tag.getInteger("GotStuff");
         if (this.got_stuff != 0) {
-            NBTTagList nbttaglist = par1NBTTagCompound.getTagList("Inventory", 10);
+            NBTTagList nbttaglist = tag.getTagList("Inventory", 10);
             this.readFromNBT(nbttaglist);
         }
     }
 
-    public NBTTagList writeToNBT(NBTTagList par1NBTTagList) {
+    public NBTTagList writeToNBT(NBTTagList tag) {
         for (int i = 0; i < this.MymainInventory.length; i++) {
             if (this.MymainInventory[i] != null) {
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
                 nbttagcompound.setByte("Slot", (byte) i);
                 this.MymainInventory[i].writeToNBT(nbttagcompound);
-                par1NBTTagList.appendTag(nbttagcompound);
+                tag.appendTag(nbttagcompound);
             }
         }
 
-        return par1NBTTagList;
+        return tag;
     }
 
-    public void readFromNBT(NBTTagList par1NBTTagList) {
+    public void readFromNBT(NBTTagList tag) {
         this.MymainInventory = new ItemStack[100];
 
-        for (int i = 0; i < par1NBTTagList.tagCount(); i++) {
-            NBTTagCompound nbttagcompound = par1NBTTagList.getCompoundTagAt(i);
+        for (int i = 0; i < tag.tagCount(); i++) {
+            NBTTagCompound nbttagcompound = tag.getCompoundTagAt(i);
             int j = nbttagcompound.getByte("Slot") & 255;
             ItemStack itemstack = ItemStack.loadItemStackFromNBT(nbttagcompound);
             if (itemstack != null && j >= 0 && j < this.MymainInventory.length) {

@@ -51,8 +51,8 @@ public class Stinky extends EntityTameable {
     private int ty = 0;
     private int tz = 0;
 
-    public Stinky(World par1World) {
-        super(par1World);
+    public Stinky(World world) {
+        super(world);
         this.setSize(0.75F, 0.75F);
         this.moveSpeed = 0.3F;
         this.fireResistance = 1000;
@@ -95,19 +95,19 @@ public class Stinky extends EntityTameable {
         this.setTamed(false);
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("SpyroActivity", this.dataWatcher.getWatchableObjectInt(21));
-        par1NBTTagCompound.setInteger("SpyroFire", this.dataWatcher.getWatchableObjectInt(20));
-        par1NBTTagCompound.setInteger("StinkySkin", this.dataWatcher.getWatchableObjectInt(22));
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("SpyroActivity", this.dataWatcher.getWatchableObjectInt(21));
+        tag.setInteger("SpyroFire", this.dataWatcher.getWatchableObjectInt(20));
+        tag.setInteger("StinkySkin", this.dataWatcher.getWatchableObjectInt(22));
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.activity = par1NBTTagCompound.getInteger("SpyroActivity");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.activity = tag.getInteger("SpyroActivity");
         this.dataWatcher.updateObject(21, this.activity);
-        this.dataWatcher.updateObject(20, par1NBTTagCompound.getInteger("SpyroFire"));
-        this.skin_color = par1NBTTagCompound.getInteger("StinkySkin");
+        this.dataWatcher.updateObject(20, tag.getInteger("SpyroFire"));
+        this.skin_color = tag.getInteger("StinkySkin");
         this.dataWatcher.updateObject(22, this.skin_color);
     }
 
@@ -117,17 +117,17 @@ public class Stinky extends EntityTameable {
         return i;
     }
 
-    public void setActivity(int par1) {
-        this.activity = par1;
-        this.dataWatcher.updateObject(21, par1);
+    public void setActivity(int activity2) {
+        this.activity = activity2;
+        this.dataWatcher.updateObject(21, activity2);
     }
 
     public int getSpyroFire() {
         return this.dataWatcher.getWatchableObjectInt(20);
     }
 
-    public void setSpyroFire(int par1) {
-        this.dataWatcher.updateObject(20, par1);
+    public void setSpyroFire(int n) {
+        this.dataWatcher.updateObject(20, n);
     }
 
     public int getSkin() {
@@ -136,10 +136,10 @@ public class Stinky extends EntityTameable {
         return i;
     }
 
-    public void setSkin(int par1) {
-        this.skin_color = par1;
+    public void setSkin(int n) {
+        this.skin_color = n;
         this.dataWatcher.updateObject(22, 0);
-        this.dataWatcher.updateObject(22, par1);
+        this.dataWatcher.updateObject(22, n);
     }
 
     public boolean isAIEnabled() {
@@ -154,21 +154,20 @@ public class Stinky extends EntityTameable {
         return 100;
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (var2 != null && var2.getItem() == Items.beef && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+        if (currentItem != null && currentItem.getItem() == Items.beef && player.getDistanceSqToEntity(this) < 16.0) {
             if (!this.isTamed()) {
                 if (!this.worldObj.isRemote) {
                     if (this.worldObj.rand.nextInt(2) == 1) {
                         this.setTamed(true);
                         this.func_152115_b(
-                            par1EntityPlayer.getUniqueID()
+                            player.getUniqueID()
                                 .toString());
                         this.playTameEffect(true);
                         this.worldObj.setEntityState(this, (byte) 7);
@@ -178,7 +177,7 @@ public class Stinky extends EntityTameable {
                         this.worldObj.setEntityState(this, (byte) 6);
                     }
                 }
-            } else if (this.func_152114_e(par1EntityPlayer)) {
+            } else if (this.func_152114_e(player)) {
                 if (this.worldObj.isRemote) {
                     this.playTameEffect(true);
                     this.worldObj.setEntityState(this, (byte) 7);
@@ -189,19 +188,18 @@ public class Stinky extends EntityTameable {
                 }
             }
 
-            if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                var2.stackSize--;
-                if (var2.stackSize <= 0) {
-                    par1EntityPlayer.inventory
-                        .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+            if (!player.capabilities.isCreativeMode) {
+                currentItem.stackSize--;
+                if (currentItem.stackSize <= 0) {
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                 }
             }
 
             return true;
-        } else if (this.isTamed() && var2 != null
-            && var2.getItem() == Item.getItemFromBlock(Blocks.deadbush)
-            && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-            && this.func_152114_e(par1EntityPlayer)) {
+        } else if (this.isTamed() && currentItem != null
+            && currentItem.getItem() == Item.getItemFromBlock(Blocks.deadbush)
+            && player.getDistanceSqToEntity(this) < 16.0
+            && this.func_152114_e(player)) {
                 if (!this.worldObj.isRemote) {
                     this.setTamed(false);
                     this.setHealth(this.mygetMaxHealth());
@@ -210,32 +208,30 @@ public class Stinky extends EntityTameable {
                     this.worldObj.setEntityState(this, (byte) 6);
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
-            } else if (this.isTamed() && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                && this.func_152114_e(par1EntityPlayer)) {
-                    if (!this.isSitting()) {
-                        this.setSitting(true);
-                        this.setActivity(1);
-                    } else {
-                        this.setSitting(false);
-                    }
-
-                    return true;
+            } else if (this.isTamed() && player.getDistanceSqToEntity(this) < 16.0 && this.func_152114_e(player)) {
+                if (!this.isSitting()) {
+                    this.setSitting(true);
+                    this.setActivity(1);
                 } else {
-                    return super.interact(par1EntityPlayer);
+                    this.setSitting(false);
                 }
+
+                return true;
+            } else {
+                return super.interact(player);
+            }
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.beef;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.beef;
     }
 
     protected boolean canDespawn() {
@@ -266,13 +262,13 @@ public class Stinky extends EntityTameable {
         return Items.beef;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
-        int var3 = 0;
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int roll = 0;
         if (this.isTamed()) {
-            var3 = this.worldObj.rand.nextInt(4);
-            var3++;
+            roll = this.worldObj.rand.nextInt(4);
+            roll++;
 
-            for (int var4 = 0; var4 < var3; var4++) {
+            for (int i = 0; i < roll; i++) {
                 this.dropItem(Items.beef, 1);
             }
         }
@@ -287,9 +283,9 @@ public class Stinky extends EntityTameable {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean doesEntityNotTriggerPressurePlate() {
         return false;
@@ -299,24 +295,24 @@ public class Stinky extends EntityTameable {
         return !this.worldObj.isDaytime() ? false : this.findBuddies() <= 2;
     }
 
-    public EntityAgeable createChild(EntityAgeable var1) {
+    public EntityAgeable createChild(EntityAgeable partner) {
         return null;
     }
 
-    public float getAttackStrength(Entity par1Entity) {
+    public float getAttackStrength(Entity entity) {
         return 10.0F;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        float var2 = this.getAttackStrength(par1Entity);
-        return par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), var2);
+    public boolean attackEntityAsMob(Entity target) {
+        float attackStrength = this.getAttackStrength(target);
+        return target.attackEntityFrom(DamageSource.causeMobDamage(this), attackStrength);
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        if (!par1DamageSource.getDamageType()
+        if (!source.getDamageType()
             .equals("cactus")) {
-            ret = super.attackEntityFrom(par1DamageSource, par2);
+            ret = super.attackEntityFrom(source, amount);
             this.setSitting(false);
             this.setActivity(2);
         }
@@ -331,26 +327,26 @@ public class Stinky extends EntityTameable {
             false) == null;
     }
 
-    private void dropItemFront(Item index, int par1) {
+    private void dropItemFront(Item index, int n) {
         float f = 0.75F + Math.abs(this.worldObj.rand.nextFloat() * 0.75F);
-        EntityItem var3 = new EntityItem(
+        EntityItem entityItem = new EntityItem(
             this.worldObj,
             this.posX - f * Math.sin(Math.toRadians(this.rotationYawHead)),
             this.posY + 0.9,
             this.posZ + f * Math.cos(Math.toRadians(this.rotationYawHead)),
-            new ItemStack(index, par1, 0));
-        this.worldObj.spawnEntityInWorld(var3);
+            new ItemStack(index, n, 0));
+        this.worldObj.spawnEntityInWorld(entityItem);
     }
 
-    private void dropItemRear(Item index, int par1) {
+    private void dropItemRear(Item index, int n) {
         float f = 0.55F + Math.abs(this.worldObj.rand.nextFloat() * 0.55F);
-        EntityItem var3 = new EntityItem(
+        EntityItem entityItem = new EntityItem(
             this.worldObj,
             this.posX + f * Math.sin(Math.toRadians(this.rotationYawHead)),
             this.posY + 0.25,
             this.posZ - f * Math.cos(Math.toRadians(this.rotationYawHead)),
-            new ItemStack(index, par1, 0));
-        this.worldObj.spawnEntityInWorld(var3);
+            new ItemStack(index, n, 0));
+        this.worldObj.spawnEntityInWorld(entityItem);
     }
 
     public void onUpdate() {
@@ -511,26 +507,26 @@ public class Stinky extends EntityTameable {
             }
         }
 
-        for (int var12 = -dx; var12 <= dx; var12++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dz; j <= dz; j++) {
-                Block bidx = this.worldObj.getBlock(x + var12, y + dy, z + j);
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
                 if (bidx == Blocks.coal_ore) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y + dy;
                         this.tz = z + j;
                         found++;
                     }
                 }
 
-                bidx = this.worldObj.getBlock(x + var12, y - dy, z + j);
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
                 if (bidx == Blocks.coal_ore) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y - dy;
                         this.tz = z + j;
                         found++;
@@ -539,26 +535,26 @@ public class Stinky extends EntityTameable {
             }
         }
 
-        for (int var13 = -dx; var13 <= dx; var13++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dy; j <= dy; j++) {
-                Block bidxx = this.worldObj.getBlock(x + var13, y + j, z + dz);
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
                 if (bidxx == Blocks.coal_ore) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z + dz;
                         found++;
                     }
                 }
 
-                bidxx = this.worldObj.getBlock(x + var13, y + j, z - dz);
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
                 if (bidxx == Blocks.coal_ore) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z - dz;
                         found++;
@@ -753,9 +749,9 @@ public class Stinky extends EntityTameable {
             }
 
             double speed_factor = 1.0;
-            double var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+            double dx = this.currentFlightTarget.posX + 0.5 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.5 - this.posZ;
             if (this.owner_flying != 0) {
                 speed_factor = 1.75;
                 if (this.isTamed() && this.getOwner() != null) {
@@ -766,30 +762,30 @@ public class Stinky extends EntityTameable {
                 }
             }
 
-            this.motionX = this.motionX + (Math.signum(var1) * 0.5 - this.motionX) * 0.15 * speed_factor;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.7 - this.motionY) * 0.21 * speed_factor;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.5 - this.motionZ) * 0.15 * speed_factor;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            this.motionX = this.motionX + (Math.signum(dx) * 0.5 - this.motionX) * 0.15 * speed_factor;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.7 - this.motionY) * 0.21 * speed_factor;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.5 - this.motionZ) * 0.15 * speed_factor;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = (float) (0.75 * speed_factor);
-            this.rotationYaw += var8 / 3.0F;
+            this.rotationYaw += f2 / 3.0F;
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
             } else {
-                return par1EntityLiving instanceof Mothra ? true : par1EntityLiving instanceof EntityMob;
+                return target instanceof Mothra ? true : target instanceof EntityMob;
             }
     }
 
@@ -797,18 +793,18 @@ public class Stinky extends EntityTameable {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(12.0, 6.0, 12.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false) && this.canSeeTarget(var4.posX, var4.posY, var4.posZ)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false) && this.canSeeTarget(target.posX, target.posY, target.posZ)) {
+                    return target;
                 }
             }
 
@@ -817,7 +813,7 @@ public class Stinky extends EntityTameable {
     }
 
     private int findBuddies() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(Stinky.class, this.boundingBox.expand(20.0, 10.0, 20.0));
-        return var5.size();
+        List entities = this.worldObj.getEntitiesWithinAABB(Stinky.class, this.boundingBox.expand(20.0, 10.0, 20.0));
+        return entities.size();
     }
 }

@@ -97,8 +97,8 @@ public class UltimateFishHook extends EntityFishHook {
     private double field_146053_aJ;
     private int fishing_in_lava = 0;
 
-    public UltimateFishHook(World par1World) {
-        super(par1World);
+    public UltimateFishHook(World world) {
+        super(world);
         this.field_146037_g = -1;
         this.field_146048_h = -1;
         this.field_146050_i = -1;
@@ -109,31 +109,31 @@ public class UltimateFishHook extends EntityFishHook {
     }
 
     @SideOnly(Side.CLIENT)
-    public UltimateFishHook(World par1World, double par2, double par4, double par6, EntityPlayer par8EntityPlayer) {
-        this(par1World);
-        this.setPosition(par2, par4, par6);
+    public UltimateFishHook(World world, double x, double y, double z, EntityPlayer player) {
+        this(world);
+        this.setPosition(x, y, z);
         this.ignoreFrustumCheck = true;
-        this.field_146042_b = par8EntityPlayer;
-        par8EntityPlayer.fishEntity = this;
+        this.field_146042_b = player;
+        player.fishEntity = this;
         this.fireResistance = 3000;
         this.isImmuneToFire = true;
     }
 
-    public UltimateFishHook(World par1World, EntityPlayer par2EntityPlayer) {
-        super(par1World);
+    public UltimateFishHook(World world, EntityPlayer player) {
+        super(world);
         this.field_146037_g = -1;
         this.field_146048_h = -1;
         this.field_146050_i = -1;
         this.ignoreFrustumCheck = true;
-        this.field_146042_b = par2EntityPlayer;
+        this.field_146042_b = player;
         this.field_146042_b.fishEntity = this;
         this.setSize(0.25F, 0.25F);
         this.setLocationAndAngles(
-            par2EntityPlayer.posX,
-            par2EntityPlayer.posY + 1.62 - par2EntityPlayer.yOffset,
-            par2EntityPlayer.posZ,
-            par2EntityPlayer.rotationYaw,
-            par2EntityPlayer.rotationPitch);
+            player.posX,
+            player.posY + 1.62 - player.yOffset,
+            player.posZ,
+            player.rotationYaw,
+            player.rotationPitch);
         this.posX = this.posX - MathHelper.cos(this.rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
         this.posY -= 0.1F;
         this.posZ = this.posZ - MathHelper.sin(this.rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
@@ -157,53 +157,52 @@ public class UltimateFishHook extends EntityFishHook {
         this.isImmuneToFire = true;
     }
 
-    public void func_146035_c(double p_146035_1_, double p_146035_3_, double p_146035_5_, float p_146035_7_,
-        float p_146035_8_) {
-        float f2 = MathHelper
-            .sqrt_double(p_146035_1_ * p_146035_1_ + p_146035_3_ * p_146035_3_ + p_146035_5_ * p_146035_5_);
-        p_146035_1_ /= f2;
-        p_146035_3_ /= f2;
-        p_146035_5_ /= f2;
-        p_146035_1_ += this.rand.nextGaussian() * 0.0075F * p_146035_8_;
-        p_146035_3_ += this.rand.nextGaussian() * 0.0075F * p_146035_8_;
-        p_146035_5_ += this.rand.nextGaussian() * 0.0075F * p_146035_8_;
-        p_146035_1_ *= p_146035_7_;
-        p_146035_3_ *= p_146035_7_;
-        p_146035_5_ *= p_146035_7_;
-        this.motionX = p_146035_1_;
-        this.motionY = p_146035_3_;
-        this.motionZ = p_146035_5_;
-        float f3 = MathHelper.sqrt_double(p_146035_1_ * p_146035_1_ + p_146035_5_ * p_146035_5_);
-        this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(p_146035_1_, p_146035_5_) * 180.0 / Math.PI);
-        this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(p_146035_3_, f3) * 180.0 / Math.PI);
+    public void func_146035_c(double x, double y, double z, float f, float f4) {
+        float f2 = MathHelper.sqrt_double(x * x + y * y + z * z);
+        x /= f2;
+        y /= f2;
+        z /= f2;
+        x += this.rand.nextGaussian() * 0.0075F * f4;
+        y += this.rand.nextGaussian() * 0.0075F * f4;
+        z += this.rand.nextGaussian() * 0.0075F * f4;
+        x *= f;
+        y *= f;
+        z *= f;
+        this.motionX = x;
+        this.motionY = y;
+        this.motionZ = z;
+        float f3 = MathHelper.sqrt_double(x * x + z * z);
+        this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(x, z) * 180.0 / Math.PI);
+        this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(y, f3) * 180.0 / Math.PI);
         this.field_146049_av = 0;
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean isInRangeToRenderDist(double par1) {
+    public boolean isInRangeToRenderDist(double distance) {
         double d1 = this.boundingBox.getAverageEdgeLength() * 4.0;
         d1 *= 64.0;
-        return par1 < d1 * d1;
+        return distance < d1 * d1;
     }
 
     @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
-        this.field_146056_aC = par1;
-        this.field_146057_aD = par3;
-        this.field_146058_aE = par5;
-        this.field_146059_aF = par7;
-        this.field_146060_aG = par8;
-        this.field_146055_aB = par9;
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch,
+        int posRotationIncrements) {
+        this.field_146056_aC = x;
+        this.field_146057_aD = y;
+        this.field_146058_aE = z;
+        this.field_146059_aF = yaw;
+        this.field_146060_aG = pitch;
+        this.field_146055_aB = posRotationIncrements;
         this.motionX = this.field_146061_aH;
         this.motionY = this.field_146052_aI;
         this.motionZ = this.field_146053_aJ;
     }
 
     @SideOnly(Side.CLIENT)
-    public void setVelocity(double par1, double par3, double par5) {
-        this.field_146061_aH = this.motionX = par1;
-        this.field_146052_aI = this.motionY = par3;
-        this.field_146053_aJ = this.motionZ = par5;
+    public void setVelocity(double vx, double vy, double vz) {
+        this.field_146061_aH = this.motionX = vx;
+        this.field_146052_aI = this.motionY = vy;
+        this.field_146053_aJ = this.motionZ = vz;
     }
 
     public void onUpdate() {
@@ -496,22 +495,22 @@ public class UltimateFishHook extends EntityFishHook {
         }
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        par1NBTTagCompound.setShort("xTile", (short) this.field_146037_g);
-        par1NBTTagCompound.setShort("yTile", (short) this.field_146048_h);
-        par1NBTTagCompound.setShort("zTile", (short) this.field_146050_i);
-        par1NBTTagCompound.setByte("inTile", (byte) Block.getIdFromBlock(this.field_146046_j));
-        par1NBTTagCompound.setByte("shake", (byte) this.field_146044_a);
-        par1NBTTagCompound.setByte("inGround", (byte) (this.field_146051_au ? 1 : 0));
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        tag.setShort("xTile", (short) this.field_146037_g);
+        tag.setShort("yTile", (short) this.field_146048_h);
+        tag.setShort("zTile", (short) this.field_146050_i);
+        tag.setByte("inTile", (byte) Block.getIdFromBlock(this.field_146046_j));
+        tag.setByte("shake", (byte) this.field_146044_a);
+        tag.setByte("inGround", (byte) (this.field_146051_au ? 1 : 0));
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        this.field_146037_g = par1NBTTagCompound.getShort("xTile");
-        this.field_146048_h = par1NBTTagCompound.getShort("yTile");
-        this.field_146050_i = par1NBTTagCompound.getShort("zTile");
-        this.field_146046_j = Block.getBlockById(par1NBTTagCompound.getByte("inTile") & 255);
-        this.field_146044_a = par1NBTTagCompound.getByte("shake") & 255;
-        this.field_146051_au = par1NBTTagCompound.getByte("inGround") == 1;
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        this.field_146037_g = tag.getShort("xTile");
+        this.field_146048_h = tag.getShort("yTile");
+        this.field_146050_i = tag.getShort("zTile");
+        this.field_146046_j = Block.getBlockById(tag.getByte("inTile") & 255);
+        this.field_146044_a = tag.getByte("shake") & 255;
+        this.field_146051_au = tag.getByte("inGround") == 1;
     }
 
     @SideOnly(Side.CLIENT)

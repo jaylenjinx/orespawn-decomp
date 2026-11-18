@@ -27,8 +27,8 @@ public class SpiderDriver extends EntitySpider {
 
     private GenericTargetSorter TargetSorter = null;
 
-    public SpiderDriver(World par1World) {
-        super(par1World);
+    public SpiderDriver(World world) {
+        super(world);
         this.TargetSorter = new GenericTargetSorter(this);
         this.tasks.addTask(1, new EntityAISwimming(this));
         this.tasks.addTask(2, new EntityAIPanic(this, 1.5));
@@ -85,14 +85,14 @@ public class SpiderDriver extends EntitySpider {
         }
     }
 
-    protected void attackEntity(Entity par1Entity, float par2) {
-        if (this.attackTime <= 0 && par2 < 2.0F
-            && par1Entity.boundingBox.maxY > this.boundingBox.minY
-            && par1Entity.boundingBox.minY < this.boundingBox.maxY) {
+    protected void attackEntity(Entity entity, float f) {
+        if (this.attackTime <= 0 && f < 2.0F
+            && entity.boundingBox.maxY > this.boundingBox.minY
+            && entity.boundingBox.minY < this.boundingBox.maxY) {
             this.attackTime = 16;
-            this.attackEntityAsMob(par1Entity);
+            this.attackEntityAsMob(entity);
             if (this.worldObj.rand.nextInt(2) == 0) {
-                ((EntityLivingBase) par1Entity).addPotionEffect(new PotionEffect(Potion.poison.id, 60, 0));
+                ((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.poison.id, 60, 0));
             }
         }
     }
@@ -105,18 +105,18 @@ public class SpiderDriver extends EntitySpider {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(SpiderRobot.class, this.boundingBox.expand(25.0, 15.0, 25.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase living = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (var4.riddenByEntity == null) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                living = (EntityLivingBase) entity;
+                if (living.riddenByEntity == null) {
+                    return living;
                 }
             }
 
@@ -124,33 +124,33 @@ public class SpiderDriver extends EntitySpider {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
-        } else if (par1EntityLiving instanceof SpiderRobot) {
+        } else if (target instanceof SpiderRobot) {
             return false;
-        } else if (par1EntityLiving instanceof SpiderDriver) {
+        } else if (target instanceof SpiderDriver) {
             return false;
-        } else if (par1EntityLiving instanceof EntitySpider) {
+        } else if (target instanceof EntitySpider) {
             return false;
-        } else if (par1EntityLiving instanceof EntityCaveSpider) {
+        } else if (target instanceof EntityCaveSpider) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (target instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) target;
                 return !p.capabilities.isCreativeMode;
             } else {
-                return !(this.getDistanceSqToEntity(par1EntityLiving) < 36.0);
+                return !(this.getDistanceSqToEntity(target) < 36.0);
             }
     }
 
@@ -158,18 +158,18 @@ public class SpiderDriver extends EntitySpider {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(35.0, 15.0, 35.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 

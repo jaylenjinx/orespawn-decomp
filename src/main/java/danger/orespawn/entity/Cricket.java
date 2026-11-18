@@ -16,8 +16,8 @@ public class Cricket extends EntityAnimal {
     private int singing = 0;
     private int jumpcount = 0;
 
-    public Cricket(World par1World) {
-        super(par1World);
+    public Cricket(World world) {
+        super(world);
         this.setSize(0.1F, 0.1F);
         this.experienceValue = 1;
         this.getNavigator()
@@ -51,8 +51,8 @@ public class Cricket extends EntityAnimal {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public void setSinging(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public void setSinging(int n) {
+        this.dataWatcher.updateObject(20, (byte) n);
     }
 
     private void jumpAround() {
@@ -121,19 +121,19 @@ public class Cricket extends EntityAnimal {
         return 0.7F;
     }
 
-    protected void playStepSound(int par1, int par2, int par3, int par4) {}
+    protected void playStepSound(int n, int n2, int n3, int n4) {}
 
-    protected void dropFewItems(boolean par1, int par2) {}
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {}
 
     protected boolean canTriggerWalking() {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
-    public EntityAgeable createChild(EntityAgeable var1) {
+    public EntityAgeable createChild(EntityAgeable partner) {
         return null;
     }
 
@@ -142,7 +142,7 @@ public class Cricket extends EntityAnimal {
     }
 
     private int findBuddies() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(Cricket.class, this.boundingBox.expand(20.0, 10.0, 20.0));
-        return var5.size();
+        List entities = this.worldObj.getEntitiesWithinAABB(Cricket.class, this.boundingBox.expand(20.0, 10.0, 20.0));
+        return entities.size();
     }
 }

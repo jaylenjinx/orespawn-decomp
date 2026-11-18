@@ -34,8 +34,8 @@ public class Vortex extends EntityMob {
     private int busy_fighting = 0;
     private int was_spawnered = 0;
 
-    public Vortex(World par1World) {
-        super(par1World);
+    public Vortex(World world) {
+        super(world);
         this.setSize(2.0F, 4.0F);
         this.experienceValue = 200;
         this.isImmuneToFire = true;
@@ -85,7 +85,7 @@ public class Vortex extends EntityMob {
         return true;
     }
 
-    protected void collideWithEntity(Entity par1Entity) {}
+    protected void collideWithEntity(Entity entity) {}
 
     public int mygetMaxHealth() {
         return OreSpawnMain.Vortex_stats.health;
@@ -217,16 +217,16 @@ public class Vortex extends EntityMob {
                 }
             }
 
-            double var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.4 - this.motionX) * 0.2;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.7F - this.motionY) * 0.20000000149011612;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.4 - this.motionZ) * 0.2;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx = this.currentFlightTarget.posX + 0.5 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx) * 0.4 - this.motionX) * 0.2;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.7F - this.motionY) * 0.20000000149011612;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.4 - this.motionZ) * 0.2;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 0.75F;
-            this.rotationYaw += var8 / 4.0F;
+            this.rotationYaw += f2 / 4.0F;
         }
     }
 
@@ -234,18 +234,18 @@ public class Vortex extends EntityMob {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean doesEntityNotTriggerPressurePlate() {
         return true;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        Entity e = par1DamageSource.getEntity();
-        ret = super.attackEntityFrom(par1DamageSource, par2);
+        Entity e = source.getEntity();
+        ret = super.attackEntityFrom(source, amount);
         if (e != null && this.currentFlightTarget != null) {
             this.currentFlightTarget.set((int) e.posX, (int) e.posY, (int) e.posZ);
         }
@@ -278,11 +278,10 @@ public class Vortex extends EntityMob {
             }
         }
 
-        for (int var11 = -2; var11 <= 2; var11++) {
+        for (int i = -2; i <= 2; i++) {
             for (int j = -2; j <= 2; j++) {
                 for (int ix = 1; ix < 4; ix++) {
-                    Block bid = this.worldObj
-                        .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + var11);
+                    Block bid = this.worldObj.getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
                     if (bid != Blocks.air) {
                         return false;
                     }
@@ -310,46 +309,46 @@ public class Vortex extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
                 }
 
-                if (par1EntityLiving instanceof Vortex) {
+                if (target instanceof Vortex) {
                     return false;
-                } else if (par1EntityLiving instanceof Rotator) {
+                } else if (target instanceof Rotator) {
                     return false;
-                } else if (par1EntityLiving instanceof Mothra) {
+                } else if (target instanceof Mothra) {
                     return false;
-                } else if (par1EntityLiving instanceof Brutalfly) {
+                } else if (target instanceof Brutalfly) {
                     return false;
-                } else if (par1EntityLiving instanceof Peacock) {
+                } else if (target instanceof Peacock) {
                     return false;
-                } else if (par1EntityLiving instanceof CrystalCow) {
+                } else if (target instanceof CrystalCow) {
                     return false;
-                } else if (par1EntityLiving instanceof Irukandji) {
+                } else if (target instanceof Irukandji) {
                     return false;
-                } else if (par1EntityLiving instanceof Skate) {
+                } else if (target instanceof Skate) {
                     return false;
-                } else if (par1EntityLiving instanceof Whale) {
+                } else if (target instanceof Whale) {
                     return false;
                 } else {
-                    return par1EntityLiving instanceof Flounder ? false : !(par1EntityLiving instanceof Urchin);
+                    return target instanceof Flounder ? false : !(target instanceof Urchin);
                 }
             }
     }
@@ -358,18 +357,18 @@ public class Vortex extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(16.0, 10.0, 16.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -377,58 +376,58 @@ public class Vortex extends EntityMob {
         }
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(6) - OreSpawnMain.OreSpawnRand.nextInt(6),
             this.posY + 1.0 + this.worldObj.rand.nextInt(10),
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(6) - OreSpawnMain.OreSpawnRand.nextInt(6),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         this.dropItemRand(OreSpawnMain.VortexEye, 1);
         this.dropItemRand(Items.item_frame, 1);
         int i = 5 + this.worldObj.rand.nextInt(7);
 
-        for (int var4 = 0; var4 < i; var4++) {
-            int var3 = this.worldObj.rand.nextInt(10);
-            if (var3 == 0) {
+        for (int i2 = 0; i2 < i; i2++) {
+            int roll = this.worldObj.rand.nextInt(10);
+            if (roll == 0) {
                 this.dropItemRand(Items.stick, 1);
             }
 
-            if (var3 == 1) {
+            if (roll == 1) {
                 this.dropItemRand(OreSpawnMain.MyTigersEyeIngot, 1);
             }
 
-            if (var3 == 2) {
+            if (roll == 2) {
                 this.dropItemRand(OreSpawnMain.MyCrystalPinkIngot, 1);
             }
 
-            if (var3 == 3) {
+            if (roll == 3) {
                 this.dropItemRand(Items.iron_ingot, 1);
             }
 
-            if (var3 == 4) {
+            if (roll == 4) {
                 this.dropItemRand(OreSpawnMain.UraniumNugget, 1);
             }
 
-            if (var3 == 6) {
+            if (roll == 6) {
                 this.dropItemRand(OreSpawnMain.TitaniumNugget, 1);
             }
 
-            if (var3 == 7) {
+            if (roll == 7) {
                 this.dropItemRand(OreSpawnMain.MyIrukandji, 1);
             }
 
-            if (var3 == 8) {
+            if (roll == 8) {
                 this.dropItemRand(Item.getItemFromBlock(OreSpawnMain.CrystalCoal), 1);
             }
         }

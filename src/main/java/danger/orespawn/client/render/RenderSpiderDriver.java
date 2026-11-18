@@ -13,26 +13,26 @@ public class RenderSpiderDriver extends RenderSpider {
 
     private static final ResourceLocation texture = new ResourceLocation("orespawn", "spiderdriver.png");
 
-    public RenderSpiderDriver(ModelSpider modelSpider, float par2) {}
+    public RenderSpiderDriver(ModelSpider modelSpider, float f) {}
 
-    public void renderSpiderDriver(SpiderDriver par1EntitySpiderDriver, double par2, double par4, double par6,
-        float par8, float par9) {
-        super.doRender(par1EntitySpiderDriver, par2, par4, par6, par8, par9);
+    public void renderSpiderDriver(SpiderDriver entitySpiderDriver, double x, double y, double z, float yaw,
+        float partialTicks) {
+        super.doRender(entitySpiderDriver, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderSpiderDriver((SpiderDriver) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderSpiderDriver((SpiderDriver) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderSpiderDriver((SpiderDriver) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderSpiderDriver((SpiderDriver) entity, x, y, z, yaw, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {
         return texture;
     }
 
-    protected ResourceLocation getSpiderTextures(EntitySpider par1EntitySpider) {
+    protected ResourceLocation getSpiderTextures(EntitySpider entitySpider) {
         return texture;
     }
 }

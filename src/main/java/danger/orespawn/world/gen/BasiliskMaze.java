@@ -92,18 +92,18 @@ public class BasiliskMaze {
         int top = 16;
         int bottom = 64;
 
-        for (int var26 = 0; var26 < gridw; var26++) {
-            cells[var26][0] = cells[var26][0] | top;
-            cells[var26][gridh - 1] = cells[var26][gridh - 1] | bottom;
+        for (int i = 0; i < gridw; i++) {
+            cells[i][0] = cells[i][0] | top;
+            cells[i][gridh - 1] = cells[i][gridh - 1] | bottom;
         }
 
         Vector outlist = new Vector(gridw * gridh);
         Vector inlist = new Vector(10, 10);
         Vector frontlist = new Vector(10, 10);
 
-        for (int var27 = 0; var27 < gridw; var27++) {
-            for (int var30 = 0; var30 < gridh; var30++) {
-                outlist.addElement(new Point(var27, var30));
+        for (int i = 0; i < gridw; i++) {
+            for (int j = 0; j < gridh; j++) {
+                outlist.addElement(new Point(i, j));
             }
         }
 
@@ -121,16 +121,16 @@ public class BasiliskMaze {
 
         current_cell = null;
 
-        for (int var28 = 0; var28 < gridw; var28++) {
-            for (int var31 = 0; var31 < gridh; var31++) {
-                int val = cells[var28][var31];
+        for (int i = 0; i < gridw; i++) {
+            for (int j = 0; j < gridh; j++) {
+                int val = cells[i][j];
                 if ((val & 1) != 0) {
                     this.drawSide(
                         world,
-                        var28 * cellsize,
-                        var31 * cellsize,
-                        (var28 + 1) * cellsize,
-                        var31 * cellsize,
+                        i * cellsize,
+                        j * cellsize,
+                        (i + 1) * cellsize,
+                        j * cellsize,
                         xx,
                         yy,
                         zz,
@@ -143,10 +143,10 @@ public class BasiliskMaze {
                 if ((val & 2) != 0) {
                     this.drawSide(
                         world,
-                        (var28 + 1) * cellsize - 1,
-                        var31 * cellsize,
-                        (var28 + 1) * cellsize - 1,
-                        (var31 + 1) * cellsize,
+                        (i + 1) * cellsize - 1,
+                        j * cellsize,
+                        (i + 1) * cellsize - 1,
+                        (j + 1) * cellsize,
                         xx,
                         yy,
                         zz,
@@ -159,10 +159,10 @@ public class BasiliskMaze {
                 if ((val & 4) != 0) {
                     this.drawSide(
                         world,
-                        var28 * cellsize,
-                        (var31 + 1) * cellsize - 1,
-                        (var28 + 1) * cellsize,
-                        (var31 + 1) * cellsize - 1,
+                        i * cellsize,
+                        (j + 1) * cellsize - 1,
+                        (i + 1) * cellsize,
+                        (j + 1) * cellsize - 1,
                         xx,
                         yy,
                         zz,
@@ -175,10 +175,10 @@ public class BasiliskMaze {
                 if ((val & 8) != 0) {
                     this.drawSide(
                         world,
-                        var28 * cellsize,
-                        var31 * cellsize,
-                        var28 * cellsize,
-                        (var31 + 1) * cellsize,
+                        i * cellsize,
+                        j * cellsize,
+                        i * cellsize,
+                        (j + 1) * cellsize,
                         xx,
                         yy,
                         zz,
@@ -328,16 +328,16 @@ public class BasiliskMaze {
         return s;
     }
 
-    private Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+    private Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
     private void clearArea(World world, int x, int y, int z) {
@@ -354,10 +354,10 @@ public class BasiliskMaze {
             }
         }
 
-        for (int var9 = 0; var9 < 5; var9++) {
+        for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 6; j++) {
                 for (int k = 0; k < 30; k++) {
-                    OreSpawnMain.setBlockFast(world, x - var9, y + j, z + k, Blocks.air, 0, 2);
+                    OreSpawnMain.setBlockFast(world, x - i, y + j, z + k, Blocks.air, 0, 2);
                 }
             }
         }
@@ -374,12 +374,12 @@ public class BasiliskMaze {
             }
         }
 
-        for (int var12 = zw * csz - 1; var12 >= 0; var12--) {
-            Block bid = world.getBlock(xx + xw * csz - 2, yy, zz + var12);
+        for (int i = zw * csz - 1; i >= 0; i--) {
+            Block bid = world.getBlock(xx + xw * csz - 2, yy, zz + i);
             if (bid == Blocks.air) {
-                OreSpawnMain.setBlockFast(world, xx + xw * csz - 1, yy, zz + var12, Blocks.air, 0, 2);
-                OreSpawnMain.setBlockFast(world, xx + xw * csz - 1, yy + 1, zz + var12, Blocks.air, 0, 2);
-                OreSpawnMain.setBlockFast(world, xx + xw * csz - 1, yy + 2, zz + var12, Blocks.air, 0, 2);
+                OreSpawnMain.setBlockFast(world, xx + xw * csz - 1, yy, zz + i, Blocks.air, 0, 2);
+                OreSpawnMain.setBlockFast(world, xx + xw * csz - 1, yy + 1, zz + i, Blocks.air, 0, 2);
+                OreSpawnMain.setBlockFast(world, xx + xw * csz - 1, yy + 2, zz + i, Blocks.air, 0, 2);
                 break;
             }
         }
@@ -392,7 +392,7 @@ public class BasiliskMaze {
             }
         }
 
-        for (int var11 = 0; var11 < 80; var11++) {
+        for (int i = 0; i < 80; i++) {
             OreSpawnMain.setBlockFast(
                 world,
                 x + world.rand.nextInt(28) + 1,
@@ -403,7 +403,7 @@ public class BasiliskMaze {
                 2);
         }
 
-        for (int var12 = 0; var12 < 20; var12++) {
+        for (int i = 0; i < 20; i++) {
             OreSpawnMain.setBlockFast(
                 world,
                 x + 30 + world.rand.nextInt(28) + 1,
@@ -414,73 +414,73 @@ public class BasiliskMaze {
                 2);
         }
 
-        for (int var13 = 0; var13 < 30; var13++) {
+        for (int i = 0; i < 30; i++) {
             for (int k = 0; k < 30; k++) {
-                OreSpawnMain.setBlockFast(world, x + var13, y + 4, z + k, Blocks.bedrock, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + i, y + 4, z + k, Blocks.bedrock, 0, 2);
             }
         }
 
-        for (int var14 = 0; var14 < 30; var14++) {
+        for (int i = 0; i < 30; i++) {
             for (int k = 0; k < 30; k++) {
-                OreSpawnMain.setBlockFast(world, x + var14 + 30, y + 6, z + k, Blocks.bedrock, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + i + 30, y + 6, z + k, Blocks.bedrock, 0, 2);
             }
         }
 
-        for (int var15 = 0; var15 < 30; var15++) {
+        for (int i = 0; i < 30; i++) {
             for (int k = 0; k < 5; k++) {
-                OreSpawnMain.setBlockFast(world, x + 59, y + k + 1, z + var15, Blocks.obsidian, 0, 2);
-                OreSpawnMain.setBlockFast(world, x + 60, y + k + 1, z + var15, Blocks.bedrock, 0, 2);
-                OreSpawnMain.setBlockFast(world, x + 61, y + k + 1, z + var15, Blocks.bedrock, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + 59, y + k + 1, z + i, Blocks.obsidian, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + 60, y + k + 1, z + i, Blocks.bedrock, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + 61, y + k + 1, z + i, Blocks.bedrock, 0, 2);
             }
         }
 
-        for (int var16 = 0; var16 < 30; var16++) {
+        for (int i = 0; i < 30; i++) {
             for (int k = 0; k < 5; k++) {
-                OreSpawnMain.setBlockFast(world, x + 30 + var16, y + k + 1, z, Blocks.obsidian, 0, 2);
-                OreSpawnMain.setBlockFast(world, x + 30 + var16, y + k + 1, z - 1, Blocks.bedrock, 0, 2);
-                OreSpawnMain.setBlockFast(world, x + 30 + var16, y + k + 1, z - 2, Blocks.bedrock, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + 30 + i, y + k + 1, z, Blocks.obsidian, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + 30 + i, y + k + 1, z - 1, Blocks.bedrock, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + 30 + i, y + k + 1, z - 2, Blocks.bedrock, 0, 2);
             }
         }
 
-        for (int var17 = 0; var17 < 30; var17++) {
+        for (int i = 0; i < 30; i++) {
             for (int k = 0; k < 5; k++) {
-                OreSpawnMain.setBlockFast(world, x + 30 + var17, y + k + 1, z + 29, Blocks.obsidian, 0, 2);
-                OreSpawnMain.setBlockFast(world, x + 30 + var17, y + k + 1, z + 30, Blocks.bedrock, 0, 2);
-                OreSpawnMain.setBlockFast(world, x + 30 + var17, y + k + 1, z + 31, Blocks.bedrock, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + 30 + i, y + k + 1, z + 29, Blocks.obsidian, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + 30 + i, y + k + 1, z + 30, Blocks.bedrock, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + 30 + i, y + k + 1, z + 31, Blocks.bedrock, 0, 2);
             }
         }
 
-        for (int var18 = 0; var18 < 30; var18++) {
-            OreSpawnMain.setBlockFast(world, x + 30, y + 5, z + var18, Blocks.obsidian, 0, 2);
+        for (int i = 0; i < 30; i++) {
+            OreSpawnMain.setBlockFast(world, x + 30, y + 5, z + i, Blocks.obsidian, 0, 2);
         }
 
-        for (int var19 = 0; var19 < 30; var19++) {
+        for (int i = 0; i < 30; i++) {
             for (int k = 0; k < 4; k++) {
-                OreSpawnMain.setBlockFast(world, x - 4 + k, y, z + var19, Blocks.sandstone, 0, 2);
+                OreSpawnMain.setBlockFast(world, x - 4 + k, y, z + i, Blocks.sandstone, 0, 2);
             }
         }
 
-        for (int var20 = 0; var20 < 30; var20++) {
+        for (int i = 0; i < 30; i++) {
             for (int k = 0; k < 4; k++) {
-                OreSpawnMain.setBlockFast(world, x - 4 + k, y + 5, z + var20, Blocks.obsidian, 0, 2);
+                OreSpawnMain.setBlockFast(world, x - 4 + k, y + 5, z + i, Blocks.obsidian, 0, 2);
             }
         }
 
-        for (int var21 = 0; var21 < 30; var21++) {
+        for (int i = 0; i < 30; i++) {
             for (int k = 1; k < 5; k++) {
-                OreSpawnMain.setBlockFast(world, x - 5, y + k, z + var21, Blocks.iron_ore, 0, 2);
+                OreSpawnMain.setBlockFast(world, x - 5, y + k, z + i, Blocks.iron_ore, 0, 2);
             }
         }
 
-        for (int var22 = 0; var22 < 5; var22++) {
+        for (int i = 0; i < 5; i++) {
             for (int k = 1; k < 5; k++) {
-                OreSpawnMain.setBlockFast(world, x - 4 + var22, y + k, z - 1, Blocks.iron_ore, 0, 2);
+                OreSpawnMain.setBlockFast(world, x - 4 + i, y + k, z - 1, Blocks.iron_ore, 0, 2);
             }
         }
 
-        for (int var23 = 0; var23 < 5; var23++) {
+        for (int i = 0; i < 5; i++) {
             for (int k = 1; k < 5; k++) {
-                OreSpawnMain.setBlockFast(world, x - 4 + var23, y + k, z + 30, Blocks.iron_ore, 0, 2);
+                OreSpawnMain.setBlockFast(world, x - 4 + i, y + k, z + 30, Blocks.iron_ore, 0, 2);
             }
         }
 
@@ -488,12 +488,12 @@ public class BasiliskMaze {
             OreSpawnMain.setBlockFast(world, x - 4, y + 1 + k, z, Blocks.sandstone, 0, 2);
         }
 
-        for (int var36 = 0; var36 < 4; var36++) {
-            OreSpawnMain.setBlockFast(world, x - 4, y + 1 + var36, z + 15, Blocks.sandstone, 0, 2);
+        for (int i = 0; i < 4; i++) {
+            OreSpawnMain.setBlockFast(world, x - 4, y + 1 + i, z + 15, Blocks.sandstone, 0, 2);
         }
 
-        for (int var37 = 0; var37 < 4; var37++) {
-            OreSpawnMain.setBlockFast(world, x - 4, y + 1 + var37, z + 29, Blocks.sandstone, 0, 2);
+        for (int i = 0; i < 4; i++) {
+            OreSpawnMain.setBlockFast(world, x - 4, y + 1 + i, z + 29, Blocks.sandstone, 0, 2);
         }
 
         OreSpawnMain.setBlockFast(world, x - 3, y + 3, z, OreSpawnMain.ExtremeTorch, 0, 2);
@@ -503,12 +503,12 @@ public class BasiliskMaze {
         OreSpawnMain.setBlockFast(world, x + 30, y + 4, z + 15, Blocks.redstone_torch, 0, 2);
         OreSpawnMain.setBlockFast(world, x + 30, y + 4, z + 27, Blocks.redstone_torch, 0, 2);
         TileEntityChest chest = null;
-        int var24 = 2 + world.rand.nextInt(3);
+        int n = 2 + world.rand.nextInt(3);
 
-        for (int var38 = 0; var38 < var24; var38++) {
-            OreSpawnMain.setBlockFast(world, x + 58, y + 4, z + 2 + var38 * 2, Blocks.torch, 0, 2);
-            OreSpawnMain.setBlockFast(world, x + 58, y + 1, z + 2 + var38 * 2, Blocks.chest, 0, 2);
-            chest = (TileEntityChest) world.getTileEntity(x + 58, y + 1, z + 2 + var38 * 2);
+        for (int i = 0; i < n; i++) {
+            OreSpawnMain.setBlockFast(world, x + 58, y + 4, z + 2 + i * 2, Blocks.torch, 0, 2);
+            OreSpawnMain.setBlockFast(world, x + 58, y + 1, z + 2 + i * 2, Blocks.chest, 0, 2);
+            chest = (TileEntityChest) world.getTileEntity(x + 58, y + 1, z + 2 + i * 2);
             if (chest != null) {
                 WeightedRandomChestContent
                     .generateChestContents(world.rand, this.chestContentsList, chest, 5 + world.rand.nextInt(6));
@@ -549,32 +549,32 @@ public class BasiliskMaze {
 
         int k = 0;
 
-        for (int var13 = width; var13 > -depth; var13--) {
+        for (int i2 = width; i2 > -depth; i2--) {
             for (int i = 0; i < 4; i++) {
-                OreSpawnMain.setBlockFast(world, x + i, y + var13, z, Blocks.bedrock, 0, 2);
-                OreSpawnMain.setBlockFast(world, x + i, y + var13, z + 3, Blocks.bedrock, 0, 2);
-                OreSpawnMain.setBlockFast(world, x, y + var13, z + i, Blocks.bedrock, 0, 2);
-                OreSpawnMain.setBlockFast(world, x + 3, y + var13, z + i, Blocks.bedrock, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + i, y + i2, z, Blocks.bedrock, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + i, y + i2, z + 3, Blocks.bedrock, 0, 2);
+                OreSpawnMain.setBlockFast(world, x, y + i2, z + i, Blocks.bedrock, 0, 2);
+                OreSpawnMain.setBlockFast(world, x + 3, y + i2, z + i, Blocks.bedrock, 0, 2);
             }
 
             for (int l = 0; l < 2; l++) {
                 for (int m = 0; m < 2; m++) {
-                    OreSpawnMain.setBlockFast(world, x + 1 + l, y + var13, z + 1 + m, Blocks.air, 0, 2);
+                    OreSpawnMain.setBlockFast(world, x + 1 + l, y + i2, z + 1 + m, Blocks.air, 0, 2);
                 }
             }
 
             switch (k) {
                 case 0:
-                    OreSpawnMain.setBlockFast(world, x + 1, y + var13, z + 1, Blocks.obsidian, 0, 2);
+                    OreSpawnMain.setBlockFast(world, x + 1, y + i2, z + 1, Blocks.obsidian, 0, 2);
                     break;
                 case 1:
-                    OreSpawnMain.setBlockFast(world, x + 2, y + var13, z + 1, Blocks.obsidian, 0, 2);
+                    OreSpawnMain.setBlockFast(world, x + 2, y + i2, z + 1, Blocks.obsidian, 0, 2);
                     break;
                 case 2:
-                    OreSpawnMain.setBlockFast(world, x + 2, y + var13, z + 2, Blocks.obsidian, 0, 2);
+                    OreSpawnMain.setBlockFast(world, x + 2, y + i2, z + 2, Blocks.obsidian, 0, 2);
                     break;
                 default:
-                    OreSpawnMain.setBlockFast(world, x + 1, y + var13, z + 2, Blocks.obsidian, 0, 2);
+                    OreSpawnMain.setBlockFast(world, x + 1, y + i2, z + 2, Blocks.obsidian, 0, 2);
             }
 
             if (++k > 3) {

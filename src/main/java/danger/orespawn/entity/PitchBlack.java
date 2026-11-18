@@ -43,8 +43,8 @@ public class PitchBlack extends EntityMob {
     private int damage_ticker = 0;
     private int wing_sound = 0;
 
-    public PitchBlack(World par1World) {
-        super(par1World);
+    public PitchBlack(World world) {
+        super(world);
         this.setSize(2.0F, 3.0F);
         this.getNavigator()
             .setAvoidsWater(false);
@@ -148,33 +148,33 @@ public class PitchBlack extends EntityMob {
         this.setSize(2.5F * this.getPitchBlackScale(), 3.5F * this.getPitchBlackScale());
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.setPitchBlackScale(par1NBTTagCompound.getFloat("Fscale"));
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.setPitchBlackScale(tag.getFloat("Fscale"));
         this.setSize(2.5F * this.getPitchBlackScale(), 3.5F * this.getPitchBlackScale());
         this.experienceValue = (int) (100.0F * this.getPitchBlackScale());
         this.fireResistance = (int) (25.0F * this.getPitchBlackScale());
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setFloat("Fscale", this.getPitchBlackScale());
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setFloat("Fscale", this.getPitchBlackScale());
     }
 
     public final int getAttacking() {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public final int getActivity() {
         return this.dataWatcher.getWatchableObjectByte(21);
     }
 
-    public final void setActivity(int par1) {
-        this.dataWatcher.updateObject(21, (byte) par1);
+    public final void setActivity(int activity) {
+        this.dataWatcher.updateObject(21, (byte) activity);
     }
 
     public float getPitchBlackScale() {
@@ -183,8 +183,8 @@ public class PitchBlack extends EntityMob {
         return f / 10.0F;
     }
 
-    public void setPitchBlackScale(float par1) {
-        float f = par1 * 10.0001F;
+    public void setPitchBlackScale(float f2) {
+        float f = f2 * 10.0001F;
         int i = (int) f;
         this.dataWatcher.updateObject(22, i);
     }
@@ -296,43 +296,43 @@ public class PitchBlack extends EntityMob {
         }
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        boolean var4 = false;
-        if (par1Entity != null && par1Entity instanceof EntityDragon) {
-            EntityDragon dr = (EntityDragon) par1Entity;
-            DamageSource var21 = null;
-            var21 = DamageSource.setExplosionSource(null);
-            var21.setExplosion();
+    public boolean attackEntityAsMob(Entity target) {
+        boolean flag = false;
+        if (target != null && target instanceof EntityDragon) {
+            EntityDragon dr = (EntityDragon) target;
+            DamageSource source = null;
+            source = DamageSource.setExplosionSource(null);
+            source.setExplosion();
             if (this.worldObj.rand.nextInt(8) == 1) {
                 dr.attackEntityFromPart(
                     dr.dragonPartHead,
-                    var21,
+                    source,
                     OreSpawnMain.PitchBlack_stats.attack * this.getPitchBlackScale());
             } else {
                 dr.attackEntityFromPart(
                     dr.dragonPartBody,
-                    var21,
+                    source,
                     OreSpawnMain.PitchBlack_stats.attack * this.getPitchBlackScale());
             }
 
-            var4 = true;
+            flag = true;
         } else {
-            var4 = par1Entity.attackEntityFrom(
+            flag = target.attackEntityFrom(
                 DamageSource.causeMobDamage(this),
                 OreSpawnMain.PitchBlack_stats.attack * this.getPitchBlackScale());
-            if (var4 && par1Entity != null && par1Entity instanceof EntityLivingBase) {
+            if (flag && target != null && target instanceof EntityLivingBase) {
                 double ks = 1.15 * this.getPitchBlackScale();
                 double inair = 0.08 * this.getPitchBlackScale();
-                float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-                if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+                float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+                if (target.isDead || target instanceof EntityPlayer) {
                     inair *= 2.0;
                 }
 
-                par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+                target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
             }
         }
 
-        return var4;
+        return flag;
     }
 
     public boolean canSeeTarget(double pX, double pY, double pZ) {
@@ -418,17 +418,17 @@ public class PitchBlack extends EntityMob {
                     }
                 }
 
-                double var1 = this.currentFlightTarget.posX + 0.4 - this.posX;
-                double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-                double var5 = this.currentFlightTarget.posZ + 0.4 - this.posZ;
+                double dx = this.currentFlightTarget.posX + 0.4 - this.posX;
+                double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+                double dz = this.currentFlightTarget.posZ + 0.4 - this.posZ;
                 double myspeed = 0.5F + this.getPitchBlackScale() / 10.0F;
-                this.motionX = this.motionX + (Math.signum(var1) * myspeed - this.motionX) * 0.33;
-                this.motionY = this.motionY + (Math.signum(var3) * 0.7F - this.motionY) * 0.20000000149011612;
-                this.motionZ = this.motionZ + (Math.signum(var5) * myspeed - this.motionZ) * 0.33;
-                float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-                float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+                this.motionX = this.motionX + (Math.signum(dx) * myspeed - this.motionX) * 0.33;
+                this.motionY = this.motionY + (Math.signum(dy) * 0.7F - this.motionY) * 0.20000000149011612;
+                this.motionZ = this.motionZ + (Math.signum(dz) * myspeed - this.motionZ) * 0.33;
+                float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+                float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
                 this.moveForward = 0.1F + (float) myspeed;
-                this.rotationYaw += var8 / 5.0F;
+                this.rotationYaw += f2 / 5.0F;
             }
         }
     }
@@ -437,22 +437,22 @@ public class PitchBlack extends EntityMob {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean doesEntityNotTriggerPressurePlate() {
         return false;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
         if (this.damage_ticker > 0) {
             return ret;
         } else {
             this.damage_ticker = 20;
-            ret = super.attackEntityFrom(par1DamageSource, par2);
-            Entity e = par1DamageSource.getEntity();
+            ret = super.attackEntityFrom(source, amount);
+            Entity e = source.getEntity();
             if (e != null && this.currentFlightTarget != null) {
                 this.currentFlightTarget.set((int) e.posX, (int) (e.posY + 2.0), (int) e.posZ);
             }
@@ -513,11 +513,11 @@ public class PitchBlack extends EntityMob {
 
                 int iy = ix * 3;
 
-                for (int var13 = -ix; var13 <= ix; var13++) {
+                for (int i = -ix; i <= ix; i++) {
                     for (int j = -ix; j <= ix; j++) {
                         for (int ixx = 1; ixx <= iy; ixx++) {
                             Block bid = this.worldObj
-                                .getBlock((int) this.posX + j, (int) this.posY + ixx, (int) this.posZ + var13);
+                                .getBlock((int) this.posX + j, (int) this.posY + ixx, (int) this.posZ + i);
                             if (bid != Blocks.air) {
                                 return false;
                             }
@@ -530,41 +530,41 @@ public class PitchBlack extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!(par1EntityLiving instanceof EntityLivingBase)) {
+        } else if (!(target instanceof EntityLivingBase)) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof PitchBlack) {
+            } else if (target instanceof PitchBlack) {
                 return false;
-            } else if (par1EntityLiving instanceof EnderReaper) {
+            } else if (target instanceof EnderReaper) {
                 return false;
-            } else if (par1EntityLiving instanceof LeafMonster) {
+            } else if (target instanceof LeafMonster) {
                 return false;
-            } else if (par1EntityLiving instanceof TerribleTerror) {
+            } else if (target instanceof TerribleTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof LurkingTerror) {
+            } else if (target instanceof LurkingTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof CreepingHorror) {
+            } else if (target instanceof CreepingHorror) {
                 return false;
-            } else if (par1EntityLiving instanceof Island) {
+            } else if (target instanceof Island) {
                 return false;
-            } else if (par1EntityLiving instanceof IslandToo) {
+            } else if (target instanceof IslandToo) {
                 return false;
-            } else if (par1EntityLiving instanceof Triffid) {
+            } else if (target instanceof Triffid) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -580,16 +580,16 @@ public class PitchBlack extends EntityMob {
         } else {
             double d1 = 16.0 + this.getPitchBlackScale() * 6.0F;
             double d2 = 10.0 + this.getPitchBlackScale() * 4.0F;
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(d1, d2, d1));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            EntityLivingBase var3 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (EntityLivingBase) var2.next();
-                if (this.isSuitableTarget(var3, false)) {
-                    return var3;
+            while (iterator.hasNext()) {
+                target = (EntityLivingBase) iterator.next();
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -601,10 +601,10 @@ public class PitchBlack extends EntityMob {
         return OreSpawnMain.MyNightmareScale;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(5) * this.getPitchBlackScale()
                 - OreSpawnMain.OreSpawnRand.nextInt(5) * this.getPitchBlackScale(),
@@ -612,17 +612,17 @@ public class PitchBlack extends EntityMob {
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(5) * this.getPitchBlackScale()
                 - OreSpawnMain.OreSpawnRand.nextInt(5) * this.getPitchBlackScale(),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         int i = 3 + this.worldObj.rand.nextInt(2 + (int) (5.0F * this.getPitchBlackScale()));
 
-        for (int var4 = 0; var4 < i; var4++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(Items.rotten_flesh, 1);
             int j = this.worldObj.rand.nextInt(10);
             if (j == 0) {
@@ -647,7 +647,7 @@ public class PitchBlack extends EntityMob {
         i = 2 + (int) this.getPitchBlackScale()
             + this.worldObj.rand.nextInt(2 + (int) (5.0F * this.getPitchBlackScale()));
 
-        for (int var7 = 0; var7 < i; var7++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(OreSpawnMain.ZooKeeper, 1);
         }
     }

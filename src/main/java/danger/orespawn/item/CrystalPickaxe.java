@@ -10,8 +10,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class CrystalPickaxe extends ItemPickaxe {
 
-    public CrystalPickaxe(int par1, ToolMaterial par2) {
-        super(par2);
+    public CrystalPickaxe(int n, ToolMaterial toolMaterial) {
+        super(toolMaterial);
         this.maxStackSize = 1;
         this.setCreativeTab(CreativeTabs.tabTools);
     }

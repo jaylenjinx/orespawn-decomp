@@ -39,59 +39,60 @@ public class UltimateArrow extends EntityArrow {
     private int ticksInAir = 0;
     private int knockbackStrength;
 
-    public UltimateArrow(World par1World) {
-        super(par1World);
+    public UltimateArrow(World world) {
+        super(world);
     }
 
-    public UltimateArrow(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public UltimateArrow(World world, double x, double y, double z) {
+        super(world, x, y, z);
     }
 
-    public UltimateArrow(World par1World, EntityLiving par2EntityLiving, EntityLivingBase par3EntityLiving, float par4,
-        float par5) {
-        super(par1World, par2EntityLiving, par3EntityLiving, par4, par5);
+    public UltimateArrow(World world, EntityLiving living2, EntityLivingBase living, float f, float f2) {
+        super(world, living2, living, f, f2);
     }
 
-    public UltimateArrow(World par1World, EntityPlayer par3EntityPlayer, float par3) {
-        super(par1World, par3EntityPlayer, par3);
+    public UltimateArrow(World world, EntityPlayer player, float f) {
+        super(world, player, f);
     }
 
     protected void entityInit() {
         this.dataWatcher.addObject(16, (byte) 0);
     }
 
-    public void setThrowableHeading(double par1, double par3, double par5, float par7, float par8) {
-        float var9 = MathHelper.sqrt_double(par1 * par1 + par3 * par3 + par5 * par5);
-        par1 /= var9;
-        par3 /= var9;
-        par5 /= var9;
-        par1 *= par7;
-        par3 *= par7;
-        par5 *= par7;
-        this.motionX = par1;
-        this.motionY = par3;
-        this.motionZ = par5;
-        float var10 = MathHelper.sqrt_double(par1 * par1 + par5 * par5);
-        this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(par1, par5) * 180.0 / Math.PI);
-        this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(par3, var10) * 180.0 / Math.PI);
+    public void setThrowableHeading(double vx, double vy, double vz, float velocity, float inaccuracy) {
+        float distance = MathHelper.sqrt_double(vx * vx + vy * vy + vz * vz);
+        vx /= distance;
+        vy /= distance;
+        vz /= distance;
+        vx *= velocity;
+        vy *= velocity;
+        vz *= velocity;
+        this.motionX = vx;
+        this.motionY = vy;
+        this.motionZ = vz;
+        float distance2 = MathHelper.sqrt_double(vx * vx + vz * vz);
+        this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(vx, vz) * 180.0 / Math.PI);
+        this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(vy, distance2) * 180.0 / Math.PI);
         this.ticksInGround = 0;
     }
 
     public void onUpdate() {
         super.onEntityUpdate();
         if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
-            float var1 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+            float distance = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
             this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0
                 / Math.PI);
-            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(this.motionY, var1) * 180.0 / Math.PI);
+            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(this.motionY, distance) * 180.0
+                / Math.PI);
         }
 
-        Block var16 = this.worldObj.getBlock(this.xTile, this.yTile, this.zTile);
-        if (var16 != Blocks.air) {
-            var16.setBlockBoundsBasedOnState(this.worldObj, this.xTile, this.yTile, this.zTile);
-            AxisAlignedBB var2 = var16
+        Block block = this.worldObj.getBlock(this.xTile, this.yTile, this.zTile);
+        if (block != Blocks.air) {
+            block.setBlockBoundsBasedOnState(this.worldObj, this.xTile, this.yTile, this.zTile);
+            AxisAlignedBB collisionBoundingBoxFromPool = block
                 .getCollisionBoundingBoxFromPool(this.worldObj, this.xTile, this.yTile, this.zTile);
-            if (var2 != null && var2.isVecInside(Vec3.createVectorHelper(this.posX, this.posY, this.posZ))) {
+            if (collisionBoundingBoxFromPool != null
+                && collisionBoundingBoxFromPool.isVecInside(Vec3.createVectorHelper(this.posX, this.posY, this.posZ))) {
                 this.inGround = true;
             }
         }
@@ -101,9 +102,9 @@ public class UltimateArrow extends EntityArrow {
         }
 
         if (this.inGround) {
-            Block var18 = this.worldObj.getBlock(this.xTile, this.yTile, this.zTile);
-            int var19 = this.worldObj.getBlockMetadata(this.xTile, this.yTile, this.zTile);
-            if (var18 != Blocks.air) {
+            Block block2 = this.worldObj.getBlock(this.xTile, this.yTile, this.zTile);
+            int meta = this.worldObj.getBlockMetadata(this.xTile, this.yTile, this.zTile);
+            if (block2 != Blocks.air) {
                 this.ticksInGround++;
                 if (this.ticksInGround == 500) {
                     this.setDead();
@@ -118,83 +119,83 @@ public class UltimateArrow extends EntityArrow {
             }
         } else {
             this.ticksInAir++;
-            Vec3 var17 = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-            Vec3 var3 = Vec3
+            Vec3 vec = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
+            Vec3 vec2 = Vec3
                 .createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-            MovingObjectPosition var4 = this.worldObj.rayTraceBlocks(var17, var3, true);
-            var17 = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-            var3 = Vec3
+            MovingObjectPosition hit = this.worldObj.rayTraceBlocks(vec, vec2, true);
+            vec = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
+            vec2 = Vec3
                 .createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-            if (var4 != null) {
-                var3 = Vec3.createVectorHelper(var4.hitVec.xCoord, var4.hitVec.yCoord, var4.hitVec.zCoord);
+            if (hit != null) {
+                vec2 = Vec3.createVectorHelper(hit.hitVec.xCoord, hit.hitVec.yCoord, hit.hitVec.zCoord);
             }
 
-            Entity var5 = null;
-            List var6 = this.worldObj.getEntitiesWithinAABBExcludingEntity(
+            Entity entity = null;
+            List entities = this.worldObj.getEntitiesWithinAABBExcludingEntity(
                 this,
                 this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ)
                     .expand(1.0, 1.0, 1.0));
-            double var7 = 0.0;
+            double d = 0.0;
 
-            for (int var9 = 0; var9 < var6.size(); var9++) {
-                Entity var10 = (Entity) var6.get(var9);
-                if (var10.canBeCollidedWith() && (var10 != this.shootingEntity || this.ticksInAir >= 5)
-                    && !(var10 instanceof Elevator)) {
-                    if (var10 instanceof Cephadrome) {
-                        Cephadrome c = (Cephadrome) var10;
+            for (int i = 0; i < entities.size(); i++) {
+                Entity entity2 = (Entity) entities.get(i);
+                if (entity2.canBeCollidedWith() && (entity2 != this.shootingEntity || this.ticksInAir >= 5)
+                    && !(entity2 instanceof Elevator)) {
+                    if (entity2 instanceof Cephadrome) {
+                        Cephadrome c = (Cephadrome) entity2;
                         if (c.riddenByEntity != null) {
                             continue;
                         }
                     }
 
-                    if (var10 instanceof Dragon) {
-                        Dragon c = (Dragon) var10;
+                    if (entity2 instanceof Dragon) {
+                        Dragon c = (Dragon) entity2;
                         if (c.riddenByEntity != null) {
                             continue;
                         }
                     }
 
-                    if (var10 instanceof EntityHorse) {
-                        EntityHorse c = (EntityHorse) var10;
+                    if (entity2 instanceof EntityHorse) {
+                        EntityHorse c = (EntityHorse) entity2;
                         if (c.riddenByEntity != null) {
                             continue;
                         }
                     }
 
-                    float var11 = 0.3F;
-                    AxisAlignedBB var12 = var10.boundingBox.expand(var11, var11, var11);
-                    MovingObjectPosition var13 = var12.calculateIntercept(var17, var3);
-                    if (var13 != null) {
-                        double var14 = var17.distanceTo(var13.hitVec);
-                        if (var14 < var7 || var7 == 0.0) {
-                            var5 = var10;
-                            var7 = var14;
+                    float f = 0.3F;
+                    AxisAlignedBB box = entity2.boundingBox.expand(f, f, f);
+                    MovingObjectPosition hit2 = box.calculateIntercept(vec, vec2);
+                    if (hit2 != null) {
+                        double d2 = vec.distanceTo(hit2.hitVec);
+                        if (d2 < d || d == 0.0) {
+                            entity = entity2;
+                            d = d2;
                         }
                     }
                 }
             }
 
-            if (var5 != null) {
-                var4 = new MovingObjectPosition(var5);
+            if (entity != null) {
+                hit = new MovingObjectPosition(entity);
             }
 
-            if (var4 != null) {
-                if (var4.entityHit != null) {
-                    float var20 = MathHelper.sqrt_double(
+            if (hit != null) {
+                if (hit.entityHit != null) {
+                    float distance = MathHelper.sqrt_double(
                         this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
-                    float var23 = MathHelper.ceiling_double_int((double) var20 * OreSpawnMain.UltimateBowDamage);
+                    float amount = MathHelper.ceiling_double_int((double) distance * OreSpawnMain.UltimateBowDamage);
                     if (OreSpawnMain.ultimate_sword_pvp == 0) {
-                        if (var4.entityHit instanceof EntityPlayer || var4.entityHit instanceof Girlfriend
-                            || var4.entityHit instanceof Boyfriend) {
-                            EntityLivingBase e = (EntityLivingBase) var4.entityHit;
+                        if (hit.entityHit instanceof EntityPlayer || hit.entityHit instanceof Girlfriend
+                            || hit.entityHit instanceof Boyfriend) {
+                            EntityLivingBase e = (EntityLivingBase) hit.entityHit;
                             this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
                             e.heal(1.0F);
                             this.setDead();
                             return;
                         }
 
-                        if (var4.entityHit instanceof EntityTameable) {
-                            EntityTameable t = (EntityTameable) var4.entityHit;
+                        if (hit.entityHit instanceof EntityTameable) {
+                            EntityTameable t = (EntityTameable) hit.entityHit;
                             if (t.isTamed()) {
                                 this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
                                 t.heal(1.0F);
@@ -205,40 +206,40 @@ public class UltimateArrow extends EntityArrow {
                     }
 
                     if (this.getIsCritical()) {
-                        var23 += this.rand.nextInt((int) var23 / 2 + 2);
+                        amount += this.rand.nextInt((int) amount / 2 + 2);
                     }
 
-                    DamageSource var21 = null;
+                    DamageSource source = null;
                     if (this.shootingEntity == null) {
-                        var21 = DamageSource.causeArrowDamage(this, this);
+                        source = DamageSource.causeArrowDamage(this, this);
                     } else {
-                        var21 = DamageSource.causeArrowDamage(this, this.shootingEntity);
+                        source = DamageSource.causeArrowDamage(this, this.shootingEntity);
                     }
 
                     if (this.isBurning()) {
-                        var4.entityHit.setFire(5);
+                        hit.entityHit.setFire(5);
                     }
 
-                    if (var4.entityHit.attackEntityFrom(var21, var23)) {
-                        if (var4.entityHit instanceof EntityLiving) {
-                            EntityLiving var24 = (EntityLiving) var4.entityHit;
+                    if (hit.entityHit.attackEntityFrom(source, amount)) {
+                        if (hit.entityHit instanceof EntityLiving) {
+                            EntityLiving entityHit = (EntityLiving) hit.entityHit;
                             if (!this.worldObj.isRemote) {
-                                var24.setArrowCountInEntity(var24.getArrowCountInEntity() + 1);
+                                entityHit.setArrowCountInEntity(entityHit.getArrowCountInEntity() + 1);
                             }
 
                             if (this.knockbackStrength > 0) {
-                                float var26 = MathHelper
+                                float distance2 = MathHelper
                                     .sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-                                if (var26 > 0.0F) {
-                                    var4.entityHit.addVelocity(
-                                        this.motionX * this.knockbackStrength * 0.6F / var26,
+                                if (distance2 > 0.0F) {
+                                    hit.entityHit.addVelocity(
+                                        this.motionX * this.knockbackStrength * 0.6F / distance2,
                                         0.1,
-                                        this.motionZ * this.knockbackStrength * 0.6F / var26);
+                                        this.motionZ * this.knockbackStrength * 0.6F / distance2);
                                 }
                             }
 
-                            if (this.shootingEntity != null && var4.entityHit != this.shootingEntity
-                                && var4.entityHit instanceof EntityPlayer
+                            if (this.shootingEntity != null && hit.entityHit != this.shootingEntity
+                                && hit.entityHit instanceof EntityPlayer
                                 && this.shootingEntity instanceof EntityPlayerMP) {
                                 ((EntityPlayerMP) this.shootingEntity).playerNetServerHandler
                                     .sendPacket(new S2BPacketChangeGameState(6, 0.0F));
@@ -256,19 +257,19 @@ public class UltimateArrow extends EntityArrow {
                         this.ticksInAir = 0;
                     }
                 } else {
-                    this.xTile = var4.blockX;
-                    this.yTile = var4.blockY;
-                    this.zTile = var4.blockZ;
+                    this.xTile = hit.blockX;
+                    this.yTile = hit.blockY;
+                    this.zTile = hit.blockZ;
                     this.inTile = this.worldObj.getBlock(this.xTile, this.yTile, this.zTile);
                     this.inData = this.worldObj.getBlockMetadata(this.xTile, this.yTile, this.zTile);
-                    this.motionX = (float) (var4.hitVec.xCoord - this.posX);
-                    this.motionY = (float) (var4.hitVec.yCoord - this.posY);
-                    this.motionZ = (float) (var4.hitVec.zCoord - this.posZ);
-                    float var20x = MathHelper.sqrt_double(
+                    this.motionX = (float) (hit.hitVec.xCoord - this.posX);
+                    this.motionY = (float) (hit.hitVec.yCoord - this.posY);
+                    this.motionZ = (float) (hit.hitVec.zCoord - this.posZ);
+                    float distance = MathHelper.sqrt_double(
                         this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
-                    this.posX = this.posX - this.motionX / var20x * 0.05;
-                    this.posY = this.posY - this.motionY / var20x * 0.05;
-                    this.posZ = this.posZ - this.motionZ / var20x * 0.05;
+                    this.posX = this.posX - this.motionX / distance * 0.05;
+                    this.posY = this.posY - this.motionY / distance * 0.05;
+                    this.posZ = this.posZ - this.motionZ / distance * 0.05;
                     this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
                     this.inGround = true;
                     this.arrowShake = 7;
@@ -280,12 +281,12 @@ public class UltimateArrow extends EntityArrow {
             }
 
             if (this.getIsCritical()) {
-                for (int var221 = 0; var221 < 4; var221++) {
+                for (int i = 0; i < 4; i++) {
                     this.worldObj.spawnParticle(
                         "crit",
-                        this.posX + this.motionX * var221 / 4.0,
-                        this.posY + this.motionY * var221 / 4.0,
-                        this.posZ + this.motionZ * var221 / 4.0,
+                        this.posX + this.motionX * i / 4.0,
+                        this.posY + this.motionY * i / 4.0,
+                        this.posZ + this.motionZ * i / 4.0,
                         -this.motionX,
                         -this.motionY + 0.2,
                         -this.motionZ);
@@ -295,9 +296,9 @@ public class UltimateArrow extends EntityArrow {
             this.posX = this.posX + this.motionX;
             this.posY = this.posY + this.motionY;
             this.posZ = this.posZ + this.motionZ;
-            float var20x = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+            float distance = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
             this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0 / Math.PI);
-            this.rotationPitch = (float) (Math.atan2(this.motionY, var20x) * 180.0 / Math.PI);
+            this.rotationPitch = (float) (Math.atan2(this.motionY, distance) * 180.0 / Math.PI);
 
             while (this.rotationPitch - this.prevRotationPitch < -180.0F) {
                 this.prevRotationPitch -= 360.0F;
@@ -317,38 +318,38 @@ public class UltimateArrow extends EntityArrow {
 
             this.rotationPitch = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 0.2F;
             this.rotationYaw = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 0.2F;
-            float var22 = 0.99F;
-            float var11 = 0.05F;
+            float motionX = 0.99F;
+            float motionY = 0.05F;
             if (this.isInWater()) {
-                for (int var25 = 0; var25 < 4; var25++) {
-                    float var26 = 0.25F;
+                for (int i = 0; i < 4; i++) {
+                    float f = 0.25F;
                     this.worldObj.spawnParticle(
                         "bubble",
-                        this.posX - this.motionX * var26,
-                        this.posY - this.motionY * var26,
-                        this.posZ - this.motionZ * var26,
+                        this.posX - this.motionX * f,
+                        this.posY - this.motionY * f,
+                        this.posZ - this.motionZ * f,
                         this.motionX,
                         this.motionY,
                         this.motionZ);
                 }
 
-                var22 = 0.8F;
+                motionX = 0.8F;
             }
 
-            this.motionX *= var22;
-            this.motionY *= var22;
-            this.motionZ *= var22;
-            this.motionY -= var11;
+            this.motionX *= motionX;
+            this.motionY *= motionX;
+            this.motionZ *= motionX;
+            this.motionY -= motionY;
             this.setPosition(this.posX, this.posY, this.posZ);
             this.func_145775_I();
         }
     }
 
-    public void setKnockbackStrength(int par1) {
-        this.knockbackStrength = par1;
+    public void setKnockbackStrength(int knockbackStrength2) {
+        this.knockbackStrength = knockbackStrength2;
     }
 
-    public void setDamage(double par1) {}
+    public void setDamage(double d) {}
 
     public double getDamage() {
         return OreSpawnMain.UltimateBowDamage;

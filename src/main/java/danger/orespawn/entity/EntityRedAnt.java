@@ -22,8 +22,8 @@ public class EntityRedAnt extends EntityAnt {
 
     int attack_delay = 20;
 
-    public EntityRedAnt(World par1World) {
-        super(par1World);
+    public EntityRedAnt(World world) {
+        super(world);
         this.setSize(0.2F, 0.2F);
         this.moveSpeed = 0.2F;
         this.experienceValue = 1;
@@ -53,37 +53,36 @@ public class EntityRedAnt extends EntityAnt {
         return 2;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         if (OreSpawnMain.OreSpawnRand.nextInt(15) != 0) {
             return false;
         } else {
             return this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL ? false
-                : par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), 1.0F);
+                : target.attackEntityFrom(DamageSource.causeMobDamage(this), 1.0F);
         }
     }
 
     @Override
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        if (par1EntityPlayer == null) {
+    public boolean interact(EntityPlayer player) {
+        if (player == null) {
             return false;
-        } else if (!(par1EntityPlayer instanceof EntityPlayerMP)) {
+        } else if (!(player instanceof EntityPlayerMP)) {
             return false;
         } else {
-            ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-            if (var2 != null && var2.stackSize <= 0) {
-                par1EntityPlayer.inventory
-                    .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-                var2 = null;
+            ItemStack currentItem = player.inventory.getCurrentItem();
+            if (currentItem != null && currentItem.stackSize <= 0) {
+                player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                currentItem = null;
             }
 
-            if (var2 != null) {
+            if (currentItem != null) {
                 return false;
             } else {
-                if (par1EntityPlayer.dimension != OreSpawnMain.DimensionID2) {
+                if (player.dimension != OreSpawnMain.DimensionID2) {
                     MinecraftServer.getServer()
                         .getConfigurationManager()
                         .transferPlayerToDimension(
-                            (EntityPlayerMP) par1EntityPlayer,
+                            (EntityPlayerMP) player,
                             OreSpawnMain.DimensionID2,
                             new OreSpawnTeleporter(
                                 MinecraftServer.getServer()
@@ -94,7 +93,7 @@ public class EntityRedAnt extends EntityAnt {
                     MinecraftServer.getServer()
                         .getConfigurationManager()
                         .transferPlayerToDimension(
-                            (EntityPlayerMP) par1EntityPlayer,
+                            (EntityPlayerMP) player,
                             0,
                             new OreSpawnTeleporter(
                                 MinecraftServer.getServer()

@@ -15,7 +15,7 @@ import danger.orespawn.entity.projectile.UltimateFishHook;
 
 public class UltimateFishingRod extends Item {
 
-    public UltimateFishingRod(int par1) {
+    public UltimateFishingRod(int n) {
         this.setMaxDamage(3000);
         this.setMaxStackSize(1);
         this.setCreativeTab(CreativeTabs.tabTools);
@@ -25,8 +25,8 @@ public class UltimateFishingRod extends Item {
         return true;
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        par1ItemStack.addEnchantment(Enchantment.unbreaking, 2);
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+        stack.addEnchantment(Enchantment.unbreaking, 2);
     }
 
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
@@ -40,22 +40,21 @@ public class UltimateFishingRod extends Item {
         return true;
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (par3EntityPlayer.fishEntity != null) {
-            int var4 = par3EntityPlayer.fishEntity.func_146034_e();
-            par1ItemStack.damageItem(var4, par3EntityPlayer);
-            par3EntityPlayer.swingItem();
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (player.fishEntity != null) {
+            int n = player.fishEntity.func_146034_e();
+            stack.damageItem(n, player);
+            player.swingItem();
         } else {
-            par2World
-                .playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-            if (!par2World.isRemote) {
-                par2World.spawnEntityInWorld(new UltimateFishHook(par2World, par3EntityPlayer));
+            world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+            if (!world.isRemote) {
+                world.spawnEntityInWorld(new UltimateFishHook(world, player));
             }
 
-            par3EntityPlayer.swingItem();
+            player.swingItem();
         }
 
-        return par1ItemStack;
+        return stack;
     }
 
     @SideOnly(Side.CLIENT)

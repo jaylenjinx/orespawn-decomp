@@ -16,10 +16,10 @@ public class MyEntityAIWanderALot extends EntityAIBase {
     private int xzRange = 10;
     private int busy = 0;
 
-    public MyEntityAIWanderALot(EntityCreature par1EntityCreature, int par1, double par2) {
-        this.entity = par1EntityCreature;
-        this.xzRange = par1;
-        this.speed = par2;
+    public MyEntityAIWanderALot(EntityCreature creature, int xzRange2, double speed2) {
+        this.entity = creature;
+        this.xzRange = xzRange2;
+        this.speed = speed2;
         this.setMutexBits(1);
     }
 
@@ -35,13 +35,13 @@ public class MyEntityAIWanderALot extends EntityAIBase {
         } else if (this.entity instanceof EntityTameable && ((EntityTameable) this.entity).isSitting()) {
             return false;
         } else {
-            Vec3 var1 = RandomPositionGenerator.findRandomTarget(this.entity, this.xzRange, 7);
-            if (var1 == null) {
+            Vec3 randomTarget = RandomPositionGenerator.findRandomTarget(this.entity, this.xzRange, 7);
+            if (randomTarget == null) {
                 return false;
             } else {
-                this.xPosition = var1.xCoord;
-                this.yPosition = var1.yCoord;
-                this.zPosition = var1.zCoord;
+                this.xPosition = randomTarget.xCoord;
+                this.yPosition = randomTarget.yCoord;
+                this.zPosition = randomTarget.zCoord;
                 return true;
             }
         }

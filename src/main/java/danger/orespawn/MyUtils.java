@@ -61,57 +61,57 @@ public class MyUtils {
         }
     }
 
-    public static boolean isAttackableNonMob(EntityLivingBase par1EntityLiving) {
-        if (par1EntityLiving instanceof EntityMob) {
+    public static boolean isAttackableNonMob(EntityLivingBase living) {
+        if (living instanceof EntityMob) {
             return true;
-        } else if (par1EntityLiving instanceof Mothra) {
+        } else if (living instanceof Mothra) {
             return true;
-        } else if (par1EntityLiving instanceof Leon) {
+        } else if (living instanceof Leon) {
             return true;
-        } else if (par1EntityLiving instanceof Dragon) {
+        } else if (living instanceof Dragon) {
             return true;
-        } else if (par1EntityLiving instanceof Spyro) {
+        } else if (living instanceof Spyro) {
             return true;
-        } else if (isRoyalty(par1EntityLiving)) {
+        } else if (isRoyalty(living)) {
             return true;
-        } else if (par1EntityLiving instanceof GammaMetroid) {
+        } else if (living instanceof GammaMetroid) {
             return true;
-        } else if (par1EntityLiving instanceof Cephadrome) {
+        } else if (living instanceof Cephadrome) {
             return true;
-        } else if (par1EntityLiving instanceof WaterDragon) {
+        } else if (living instanceof WaterDragon) {
             return true;
-        } else if (par1EntityLiving instanceof Girlfriend) {
+        } else if (living instanceof Girlfriend) {
             return true;
-        } else if (par1EntityLiving instanceof Boyfriend) {
+        } else if (living instanceof Boyfriend) {
             return true;
         } else {
-            return par1EntityLiving instanceof EntityVillager ? true : par1EntityLiving instanceof Stinky;
+            return living instanceof EntityVillager ? true : living instanceof Stinky;
         }
     }
 
-    public static boolean isIgnoreable(EntityLivingBase par1EntityLiving) {
-        if (par1EntityLiving instanceof RockBase) {
+    public static boolean isIgnoreable(EntityLivingBase living) {
+        if (living instanceof RockBase) {
             return true;
-        } else if (par1EntityLiving instanceof EntityAnt) {
+        } else if (living instanceof EntityAnt) {
             return true;
-        } else if (par1EntityLiving instanceof EntityButterfly) {
+        } else if (living instanceof EntityButterfly) {
             return true;
-        } else if (par1EntityLiving instanceof EntityMosquito) {
+        } else if (living instanceof EntityMosquito) {
             return true;
-        } else if (par1EntityLiving instanceof Dragonfly) {
+        } else if (living instanceof Dragonfly) {
             return true;
-        } else if (par1EntityLiving instanceof Firefly) {
+        } else if (living instanceof Firefly) {
             return true;
-        } else if (par1EntityLiving instanceof Cricket) {
+        } else if (living instanceof Cricket) {
             return true;
-        } else if (par1EntityLiving instanceof Cockateil) {
+        } else if (living instanceof Cockateil) {
             return true;
-        } else if (par1EntityLiving instanceof Termite) {
+        } else if (living instanceof Termite) {
             return true;
-        } else if (par1EntityLiving instanceof Ghost) {
+        } else if (living instanceof Ghost) {
             return true;
         } else {
-            return par1EntityLiving instanceof GhostSkelly ? true : par1EntityLiving instanceof Elevator;
+            return living instanceof GhostSkelly ? true : living instanceof Elevator;
         }
     }
 }

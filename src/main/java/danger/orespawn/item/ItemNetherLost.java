@@ -18,14 +18,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemNetherLost extends Item {
 
-    public ItemNetherLost(int par1) {
+    public ItemNetherLost(int n) {
         this.maxStackSize = 1;
         this.setMaxDamage(3000);
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        par1ItemStack.addEnchantment(Enchantment.sharpness, 2);
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+        stack.addEnchantment(Enchantment.sharpness, 2);
     }
 
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
@@ -35,22 +35,22 @@ public class ItemNetherLost extends Item {
         }
     }
 
-    public void onUpdate(ItemStack stack, World par2World, Entity par3Entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
         EntityLivingBase e = null;
         EntityPlayer p = null;
         this.onUsingTick(stack, (EntityPlayer) null, 0);
-        if (par2World != null) {
-            if (par3Entity != null && par3Entity instanceof EntityLivingBase) {
-                e = (EntityLivingBase) par3Entity;
+        if (world != null) {
+            if (entity != null && entity instanceof EntityLivingBase) {
+                e = (EntityLivingBase) entity;
                 if (e instanceof EntityPlayer) {
                     p = (EntityPlayer) e;
                     ItemStack is = p.getCurrentEquippedItem();
                     if (is != null) {
                         Item it = is.getItem();
-                        if (it != null && it instanceof ItemNetherLost && par2World.provider.dimensionId == -1) {
-                            Block i = par2World.getBlock((int) p.posX, (int) p.posY - 1, (int) p.posZ);
+                        if (it != null && it instanceof ItemNetherLost && world.provider.dimensionId == -1) {
+                            Block i = world.getBlock((int) p.posX, (int) p.posY - 1, (int) p.posZ);
                             if (i == Blocks.netherrack) {
-                                par2World.setBlock((int) p.posX, (int) p.posY - 1, (int) p.posZ, Blocks.quartz_block);
+                                world.setBlock((int) p.posX, (int) p.posY - 1, (int) p.posZ, Blocks.quartz_block);
                             }
                         }
                     }
@@ -59,7 +59,7 @@ public class ItemNetherLost extends Item {
         }
     }
 
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 3000;
     }
 

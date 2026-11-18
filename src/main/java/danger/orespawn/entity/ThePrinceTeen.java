@@ -83,8 +83,8 @@ public class ThePrinceTeen extends EntityTameable {
     private int day_count = 0;
     private int is_day = 0;
 
-    public ThePrinceTeen(World par1World) {
-        super(par1World);
+    public ThePrinceTeen(World world) {
+        super(world);
         this.setSize(3.25F, 4.25F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -111,15 +111,15 @@ public class ThePrinceTeen extends EntityTameable {
         this.renderdata = new RenderInfo();
     }
 
-    public ThePrinceTeen(World par1World, double par2, double par4, double par6) {
-        this(par1World);
-        this.setPosition(par2, par4 + this.yOffset, par6);
+    public ThePrinceTeen(World world, double x, double y, double z) {
+        this(world);
+        this.setPosition(x, y + this.yOffset, z);
         this.motionX = 0.0;
         this.motionY = 0.0;
         this.motionZ = 0.0;
-        this.prevPosX = par2;
-        this.prevPosY = par4;
-        this.prevPosZ = par6;
+        this.prevPosX = x;
+        this.prevPosY = y;
+        this.prevPosZ = z;
     }
 
     protected void applyEntityAttributes() {
@@ -162,27 +162,27 @@ public class ThePrinceTeen extends EntityTameable {
         return this.dataWatcher.getWatchableObjectInt(25);
     }
 
-    public void setHead1Ext(int par1) {
+    public void setHead1Ext(int n) {
         if (this.worldObj == null || !this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(22, par1);
+            this.dataWatcher.updateObject(22, n);
         }
     }
 
-    public void setHead2Ext(int par1) {
+    public void setHead2Ext(int n) {
         if (this.worldObj == null || !this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(23, par1);
+            this.dataWatcher.updateObject(23, n);
         }
     }
 
-    public void setHead3Ext(int par1) {
+    public void setHead3Ext(int n) {
         if (this.worldObj == null || !this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(25, par1);
+            this.dataWatcher.updateObject(25, n);
         }
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     protected boolean canTriggerWalking() {
         return true;
@@ -291,44 +291,44 @@ public class ThePrinceTeen extends EntityTameable {
         return OreSpawnMain.ThePrinceEgg;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         this.dropItemRand(OreSpawnMain.ThePrinceEgg, 1);
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         double ks = 1.75;
         double inair = 0.1;
         float iskraken = 1.0F;
-        if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
-            if (par1Entity instanceof Kraken) {
+        if (target != null && target instanceof EntityLivingBase) {
+            if (target instanceof Kraken) {
                 iskraken = 2.0F;
             }
 
-            par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), iskraken * 45.0F);
-            float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-            if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+            target.attackEntityFrom(DamageSource.causeMobDamage(this), iskraken * 45.0F);
+            float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+            if (target.isDead || target instanceof EntityPlayer) {
                 inair *= 2.0;
             }
 
-            par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
-            if (par1Entity instanceof EntityLiving) {
-                EntityLiving e = (EntityLiving) par1Entity;
+            target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+            if (target instanceof EntityLiving) {
+                EntityLiving e = (EntityLiving) target;
                 if (e.getHealth() <= 0.0F) {
                     this.kill_count++;
                 }
@@ -338,30 +338,30 @@ public class ThePrinceTeen extends EntityTameable {
         return true;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
         Entity e = null;
         if (this.hurt_timer > 0) {
             return false;
-        } else if (par1DamageSource.getDamageType()
+        } else if (source.getDamageType()
             .equals("cactus")) {
                 return ret;
-            } else if (par1DamageSource.getDamageType()
+            } else if (source.getDamageType()
                 .equals("inFire")) {
                     return ret;
-                } else if (par1DamageSource.getDamageType()
+                } else if (source.getDamageType()
                     .equals("onFire")) {
                         return ret;
-                    } else if (par1DamageSource.getDamageType()
+                    } else if (source.getDamageType()
                         .equals("lava")) {
                             return ret;
-                        } else if (par1DamageSource.getDamageType()
+                        } else if (source.getDamageType()
                             .equals("inWall")) {
                                 return ret;
                             } else {
                                 this.setSitting(false);
                                 this.setActivity(1);
-                                e = par1DamageSource.getEntity();
+                                e = source.getEntity();
                                 if (e != null && e instanceof BetterFireball) {
                                     e.setDead();
                                     return ret;
@@ -373,7 +373,7 @@ public class ThePrinceTeen extends EntityTameable {
                                 } else if (e != null && e instanceof Spyro) {
                                     return false;
                                 } else {
-                                    ret = super.attackEntityFrom(par1DamageSource, par2);
+                                    ret = super.attackEntityFrom(source, amount);
                                     this.hurt_timer = 20;
                                     if (e != null && e instanceof EntityLivingBase) {
                                         if (this.isTamed() && e instanceof EntityPlayer) {
@@ -503,34 +503,34 @@ public class ThePrinceTeen extends EntityTameable {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (MyUtils.isRoyalty(par1EntityLiving)) {
+            } else if (MyUtils.isRoyalty(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityMob) {
+            } else if (target instanceof EntityMob) {
                 return true;
-            } else if (par1EntityLiving instanceof Mothra) {
+            } else if (target instanceof Mothra) {
                 return true;
-            } else if (par1EntityLiving instanceof Kraken) {
+            } else if (target instanceof Kraken) {
                 return true;
-            } else if (par1EntityLiving instanceof Leon) {
-                Leon l = (Leon) par1EntityLiving;
+            } else if (target instanceof Leon) {
+                Leon l = (Leon) target;
                 return !l.isTamed();
-            } else if (par1EntityLiving instanceof WaterDragon) {
-                WaterDragon l = (WaterDragon) par1EntityLiving;
+            } else if (target instanceof WaterDragon) {
+                WaterDragon l = (WaterDragon) target;
                 return !l.isTamed();
-            } else if (par1EntityLiving instanceof GammaMetroid) {
-                GammaMetroid l = (GammaMetroid) par1EntityLiving;
+            } else if (target instanceof GammaMetroid) {
+                GammaMetroid l = (GammaMetroid) target;
                 return !l.isTamed();
             } else {
                 return false;
@@ -541,18 +541,18 @@ public class ThePrinceTeen extends EntityTameable {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(25.0, 20.0, 25.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -576,20 +576,21 @@ public class ThePrinceTeen extends EntityTameable {
     }
 
     @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
-        super.setPositionAndRotation2(par1, par3, par5, par7, par8, par9);
-        this.boatPosRotationIncrements = par9;
-        this.boatX = par1;
-        this.boatY = par3;
-        this.boatZ = par5;
-        this.boatYaw = par7;
-        this.boatPitch = par8;
-        this.boatYawHead = par7;
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch,
+        int posRotationIncrements) {
+        super.setPositionAndRotation2(x, y, z, yaw, pitch, posRotationIncrements);
+        this.boatPosRotationIncrements = posRotationIncrements;
+        this.boatX = x;
+        this.boatY = y;
+        this.boatZ = z;
+        this.boatYaw = yaw;
+        this.boatPitch = pitch;
+        this.boatYawHead = yaw;
     }
 
     @SideOnly(Side.CLIENT)
-    public void setVelocity(double par1, double par3, double par5) {
-        super.setVelocity(par1, par3, par5);
+    public void setVelocity(double vx, double vy, double vz) {
+        super.setVelocity(vx, vy, vz);
     }
 
     public void onUpdate() {
@@ -721,9 +722,9 @@ public class ThePrinceTeen extends EntityTameable {
         int has_owner = 0;
         EntityLivingBase e = null;
         double speed_factor = 0.5;
-        double var1 = 0.0;
-        double var3 = 0.0;
-        double var5 = 0.0;
+        double dx2 = 0.0;
+        double dy = 0.0;
+        double dz2 = 0.0;
         double gh = 1.25;
         double obstruction_factor = 0.0;
         double velocity = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
@@ -883,9 +884,9 @@ public class ThePrinceTeen extends EntityTameable {
                 this.motionY += obstruction_factor * 0.05;
                 this.posY += obstruction_factor * 0.05;
                 speed_factor = 0.5;
-                var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-                var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-                var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+                dx2 = this.currentFlightTarget.posX + 0.5 - this.posX;
+                dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+                dz2 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
                 if (this.owner_flying != 0) {
                     speed_factor = 1.75;
                     if (this.isTamed() && this.getOwner() != null) {
@@ -896,13 +897,13 @@ public class ThePrinceTeen extends EntityTameable {
                     }
                 }
 
-                this.motionX = this.motionX + (Math.signum(var1) - this.motionX) * 0.15 * speed_factor;
-                this.motionY = this.motionY + (Math.signum(var3) - this.motionY) * 0.21 * speed_factor;
-                this.motionZ = this.motionZ + (Math.signum(var5) - this.motionZ) * 0.15 * speed_factor;
-                float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-                float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+                this.motionX = this.motionX + (Math.signum(dx2) - this.motionX) * 0.15 * speed_factor;
+                this.motionY = this.motionY + (Math.signum(dy) - this.motionY) * 0.21 * speed_factor;
+                this.motionZ = this.motionZ + (Math.signum(dz2) - this.motionZ) * 0.15 * speed_factor;
+                float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+                float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
                 this.moveForward = (float) (0.75 * speed_factor);
-                this.rotationYaw += var8 / 4.0F;
+                this.rotationYaw += f2 / 4.0F;
                 this.moveEntity(this.motionX, this.motionY, this.motionZ);
             }
         }
@@ -986,11 +987,11 @@ public class ThePrinceTeen extends EntityTameable {
                         }
 
                         obstruction_factor = 0.0;
-                        int var101 = 3;
-                        var101 += (int) (velocity * 7.0);
+                        int n = 3;
+                        n += (int) (velocity * 7.0);
 
-                        for (int k = 1; k < var101; k++) {
-                            for (int i = 1; i < var101 * 2; i++) {
+                        for (int k = 1; k < n; k++) {
+                            for (int i = 1; i < n * 2; i++) {
                                 double dx = i * Math.cos(Math.toRadians(this.rotationYaw + 90.0F));
                                 double dz = i * Math.sin(Math.toRadians(this.rotationYaw + 90.0F));
                                 bid = this.worldObj
@@ -1175,32 +1176,32 @@ public class ThePrinceTeen extends EntityTameable {
                                 yoff += this.getHead3Ext() * 0.04F;
                                 double cx = this.posX - xzoff * Math.sin(Math.toRadians(this.rotationYaw + 10.0F));
                                 double cz = this.posZ + xzoff * Math.cos(Math.toRadians(this.rotationYaw + 10.0F));
-                                IceBall var2 = new IceBall(this.worldObj, cx, this.posY + yoff, cz);
-                                var2.setLocationAndAngles(
+                                IceBall iceBall = new IceBall(this.worldObj, cx, this.posY + yoff, cz);
+                                iceBall.setLocationAndAngles(
                                     cx,
                                     this.posY + yoff,
                                     cz,
                                     pp.rotationYaw + 90.0F,
                                     pp.rotationPitch);
-                                var2.setIceMaker(1);
-                                double var3 = Math.cos(Math.toRadians(pp.rotationYaw + 90.0F));
-                                double var5 = -Math.sin(Math.toRadians(pp.rotationPitch));
-                                double var77 = Math.sin(Math.toRadians(pp.rotationYaw + 90.0F));
-                                float var9 = MathHelper.sqrt_double(var3 * var3 + var77 * var77) * 0.2F;
-                                var2.setThrowableHeading(var3, var5 + var9, var77, 1.4F, 5.0F);
-                                var2.posX = var2.posX - this.motionX * 3.0;
-                                var2.posY = var2.posY - this.motionY * 3.0;
-                                var2.posZ = var2.posZ - this.motionZ * 3.0;
-                                var2.motionX *= 2.0;
-                                var2.motionY *= 2.0;
-                                var2.motionZ *= 2.0;
+                                iceBall.setIceMaker(1);
+                                double vx = Math.cos(Math.toRadians(pp.rotationYaw + 90.0F));
+                                double d = -Math.sin(Math.toRadians(pp.rotationPitch));
+                                double vz = Math.sin(Math.toRadians(pp.rotationYaw + 90.0F));
+                                float f = MathHelper.sqrt_double(vx * vx + vz * vz) * 0.2F;
+                                iceBall.setThrowableHeading(vx, d + f, vz, 1.4F, 5.0F);
+                                iceBall.posX = iceBall.posX - this.motionX * 3.0;
+                                iceBall.posY = iceBall.posY - this.motionY * 3.0;
+                                iceBall.posZ = iceBall.posZ - this.motionZ * 3.0;
+                                iceBall.motionX *= 2.0;
+                                iceBall.motionY *= 2.0;
+                                iceBall.motionZ *= 2.0;
                                 this.worldObj.playSoundAtEntity(
                                     this,
                                     "fireworks.launch",
                                     0.75F,
                                     1.0F / (this.getRNG()
                                         .nextFloat() * 0.4F + 0.8F));
-                                this.worldObj.spawnEntityInWorld(var2);
+                                this.worldObj.spawnEntityInWorld(iceBall);
                             }
 
                             if (this.which_attack == 2) {
@@ -1269,9 +1270,9 @@ public class ThePrinceTeen extends EntityTameable {
         }
     }
 
-    protected void playTameEffect(boolean par1) {
+    protected void playTameEffect(boolean success) {
         String s = "heart";
-        if (!par1) {
+        if (!success) {
             s = "smoke";
         }
 
@@ -1290,20 +1291,19 @@ public class ThePrinceTeen extends EntityTameable {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (var2 != null && var2.getItem() == Item.getItemFromBlock(Blocks.diamond_block)
-            && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+        if (currentItem != null && currentItem.getItem() == Item.getItemFromBlock(Blocks.diamond_block)
+            && player.getDistanceSqToEntity(this) < 25.0) {
             if (!this.worldObj.isRemote) {
                 this.setTamed(true);
                 this.func_152115_b(
-                    par1EntityPlayer.getUniqueID()
+                    player.getUniqueID()
                         .toString());
                 this.playTameEffect(true);
                 this.worldObj.setEntityState(this, (byte) 7);
@@ -1312,24 +1312,23 @@ public class ThePrinceTeen extends EntityTameable {
                 this.day_count = 1000;
             }
 
-            if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                var2.stackSize--;
-                if (var2.stackSize <= 0) {
-                    par1EntityPlayer.inventory
-                        .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+            if (!player.capabilities.isCreativeMode) {
+                currentItem.stackSize--;
+                if (currentItem.stackSize <= 0) {
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                 }
             }
 
             return true;
         } else {
             if (this.isTamed()) {
-                if (!this.func_152114_e(par1EntityPlayer)) {
+                if (!this.func_152114_e(player)) {
                     return false;
                 }
 
-                if (var2 == null && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+                if (currentItem == null && player.getDistanceSqToEntity(this) < 25.0) {
                     if (!this.worldObj.isRemote) {
-                        par1EntityPlayer.mountEntity(this);
+                        player.mountEntity(this);
                         this.setActivity(1);
                         this.setSitting(false);
                     }
@@ -1337,8 +1336,8 @@ public class ThePrinceTeen extends EntityTameable {
                     return true;
                 }
 
-                if (var2 != null && var2.getItem() == Items.beef
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+                if (currentItem != null && currentItem.getItem() == Items.beef
+                    && player.getDistanceSqToEntity(this) < 25.0) {
                     if (this.worldObj.isRemote) {
                         this.playTameEffect(true);
                         this.worldObj.setEntityState(this, (byte) 7);
@@ -1348,86 +1347,82 @@ public class ThePrinceTeen extends EntityTameable {
                         this.heal(this.mygetMaxHealth() - this.getHealth());
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
                 }
 
-                if (var2 != null && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0
-                    && var2.getItem() instanceof ItemFood) {
+                if (currentItem != null && player.getDistanceSqToEntity(this) < 25.0
+                    && currentItem.getItem() instanceof ItemFood) {
                     if (!this.worldObj.isRemote) {
-                        ItemFood var3 = (ItemFood) var2.getItem();
+                        ItemFood item = (ItemFood) currentItem.getItem();
                         if (this.mygetMaxHealth() > this.getHealth()) {
-                            this.heal(var3.func_150905_g(var2) * 10);
+                            this.heal(item.func_150905_g(currentItem) * 10);
                         }
 
                         this.playTameEffect(true);
                         this.worldObj.setEntityState(this, (byte) 7);
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
                 }
 
-                if (var2 != null && var2.getItem() == Item.getItemFromBlock(Blocks.ice)
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+                if (currentItem != null && currentItem.getItem() == Item.getItemFromBlock(Blocks.ice)
+                    && player.getDistanceSqToEntity(this) < 25.0) {
                     if (!this.worldObj.isRemote) {
                         this.playTameEffect(true);
                         this.worldObj.setEntityState(this, (byte) 6);
                         this.setThePrinceTeenFire(0);
                         String healthMessage = new String();
                         healthMessage = String.format("Fireballs extinguished.");
-                        par1EntityPlayer.addChatComponentMessage(new ChatComponentText(healthMessage));
+                        player.addChatComponentMessage(new ChatComponentText(healthMessage));
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
                 }
 
-                if (var2 != null && var2.getItem() == Items.flint_and_steel
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+                if (currentItem != null && currentItem.getItem() == Items.flint_and_steel
+                    && player.getDistanceSqToEntity(this) < 25.0) {
                     if (!this.worldObj.isRemote) {
                         this.playTameEffect(true);
                         this.worldObj.setEntityState(this, (byte) 6);
                         this.setThePrinceTeenFire(1);
                         String healthMessage = new String();
                         healthMessage = String.format("Fireballs lit!");
-                        par1EntityPlayer.addChatComponentMessage(new ChatComponentText(healthMessage));
+                        player.addChatComponentMessage(new ChatComponentText(healthMessage));
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
                 }
 
-                if (var2 != null && var2.getItem() == Items.diamond
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0
+                if (currentItem != null && currentItem.getItem() == Items.diamond
+                    && player.getDistanceSqToEntity(this) < 25.0
                     && !this.worldObj.isRemote) {
                     Entity ent = null;
                     ThePrince d = null;
@@ -1437,7 +1432,7 @@ public class ThePrinceTeen extends EntityTameable {
                         if (this.isTamed()) {
                             d.setTamed(true);
                             d.func_152115_b(
-                                par1EntityPlayer.getUniqueID()
+                                player.getUniqueID()
                                     .toString());
                             d.set_ok_to_grow();
                         }
@@ -1445,34 +1440,32 @@ public class ThePrinceTeen extends EntityTameable {
                         this.setDead();
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
                 }
 
-                if (this.isTamed() && var2 != null
-                    && var2.getItem() == Items.name_tag
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0
-                    && this.func_152114_e(par1EntityPlayer)) {
-                    this.setCustomNameTag(var2.getDisplayName());
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (this.isTamed() && currentItem != null
+                    && currentItem.getItem() == Items.name_tag
+                    && player.getDistanceSqToEntity(this) < 25.0
+                    && this.func_152114_e(player)) {
+                    this.setCustomNameTag(currentItem.getDisplayName());
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
                 }
 
-                if (var2 != null && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+                if (currentItem != null && player.getDistanceSqToEntity(this) < 16.0) {
                     if (!this.isSitting()) {
                         this.setSitting(true);
                         this.setActivity(0);
@@ -1489,17 +1482,17 @@ public class ThePrinceTeen extends EntityTameable {
         }
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.beef;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.beef;
     }
 
     public int getAttacking() {
         return this.dataWatcher.getWatchableObjectInt(20);
     }
 
-    public void setAttacking(int par1) {
+    public void setAttacking(int attacking) {
         if (this.worldObj == null || !this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(20, par1);
+            this.dataWatcher.updateObject(20, attacking);
         }
     }
 
@@ -1507,9 +1500,9 @@ public class ThePrinceTeen extends EntityTameable {
         return this.dataWatcher.getWatchableObjectInt(21);
     }
 
-    public void setActivity(int par1) {
+    public void setActivity(int activity) {
         if (this.worldObj == null || !this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(21, par1);
+            this.dataWatcher.updateObject(21, activity);
         }
     }
 
@@ -1517,22 +1510,22 @@ public class ThePrinceTeen extends EntityTameable {
         return this.dataWatcher.getWatchableObjectInt(24);
     }
 
-    public void setThePrinceTeenFire(int par1) {
+    public void setThePrinceTeenFire(int n) {
         if (!this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(24, par1);
+            this.dataWatcher.updateObject(24, n);
         }
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
     public EntityAgeable createChild(EntityAgeable entityageable) {
@@ -1547,22 +1540,22 @@ public class ThePrinceTeen extends EntityTameable {
         }
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("ThePrinceTeenAttacking", this.getAttacking());
-        par1NBTTagCompound.setInteger("ThePrinceTeenActivity", this.getActivity());
-        par1NBTTagCompound.setInteger("ThePrinceTeenFire", this.getThePrinceTeenFire());
-        par1NBTTagCompound.setInteger("SpyroKill", this.kill_count);
-        par1NBTTagCompound.setInteger("SpyroDay", this.day_count);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("ThePrinceTeenAttacking", this.getAttacking());
+        tag.setInteger("ThePrinceTeenActivity", this.getActivity());
+        tag.setInteger("ThePrinceTeenFire", this.getThePrinceTeenFire());
+        tag.setInteger("SpyroKill", this.kill_count);
+        tag.setInteger("SpyroDay", this.day_count);
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.setAttacking(par1NBTTagCompound.getInteger("ThePrinceTeenAttacking"));
-        this.setActivity(par1NBTTagCompound.getInteger("ThePrinceTeenActivity"));
-        this.setThePrinceTeenFire(par1NBTTagCompound.getInteger("ThePrinceTeenFire"));
-        this.kill_count = par1NBTTagCompound.getInteger("SpyroKill");
-        this.day_count = par1NBTTagCompound.getInteger("SpyroDay");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.setAttacking(tag.getInteger("ThePrinceTeenAttacking"));
+        this.setActivity(tag.getInteger("ThePrinceTeenActivity"));
+        this.setThePrinceTeenFire(tag.getInteger("ThePrinceTeenFire"));
+        this.kill_count = tag.getInteger("SpyroKill");
+        this.day_count = tag.getInteger("SpyroDay");
     }
 
     private void shoot_something(double x, double y, double z) {
@@ -1635,10 +1628,10 @@ public class ThePrinceTeen extends EntityTameable {
     private void firecanonl(double x, double y, double z) {
         double yoff = 3.5;
         double xzoff = 6.0;
-        double var3x = 0.0;
-        double var5x = 0.0;
-        double var7 = 0.0;
-        float var9 = 0.0F;
+        double dx = 0.0;
+        double dy = 0.0;
+        double dz = 0.0;
+        float f = 0.0F;
         double cx = this.posX - xzoff * Math.sin(Math.toRadians(this.rotationYaw));
         double cz = this.posZ + xzoff * Math.cos(Math.toRadians(this.rotationYaw));
         this.worldObj.playSoundAtEntity(
@@ -1652,11 +1645,11 @@ public class ThePrinceTeen extends EntityTameable {
         float r3 = 5.0F * (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat());
         ThunderBolt lb = new ThunderBolt(this.worldObj, cx, this.posY + yoff, cz);
         lb.setLocationAndAngles(cx, this.posY + yoff, cz, 0.0F, 0.0F);
-        var3x = x - lb.posX;
-        var5x = y + 0.25 - lb.posY;
-        var7 = z - lb.posZ;
-        var9 = MathHelper.sqrt_double(var3x * var3x + var7 * var7) * 0.2F;
-        lb.setThrowableHeading(var3x, var5x + var9, var7, 1.4F, 4.0F);
+        dx = x - lb.posX;
+        dy = y + 0.25 - lb.posY;
+        dz = z - lb.posZ;
+        f = MathHelper.sqrt_double(dx * dx + dz * dz) * 0.2F;
+        lb.setThrowableHeading(dx, dy + f, dz, 1.4F, 4.0F);
         lb.motionX *= 3.0;
         lb.motionY *= 3.0;
         lb.motionZ *= 3.0;
@@ -1666,10 +1659,10 @@ public class ThePrinceTeen extends EntityTameable {
     private void firecanoni(double x, double y, double z) {
         double yoff = 3.5;
         double xzoff = 6.0;
-        double var3x = 0.0;
-        double var5x = 0.0;
-        double var7 = 0.0;
-        float var9 = 0.0F;
+        double dx = 0.0;
+        double dy = 0.0;
+        double dz = 0.0;
+        float f = 0.0F;
         double cx = this.posX - xzoff * Math.sin(Math.toRadians(this.rotationYaw));
         double cz = this.posZ + xzoff * Math.cos(Math.toRadians(this.rotationYaw));
         this.worldObj.playSoundAtEntity(
@@ -1684,11 +1677,11 @@ public class ThePrinceTeen extends EntityTameable {
         IceBall lb = new IceBall(this.worldObj, cx, this.posY + yoff, cz);
         lb.setIceMaker(1);
         lb.setLocationAndAngles(cx, this.posY + yoff, cz, 0.0F, 0.0F);
-        var3x = x - lb.posX;
-        var5x = y + 0.25 - lb.posY;
-        var7 = z - lb.posZ;
-        var9 = MathHelper.sqrt_double(var3x * var3x + var7 * var7) * 0.2F;
-        lb.setThrowableHeading(var3x, var5x + var9, var7, 1.4F, 4.0F);
+        dx = x - lb.posX;
+        dy = y + 0.25 - lb.posY;
+        dz = z - lb.posZ;
+        f = MathHelper.sqrt_double(dx * dx + dz * dz) * 0.2F;
+        lb.setThrowableHeading(dx, dy + f, dz, 1.4F, 4.0F);
         lb.motionX *= 3.0;
         lb.motionY *= 3.0;
         lb.motionZ *= 3.0;

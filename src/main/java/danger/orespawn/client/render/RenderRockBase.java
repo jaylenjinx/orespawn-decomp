@@ -28,31 +28,30 @@ public class RenderRockBase extends RenderLiving {
     private static final ResourceLocation texture11 = new ResourceLocation("orespawn", "rockcrystalbluetexture.png");
     private static final ResourceLocation texture12 = new ResourceLocation("orespawn", "rockcrystaltnttexture.png");
 
-    public RenderRockBase(ModelRockBase par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderRockBase(ModelRockBase modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelRockBase) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderRockBase(RockBase par1EntityRockBase, double par2, double par4, double par6, float par8,
-        float par9) {
-        super.doRender(par1EntityRockBase, par2, par4, par6, par8, par9);
+    public void renderRockBase(RockBase entityRockBase, double x, double y, double z, float yaw, float partialTicks) {
+        super.doRender(entityRockBase, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderRockBase((RockBase) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderRockBase((RockBase) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderRockBase((RockBase) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderRockBase((RockBase) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(RockBase par1Entity, float par2) {
+    protected void preRenderScale(RockBase entity, float f) {
         GL11.glScalef(this.scale, this.scale, this.scale);
     }
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
-        this.preRenderScale((RockBase) par1EntityLiving, par2);
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((RockBase) entity, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

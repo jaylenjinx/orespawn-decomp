@@ -17,17 +17,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class NightmareSword extends ItemSword {
 
-    public NightmareSword(int par1, ToolMaterial par2EnumToolMaterial) {
-        super(par2EnumToolMaterial);
+    public NightmareSword(int n, ToolMaterial enumToolMaterial) {
+        super(enumToolMaterial);
         this.maxStackSize = 1;
         this.setMaxDamage(1200);
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        par1ItemStack.addEnchantment(Enchantment.sharpness, 1);
-        par1ItemStack.addEnchantment(Enchantment.knockback, 3);
-        par1ItemStack.addEnchantment(Enchantment.fireAspect, 1);
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+        stack.addEnchantment(Enchantment.sharpness, 1);
+        stack.addEnchantment(Enchantment.knockback, 3);
+        stack.addEnchantment(Enchantment.fireAspect, 1);
     }
 
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
@@ -39,7 +39,7 @@ public class NightmareSword extends ItemSword {
         }
     }
 
-    public void onUpdate(ItemStack stack, World par2World, Entity par3Entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
         this.onUsingTick(stack, (EntityPlayer) null, 0);
     }
 
@@ -47,12 +47,12 @@ public class NightmareSword extends ItemSword {
         return "Uranium/Titanium";
     }
 
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLiving par2EntityLiving, EntityLiving par3EntityLiving) {
-        par1ItemStack.damageItem(1, par3EntityLiving);
+    public boolean hitEntity(ItemStack stack, EntityLiving target, EntityLiving attacker) {
+        stack.damageItem(1, attacker);
         return true;
     }
 
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 5000;
     }
 

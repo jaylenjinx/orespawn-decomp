@@ -21,17 +21,17 @@ public class ItemShoes extends Item {
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            par1ItemStack.stackSize--;
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (!player.capabilities.isCreativeMode) {
+            stack.stackSize--;
         }
 
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-        if (!par2World.isRemote) {
-            par2World.spawnEntityInWorld(new Shoes(par2World, par3EntityPlayer, this.my_id));
+        world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        if (!world.isRemote) {
+            world.spawnEntityInWorld(new Shoes(world, player, this.my_id));
         }
 
-        return par1ItemStack;
+        return stack;
     }
 
     @SideOnly(Side.CLIENT)

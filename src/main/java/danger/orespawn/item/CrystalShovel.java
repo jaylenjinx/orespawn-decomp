@@ -21,14 +21,14 @@ public class CrystalShovel extends ItemTool {
         new Block[] { Blocks.grass, Blocks.dirt, Blocks.sand, Blocks.gravel, Blocks.snow, Blocks.snow_layer,
             Blocks.clay, Blocks.farmland, Blocks.mycelium, OreSpawnMain.CrystalGrass });
 
-    public CrystalShovel(int par1, ToolMaterial par2) {
-        super(1.0F, par2, blocksEffectiveAgainst);
+    public CrystalShovel(int n, ToolMaterial toolMaterial) {
+        super(1.0F, toolMaterial, blocksEffectiveAgainst);
         this.maxStackSize = 1;
         this.setCreativeTab(CreativeTabs.tabTools);
     }
 
-    public boolean canHarvestBlock(Block par1Block) {
-        return par1Block == Blocks.snow;
+    public boolean canHarvestBlock(Block block) {
+        return block == Blocks.snow;
     }
 
     @SideOnly(Side.CLIENT)

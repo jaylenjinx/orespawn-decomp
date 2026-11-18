@@ -50,8 +50,8 @@ public class Ostrich extends EntityCannonFodder {
     float deltasmooth = 0.0F;
     private int didjump = 0;
 
-    public Ostrich(World par1World) {
-        super(par1World);
+    public Ostrich(World world) {
+        super(world);
         this.setSize(0.85F, 2.1F);
         this.moveSpeed = 0.38F;
         this.fireResistance = 100;
@@ -127,19 +127,19 @@ public class Ostrich extends EntityCannonFodder {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
-        if (!par1DamageSource.getDamageType()
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        if (!source.getDamageType()
             .equals("cactus")) {
-            super.attackEntityFrom(par1DamageSource, par2);
+            super.attackEntityFrom(source, amount);
         }
 
         return false;
@@ -178,24 +178,23 @@ public class Ostrich extends EntityCannonFodder {
     }
 
     @Override
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (super.interact(par1EntityPlayer)) {
+        if (super.interact(player)) {
             return true;
-        } else
-            if (var2 != null && var2.getItem() == Items.apple && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+        } else if (currentItem != null && currentItem.getItem() == Items.apple
+            && player.getDistanceSqToEntity(this) < 16.0) {
                 if (!this.isTamed()) {
                     if (!this.worldObj.isRemote) {
                         if (this.rand.nextInt(2) == 0) {
                             this.setTamed(true);
                             this.func_152115_b(
-                                par1EntityPlayer.getUniqueID()
+                                player.getUniqueID()
                                     .toString());
                             this.playTameEffect(true);
                             this.worldObj.setEntityState(this, (byte) 7);
@@ -205,7 +204,7 @@ public class Ostrich extends EntityCannonFodder {
                             this.worldObj.setEntityState(this, (byte) 6);
                         }
                     }
-                } else if (this.func_152114_e(par1EntityPlayer)) {
+                } else if (this.func_152114_e(player)) {
                     if (this.worldObj.isRemote) {
                         this.playTameEffect(true);
                         this.worldObj.setEntityState(this, (byte) 7);
@@ -216,19 +215,18 @@ public class Ostrich extends EntityCannonFodder {
                     }
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
-            } else if (this.isTamed() && var2 != null
-                && var2.getItem() == Item.getItemFromBlock(Blocks.deadbush)
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                && this.func_152114_e(par1EntityPlayer)) {
+            } else if (this.isTamed() && currentItem != null
+                && currentItem.getItem() == Item.getItemFromBlock(Blocks.deadbush)
+                && player.getDistanceSqToEntity(this) < 16.0
+                && this.func_152114_e(player)) {
                     if (!this.worldObj.isRemote) {
                         this.setTamed(false);
                         this.func_152115_b("");
@@ -236,18 +234,17 @@ public class Ostrich extends EntityCannonFodder {
                         this.worldObj.setEntityState(this, (byte) 6);
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
-                } else if (var2 != null && this.isTamed()
-                    && this.func_152114_e(par1EntityPlayer)
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+                } else if (currentItem != null && this.isTamed()
+                    && this.func_152114_e(player)
+                    && player.getDistanceSqToEntity(this) < 16.0) {
                         if (!this.worldObj.isRemote) {
                             if (!this.isSitting()) {
                                 Block bid = this.worldObj
@@ -264,24 +261,23 @@ public class Ostrich extends EntityCannonFodder {
                         }
 
                         return true;
-                    } else if (this.isTamed() && var2 != null
-                        && var2.getItem() == Items.name_tag
-                        && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                        && this.func_152114_e(par1EntityPlayer)) {
-                            this.setCustomNameTag(var2.getDisplayName());
-                            if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                                var2.stackSize--;
-                                if (var2.stackSize <= 0) {
-                                    par1EntityPlayer.inventory.setInventorySlotContents(
-                                        par1EntityPlayer.inventory.currentItem,
-                                        (ItemStack) null);
+                    } else if (this.isTamed() && currentItem != null
+                        && currentItem.getItem() == Items.name_tag
+                        && player.getDistanceSqToEntity(this) < 16.0
+                        && this.func_152114_e(player)) {
+                            this.setCustomNameTag(currentItem.getDisplayName());
+                            if (!player.capabilities.isCreativeMode) {
+                                currentItem.stackSize--;
+                                if (currentItem.stackSize <= 0) {
+                                    player.inventory
+                                        .setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                                 }
                             }
 
                             return true;
-                        } else if (var2 == null && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+                        } else if (currentItem == null && player.getDistanceSqToEntity(this) < 16.0) {
                             if (!this.worldObj.isRemote) {
-                                par1EntityPlayer.mountEntity(this);
+                                player.mountEntity(this);
                                 this.setSitting(false);
                             }
 
@@ -311,17 +307,17 @@ public class Ostrich extends EntityCannonFodder {
         return Items.feather;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
-        int var3 = 0;
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int roll = 0;
         if (this.isTamed()) {
-            var3 = this.rand.nextInt(5);
-            var3 += 2;
+            roll = this.rand.nextInt(5);
+            roll += 2;
 
-            for (int var4 = 0; var4 < var3; var4++) {
+            for (int i = 0; i < roll; i++) {
                 this.dropItem(Item.getItemFromBlock(Blocks.red_flower), 1);
             }
         } else {
-            super.dropFewItems(par1, par2);
+            super.dropFewItems(wasRecentlyHit, lootingLevel);
         }
     }
 
@@ -371,24 +367,25 @@ public class Ostrich extends EntityCannonFodder {
     }
 
     @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch,
+        int posRotationIncrements) {
         this.boatPosRotationIncrements = 10;
-        this.boatX = par1;
-        this.boatY = par3;
-        this.boatZ = par5;
-        this.boatYaw = par7;
-        this.boatPitch = par8;
-        this.boatYawHead = par9;
+        this.boatX = x;
+        this.boatY = y;
+        this.boatZ = z;
+        this.boatYaw = yaw;
+        this.boatPitch = pitch;
+        this.boatYawHead = posRotationIncrements;
         this.motionX = this.velocityX;
         this.motionY = this.velocityY;
         this.motionZ = this.velocityZ;
     }
 
     @SideOnly(Side.CLIENT)
-    public void setVelocity(double par1, double par3, double par5) {
-        this.velocityX = this.motionX = par1;
-        this.velocityY = this.motionY = par3;
-        this.velocityZ = this.motionZ = par5;
+    public void setVelocity(double vx, double vy, double vz) {
+        this.velocityX = this.motionX = vx;
+        this.velocityY = this.motionY = vy;
+        this.velocityZ = this.motionZ = vz;
     }
 
     public void onLivingUpdate() {
@@ -408,9 +405,9 @@ public class Ostrich extends EntityCannonFodder {
             super.onLivingUpdate();
         } else if (!this.isDead) {
             if (this.riddenByEntity == null) {
-                float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-                float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
-                this.rotationYaw += var8 / 5.0F;
+                float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+                float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
+                this.rotationYaw += f2 / 5.0F;
             }
 
             if (this.worldObj.isRemote) {
@@ -616,9 +613,9 @@ public class Ostrich extends EntityCannonFodder {
         }
     }
 
-    protected void playTameEffect(boolean par1) {
+    protected void playTameEffect(boolean success) {
         String s = "heart";
-        if (!par1) {
+        if (!success) {
             s = "smoke";
         }
 
@@ -637,9 +634,9 @@ public class Ostrich extends EntityCannonFodder {
         }
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     protected boolean canDespawn() {
         if (this.isChild()) {
@@ -657,15 +654,15 @@ public class Ostrich extends EntityCannonFodder {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public Ostrich spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public Ostrich spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new Ostrich(this.worldObj);
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.apple;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.apple;
     }
 
-    public boolean isBreedingItem(ItemStack par1ItemStack) {
-        return par1ItemStack.getItem() == OreSpawnMain.MyCrystalApple;
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
     }
 }

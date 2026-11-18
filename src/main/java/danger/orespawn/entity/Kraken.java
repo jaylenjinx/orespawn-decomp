@@ -52,8 +52,8 @@ public class Kraken extends EntityMob {
     private int straight_down = 1;
     private int hurt_timer = 0;
 
-    public Kraken(World par1World) {
-        super(par1World);
+    public Kraken(World world) {
+        super(world);
         if (OreSpawnMain.PlayNicely == 0) {
             this.setSize(4.0F, 15.0F);
         } else {
@@ -138,16 +138,16 @@ public class Kraken extends EntityMob {
         super.onLivingUpdate();
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
     public void onUpdate() {
@@ -184,14 +184,14 @@ public class Kraken extends EntityMob {
         }
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("LongEnough", this.long_enough);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("LongEnough", this.long_enough);
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.long_enough = par1NBTTagCompound.getInteger("LongEnough");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.long_enough = tag.getInteger("LongEnough");
     }
 
     protected String getLivingSound() {
@@ -218,37 +218,37 @@ public class Kraken extends EntityMob {
         return Items.quartz;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(8) - OreSpawnMain.OreSpawnRand.nextInt(8),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(8) - OreSpawnMain.OreSpawnRand.nextInt(8),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         ItemStack is = null;
         this.dropItemRand(OreSpawnMain.MyKrakenTooth, 1);
         this.dropItemRand(Items.item_frame, 1);
-        int var5 = 120 + this.worldObj.rand.nextInt(160);
+        int n = 120 + this.worldObj.rand.nextInt(160);
 
-        for (int var4 = 0; var4 < var5; var4++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(Items.dye, 1);
         }
 
         int i = 5 + this.worldObj.rand.nextInt(10);
 
-        for (int var9 = 0; var9 < i; var9++) {
-            int var3 = this.worldObj.rand.nextInt(53);
-            switch (var3) {
+        for (int i2 = 0; i2 < i; i2++) {
+            int roll = this.worldObj.rand.nextInt(53);
+            switch (roll) {
                 case 0:
                     is = this.dropItemRand(OreSpawnMain.MyUltimateSword, 1);
                     break;
@@ -766,16 +766,16 @@ public class Kraken extends EntityMob {
                     this.dropItemRand(Item.getItemFromBlock(Blocks.gold_block), 1);
                     break;
                 case 41:
-                    EntityItem var33 = null;
+                    EntityItem entityItem = null;
                     is = new ItemStack(Items.golden_apple, 1, 1);
-                    var33 = new EntityItem(
+                    entityItem = new EntityItem(
                         this.worldObj,
                         this.posX + OreSpawnMain.OreSpawnRand.nextInt(3) - OreSpawnMain.OreSpawnRand.nextInt(3),
                         this.posY + 1.0,
                         this.posZ + OreSpawnMain.OreSpawnRand.nextInt(3) - OreSpawnMain.OreSpawnRand.nextInt(3),
                         is);
-                    if (var33 != null) {
-                        this.worldObj.spawnEntityInWorld(var33);
+                    if (entityItem != null) {
+                        this.worldObj.spawnEntityInWorld(entityItem);
                     }
                     break;
                 case 42:
@@ -972,7 +972,7 @@ public class Kraken extends EntityMob {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
@@ -1152,20 +1152,20 @@ public class Kraken extends EntityMob {
                 }
             }
 
-            double var1 = this.currentFlightTarget.posX + 0.3 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.3 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.45 - this.motionX) * 0.15;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.70999 - this.motionY) * 0.202;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.45 - this.motionZ) * 0.15;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx2 = this.currentFlightTarget.posX + 0.3 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz2 = this.currentFlightTarget.posZ + 0.3 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx2) * 0.45 - this.motionX) * 0.15;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.70999 - this.motionY) * 0.202;
+            this.motionZ = this.motionZ + (Math.signum(dz2) * 0.45 - this.motionZ) * 0.15;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 0.4F;
             if (Math.abs(this.motionX) + Math.abs(this.motionZ) < 0.15) {
-                var8 = 0.0F;
+                f2 = 0.0F;
             }
 
-            this.rotationYaw += var8 / 5.0F;
+            this.rotationYaw += f2 / 5.0F;
             double obstruction_factor = 0.0;
             double dx = 0.0;
             double dz = 0.0;
@@ -1191,65 +1191,65 @@ public class Kraken extends EntityMob {
         }
     }
 
-    private void attackWithSomething(EntityLivingBase par1) {
+    private void attackWithSomething(EntityLivingBase caught2) {
         if (this.caught == null) {
-            double dist = (this.posX - par1.posX) * (this.posX - par1.posX);
-            dist += (this.posZ - par1.posZ) * (this.posZ - par1.posZ);
-            dist += (this.posY - par1.posY - 15.0) * (this.posY - par1.posY - 15.0);
+            double dist = (this.posX - caught2.posX) * (this.posX - caught2.posX);
+            dist += (this.posZ - caught2.posZ) * (this.posZ - caught2.posZ);
+            dist += (this.posY - caught2.posY - 15.0) * (this.posY - caught2.posY - 15.0);
             if (dist < 30.0) {
-                this.caught = par1;
+                this.caught = caught2;
                 this.release = 0;
                 this.setAttacking(1);
             }
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (target instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) target;
                 return p.capabilities.isCreativeMode ? false : !p.capabilities.isFlying;
-            } else if (!par1EntityLiving.onGround && !par1EntityLiving.isInWater()) {
+            } else if (!target.onGround && !target.isInWater()) {
                 return false;
-            } else if (par1EntityLiving instanceof EntitySquid) {
+            } else if (target instanceof EntitySquid) {
                 return false;
-            } else if (par1EntityLiving instanceof AttackSquid) {
+            } else if (target instanceof AttackSquid) {
                 return false;
-            } else if (par1EntityLiving instanceof Kraken) {
+            } else if (target instanceof Kraken) {
                 return false;
-            } else if (par1EntityLiving instanceof Spyro) {
+            } else if (target instanceof Spyro) {
                 return false;
-            } else if (par1EntityLiving instanceof Dragon) {
-                Dragon c = (Dragon) par1EntityLiving;
+            } else if (target instanceof Dragon) {
+                Dragon c = (Dragon) target;
                 return c.riddenByEntity == null;
-            } else if (par1EntityLiving instanceof Cephadrome) {
-                Cephadrome c = (Cephadrome) par1EntityLiving;
+            } else if (target instanceof Cephadrome) {
+                Cephadrome c = (Cephadrome) target;
                 return c.riddenByEntity == null;
-            } else if (par1EntityLiving instanceof Leon) {
-                Leon c = (Leon) par1EntityLiving;
+            } else if (target instanceof Leon) {
+                Leon c = (Leon) target;
                 return c.riddenByEntity == null;
-            } else if (par1EntityLiving instanceof ThePrinceTeen) {
-                ThePrinceTeen c = (ThePrinceTeen) par1EntityLiving;
+            } else if (target instanceof ThePrinceTeen) {
+                ThePrinceTeen c = (ThePrinceTeen) target;
                 return c.riddenByEntity == null;
-            } else if (par1EntityLiving instanceof ThePrinceAdult) {
-                ThePrinceAdult c = (ThePrinceAdult) par1EntityLiving;
+            } else if (target instanceof ThePrinceAdult) {
+                ThePrinceAdult c = (ThePrinceAdult) target;
                 return c.riddenByEntity == null;
-            } else if (par1EntityLiving instanceof EntityChicken) {
+            } else if (target instanceof EntityChicken) {
                 return false;
-            } else if (par1EntityLiving instanceof Chipmunk) {
+            } else if (target instanceof Chipmunk) {
                 return false;
             } else {
-                return par1EntityLiving instanceof StinkBug ? false : !(par1EntityLiving instanceof Mothra);
+                return target instanceof StinkBug ? false : !(target instanceof Mothra);
             }
     }
 
@@ -1257,18 +1257,18 @@ public class Kraken extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(20.0, 40.0, 20.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -1276,10 +1276,10 @@ public class Kraken extends EntityMob {
         }
     }
 
-    public void onStruckByLightning(EntityLightningBolt par1EntityLightningBolt) {}
+    public void onStruckByLightning(EntityLightningBolt lightning) {}
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
-        Entity e = par1DamageSource.getEntity();
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        Entity e = source.getEntity();
         boolean ret = false;
         if (this.currentFlightTarget != null && e != null
             && e instanceof EntityPlayer
@@ -1292,7 +1292,7 @@ public class Kraken extends EntityMob {
             return false;
         } else {
             this.hurt_timer = 30;
-            ret = super.attackEntityFrom(par1DamageSource, par2);
+            ret = super.attackEntityFrom(source, amount);
             if (this.worldObj.rand.nextInt(2) == 1) {
                 this.release = 1;
             }
@@ -1305,13 +1305,13 @@ public class Kraken extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean getCanSpawnHere() {
         if (this.posY < 50.0) {

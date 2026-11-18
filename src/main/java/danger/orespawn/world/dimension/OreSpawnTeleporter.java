@@ -23,24 +23,24 @@ public class OreSpawnTeleporter extends Teleporter {
     private Random random;
     private int newdim;
 
-    public OreSpawnTeleporter(WorldServer par1WorldServer, int dim, World par2World) {
-        super(par1WorldServer);
-        this.world = par1WorldServer;
-        this.oldWorld = par2World;
-        this.random = new Random(par1WorldServer.getSeed());
+    public OreSpawnTeleporter(WorldServer world2, int dim, World world3) {
+        super(world2);
+        this.world = world2;
+        this.oldWorld = world3;
+        this.random = new Random(world2.getSeed());
         this.newdim = dim;
     }
 
-    public void placeInPortal(Entity par1Entity, double par2, double par4, double par6, float par8) {
-        this.justPutMe(par1Entity);
+    public void placeInPortal(Entity entity, double x, double y, double z, float yaw) {
+        this.justPutMe(entity);
     }
 
-    public boolean placeInExistingPortal(Entity par1Entity, double par2, double par4, double par6, float par8) {
-        this.justPutMe(par1Entity);
+    public boolean placeInExistingPortal(Entity entity, double x, double y, double z, float yaw) {
+        this.justPutMe(entity);
         return true;
     }
 
-    public boolean makePortal(Entity par1Entity) {
+    public boolean makePortal(Entity entity) {
         return true;
     }
 
@@ -66,9 +66,9 @@ public class OreSpawnTeleporter extends Teleporter {
         }
     }
 
-    public boolean justPutMe(Entity par1Entity) {
-        int posX = (int) par1Entity.posX;
-        int posZ = (int) par1Entity.posZ;
+    public boolean justPutMe(Entity entity) {
+        int posX = (int) entity.posX;
+        int posZ = (int) entity.posZ;
         int posY = 120;
         int found = 0;
         int inarow = 0;
@@ -115,8 +115,7 @@ public class OreSpawnTeleporter extends Teleporter {
                 }
 
                 if (found == 0) {
-                    posX = (int) par1Entity.posX + this.world.rand.nextInt(3 + i / 5)
-                        - this.world.rand.nextInt(3 + i / 5);
+                    posX = (int) entity.posX + this.world.rand.nextInt(3 + i / 5) - this.world.rand.nextInt(3 + i / 5);
                     if (i > 100) {
                         posX = posX + OreSpawnMain.OreSpawnRand.nextInt(2 + i / 5)
                             - OreSpawnMain.OreSpawnRand.nextInt(2 + i / 5);
@@ -126,8 +125,7 @@ public class OreSpawnTeleporter extends Teleporter {
                         posX = posX + this.random.nextInt(2 + i / 5) - this.random.nextInt(2 + i / 5);
                     }
 
-                    posZ = (int) par1Entity.posZ + this.world.rand.nextInt(3 + i / 5)
-                        - this.world.rand.nextInt(3 + i / 5);
+                    posZ = (int) entity.posZ + this.world.rand.nextInt(3 + i / 5) - this.world.rand.nextInt(3 + i / 5);
                     if (i > 100) {
                         posZ = posZ + OreSpawnMain.OreSpawnRand.nextInt(2 + i / 5)
                             - OreSpawnMain.OreSpawnRand.nextInt(2 + i / 5);
@@ -146,8 +144,8 @@ public class OreSpawnTeleporter extends Teleporter {
         }
 
         if (found == 0) {
-            posX = (int) par1Entity.posX;
-            posZ = (int) par1Entity.posZ;
+            posX = (int) entity.posX;
+            posZ = (int) entity.posZ;
             posY = 180;
 
             while (posY > 1 && (Blocks.air != this.world.getBlock(posX, posY + 1, posZ)
@@ -157,9 +155,9 @@ public class OreSpawnTeleporter extends Teleporter {
             }
         }
 
-        double oldX = par1Entity.posX;
-        double oldY = par1Entity.posY;
-        double oldZ = par1Entity.posZ;
+        double oldX = entity.posX;
+        double oldY = entity.posY;
+        double oldZ = entity.posZ;
         double newX = posX;
         double newZ = posZ;
         double newY = posY;
@@ -175,24 +173,24 @@ public class OreSpawnTeleporter extends Teleporter {
             newZ += 0.5;
         }
 
-        par1Entity.setLocationAndAngles(newX, newY, newZ, par1Entity.rotationYaw, 0.0F);
-        par1Entity.motionX = par1Entity.motionY = par1Entity.motionZ = 0.0;
+        entity.setLocationAndAngles(newX, newY, newZ, entity.rotationYaw, 0.0F);
+        entity.motionX = entity.motionY = entity.motionZ = 0.0;
         MinecraftServer minecraftserver = MinecraftServer.getServer();
         WorldServer worldserver = minecraftserver.worldServerForDimension(this.oldWorld.provider.dimensionId);
         WorldServer worldserver1 = minecraftserver.worldServerForDimension(this.newdim);
-        if (par1Entity instanceof EntityPlayer) {
-            EntityPlayer ep = (EntityPlayer) par1Entity;
+        if (entity instanceof EntityPlayer) {
+            EntityPlayer ep = (EntityPlayer) entity;
             AxisAlignedBB bb = AxisAlignedBB
                 .getBoundingBox(oldX - 24.0, oldY - 12.0, oldZ - 24.0, oldX + 24.0, oldY + 12.0, oldZ + 24.0);
 
-            for (Entity var3 : this.oldWorld.getEntitiesWithinAABB(EntityTameable.class, bb)) {
-                EntityTameable et = (EntityTameable) var3;
+            for (Entity entity2 : this.oldWorld.getEntitiesWithinAABB(EntityTameable.class, bb)) {
+                EntityTameable et = (EntityTameable) entity2;
                 if (!et.isSitting()) {
                     String p1 = ep.getUniqueID()
                         .toString();
                     String p2 = et.func_152113_b();
                     if (p1 != null && p2 != null && p1.equals(p2) || et.func_152114_e(ep)) {
-                        this.sendToThisDimension(var3, newX, newY, newZ, (int) ep.rotationYaw);
+                        this.sendToThisDimension(entity2, newX, newY, newZ, (int) ep.rotationYaw);
                     }
                 }
             }
@@ -210,18 +208,18 @@ public class OreSpawnTeleporter extends Teleporter {
             e.setLocationAndAngles(newX, newY, newZ, ro, 0.0F);
             e.motionX = e.motionY = e.motionZ = 0.0;
             e.setWorld(this.world);
-            Entity var6x = EntityList.createEntityByName(EntityList.getEntityString(e), this.world);
-            if (var6x != null) {
-                var6x.copyDataFrom(e, true);
-                var6x.setLocationAndAngles(newX, newY, newZ, ro, 0.0F);
-                var6x.motionX = var6x.motionY = var6x.motionZ = 0.0;
-                var6x.setWorld(this.world);
-                this.world.spawnEntityInWorld(var6x);
+            Entity entity = EntityList.createEntityByName(EntityList.getEntityString(e), this.world);
+            if (entity != null) {
+                entity.copyDataFrom(e, true);
+                entity.setLocationAndAngles(newX, newY, newZ, ro, 0.0F);
+                entity.motionX = entity.motionY = entity.motionZ = 0.0;
+                entity.setWorld(this.world);
+                this.world.spawnEntityInWorld(entity);
             }
 
             e.isDead = true;
         }
     }
 
-    public void removeStalePortalLocations(long par1) {}
+    public void removeStalePortalLocations(long worldTime) {}
 }

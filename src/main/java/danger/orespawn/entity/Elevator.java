@@ -49,21 +49,21 @@ public class Elevator extends EntityLiving {
     private static final ResourceLocation texture9 = new ResourceLocation("orespawn", "Elevator9.png");
     private static final ResourceLocation texture10 = new ResourceLocation("orespawn", "Elevator10.png");
 
-    public Elevator(World par1World) {
-        super(par1World);
+    public Elevator(World world) {
+        super(world);
         this.setSize(1.25F, 1.0F);
         this.riddenByEntity = null;
     }
 
-    public Elevator(World par1World, double par2, double par4, double par6) {
-        this(par1World);
-        this.setPosition(par2, par4 + this.yOffset, par6);
+    public Elevator(World world, double x, double y, double z) {
+        this(world);
+        this.setPosition(x, y + this.yOffset, z);
         this.motionX = 0.0;
         this.motionY = 0.0;
         this.motionZ = 0.0;
-        this.prevPosX = par2;
-        this.prevPosY = par4;
-        this.prevPosZ = par6;
+        this.prevPosX = x;
+        this.prevPosY = y;
+        this.prevPosZ = z;
     }
 
     public ResourceLocation getTexture() {
@@ -125,9 +125,9 @@ public class Elevator extends EntityLiving {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     protected boolean canTriggerWalking() {
         return false;
@@ -151,20 +151,20 @@ public class Elevator extends EntityLiving {
         return 0.5;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
-        boolean p = par1DamageSource.getEntity() instanceof EntityPlayer;
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        boolean p = source.getEntity() instanceof EntityPlayer;
         if (this.riddenByEntity != null && !p) {
             return false;
-        } else if (par1DamageSource.getDamageType()
+        } else if (source.getDamageType()
             .equals("inWall")) {
                 return false;
             } else if (!this.worldObj.isRemote && !this.isDead) {
                 this.setForwardDirection(-this.getForwardDirection());
                 this.setTimeSinceHit(10);
-                this.setDamageTaken(this.getDamageTaken() + par2 * 10.0F);
+                this.setDamageTaken(this.getDamageTaken() + amount * 10.0F);
                 this.setBeenAttacked();
-                boolean flag = par1DamageSource.getEntity() instanceof EntityPlayer
-                    && ((EntityPlayer) par1DamageSource.getEntity()).capabilities.isCreativeMode;
+                boolean flag = source.getEntity() instanceof EntityPlayer
+                    && ((EntityPlayer) source.getEntity()).capabilities.isCreativeMode;
                 if (flag || this.getDamageTaken() > 40.0F) {
                     if (this.riddenByEntity != null) {
                         this.riddenByEntity.mountEntity(this);
@@ -195,28 +195,29 @@ public class Elevator extends EntityLiving {
     }
 
     @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch,
+        int posRotationIncrements) {
         if (this.riddenByEntity != null) {
-            this.boatPosRotationIncrements = par9 + 8;
+            this.boatPosRotationIncrements = posRotationIncrements + 8;
         } else {
             this.boatPosRotationIncrements = 6;
         }
 
-        this.boatX = par1;
-        this.boatY = par3;
-        this.boatZ = par5;
-        this.boatYaw = par7;
-        this.boatPitch = par8;
+        this.boatX = x;
+        this.boatY = y;
+        this.boatZ = z;
+        this.boatYaw = yaw;
+        this.boatPitch = pitch;
         this.motionX = this.velocityX;
         this.motionY = this.velocityY;
         this.motionZ = this.velocityZ;
     }
 
     @SideOnly(Side.CLIENT)
-    public void setVelocity(double par1, double par3, double par5) {
-        this.velocityX = this.motionX = par1;
-        this.velocityY = this.motionY = par3;
-        this.velocityZ = this.motionZ = par5;
+    public void setVelocity(double vx, double vy, double vz) {
+        this.velocityX = this.motionX = vx;
+        this.velocityY = this.motionY = vy;
+        this.velocityZ = this.motionZ = vz;
     }
 
     public void onLivingpdate() {
@@ -478,11 +479,11 @@ public class Elevator extends EntityLiving {
                 } else {
                     EntityPlayer pp = (EntityPlayer) this.riddenByEntity;
                     obstruction_factor = 0.0;
-                    int var85 = 3;
-                    var85 += (int) (velocity * 8.0);
+                    int n = 3;
+                    n += (int) (velocity * 8.0);
 
-                    for (int k = 1; k < var85; k++) {
-                        for (int i = 1; i < var85 * 2; i++) {
+                    for (int k = 1; k < n; k++) {
+                        for (int i = 1; i < n * 2; i++) {
                             double dx = i * Math.cos(Math.toRadians(this.rotationYaw + 90.0F));
                             double dz = i * Math.sin(Math.toRadians(this.rotationYaw + 90.0F));
                             bid = this.worldObj
@@ -621,7 +622,7 @@ public class Elevator extends EntityLiving {
                         this.dropItem(Items.stick, 1);
                     }
 
-                    for (int var84 = 0; var84 < 2; var84++) {
+                    for (int i = 0; i < 2; i++) {
                         this.dropItem(Items.diamond, 1);
                     }
                 } else {
@@ -659,12 +660,12 @@ public class Elevator extends EntityLiving {
         }
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        par1NBTTagCompound.setInteger("HoverColor", this.getColor());
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        tag.setInteger("HoverColor", this.getColor());
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        this.color = par1NBTTagCompound.getInteger("HoverColor");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        this.color = tag.getInteger("HoverColor");
         if (this.color < 1) {
             this.color = 1;
         }
@@ -680,16 +681,15 @@ public class Elevator extends EntityLiving {
         return 0.25F;
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (var2 != null && var2.getItem() == OreSpawnMain.MyUltimateSword
-            && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+        if (currentItem != null && currentItem.getItem() == OreSpawnMain.MyUltimateSword
+            && player.getDistanceSqToEntity(this) < 16.0) {
             if (!this.worldObj.isRemote) {
                 this.color++;
                 if (this.color > 10) {
@@ -701,11 +701,11 @@ public class Elevator extends EntityLiving {
 
             return true;
         } else if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer
-            && this.riddenByEntity != par1EntityPlayer) {
+            && this.riddenByEntity != player) {
                 return true;
             } else {
                 if (!this.worldObj.isRemote) {
-                    par1EntityPlayer.mountEntity(this);
+                    player.mountEntity(this);
                 }
 
                 return true;
@@ -720,32 +720,32 @@ public class Elevator extends EntityLiving {
         return this.dataWatcher.getWatchableObjectFloat(24);
     }
 
-    public void setTimeSinceHit(int par1) {
-        this.dataWatcher.updateObject(22, par1);
+    public void setTimeSinceHit(int n) {
+        this.dataWatcher.updateObject(22, n);
     }
 
     public int getTimeSinceHit() {
         return this.dataWatcher.getWatchableObjectInt(22);
     }
 
-    public void setForwardDirection(int par1) {
-        this.dataWatcher.updateObject(23, par1);
+    public void setForwardDirection(int n) {
+        this.dataWatcher.updateObject(23, n);
     }
 
     public int getForwardDirection() {
         return this.dataWatcher.getWatchableObjectInt(23);
     }
 
-    public void setExploding(int par1) {
-        this.dataWatcher.updateObject(20, par1);
+    public void setExploding(int n) {
+        this.dataWatcher.updateObject(20, n);
     }
 
     public int getExploding() {
         return this.dataWatcher.getWatchableObjectInt(20);
     }
 
-    public void setColor(int par1) {
-        this.dataWatcher.updateObject(21, par1);
+    public void setColor(int n) {
+        this.dataWatcher.updateObject(21, n);
     }
 
     public int getColor() {

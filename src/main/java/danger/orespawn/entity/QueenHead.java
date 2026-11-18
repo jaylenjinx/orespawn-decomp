@@ -26,8 +26,8 @@ public class QueenHead extends EntityLiving {
     private double velocityY;
     private double velocityZ;
 
-    public QueenHead(World par1World) {
-        super(par1World);
+    public QueenHead(World world) {
+        super(world);
         this.setSize(19.9F, 10.0F);
         this.noClip = true;
         this.fireResistance = 10000;
@@ -50,9 +50,9 @@ public class QueenHead extends EntityLiving {
         return false;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     protected boolean canTriggerWalQueen() {
         return false;
@@ -66,25 +66,25 @@ public class QueenHead extends EntityLiving {
         return true;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        if (par1DamageSource.getDamageType()
+        if (source.getDamageType()
             .equals("inWall")) {
             return false;
         } else {
-            Entity e = par1DamageSource.getEntity();
+            Entity e = source.getEntity();
             if (e == null || !(e instanceof TheQueen) && !(e instanceof QueenHead)) {
-                e = par1DamageSource.getSourceOfDamage();
+                e = source.getSourceOfDamage();
                 if (e == null || !(e instanceof TheQueen) && !(e instanceof QueenHead)) {
-                    List var5 = this.worldObj
+                    List entities = this.worldObj
                         .getEntitiesWithinAABB(TheQueen.class, this.boundingBox.expand(48.0, 32.0, 48.0));
-                    Iterator var2x = var5.iterator();
-                    Entity var3 = null;
-                    TheQueen var4 = null;
-                    if (var2x.hasNext()) {
-                        var3 = (Entity) var2x.next();
-                        var4 = (TheQueen) var3;
-                        ret = var4.attackEntityFrom(par1DamageSource, par2);
+                    Iterator iterator = entities.iterator();
+                    Entity entity = null;
+                    TheQueen theQueen = null;
+                    if (iterator.hasNext()) {
+                        entity = (Entity) iterator.next();
+                        theQueen = (TheQueen) entity;
+                        ret = theQueen.attackEntityFrom(source, amount);
                     }
 
                     return ret;
@@ -102,28 +102,29 @@ public class QueenHead extends EntityLiving {
     }
 
     @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch,
+        int posRotationIncrements) {
         if (this.riddenByEntity != null) {
-            this.boatPosRotationIncrements = par9 + 8;
+            this.boatPosRotationIncrements = posRotationIncrements + 8;
         } else {
             this.boatPosRotationIncrements = 6;
         }
 
-        this.boatX = par1;
-        this.boatY = par3;
-        this.boatZ = par5;
-        this.boatYaw = par7;
-        this.boatPitch = par8;
+        this.boatX = x;
+        this.boatY = y;
+        this.boatZ = z;
+        this.boatYaw = yaw;
+        this.boatPitch = pitch;
         this.motionX = this.velocityX;
         this.motionY = this.velocityY;
         this.motionZ = this.velocityZ;
     }
 
     @SideOnly(Side.CLIENT)
-    public void setVelocity(double par1, double par3, double par5) {
-        this.velocityX = this.motionX = par1;
-        this.velocityY = this.motionY = par3;
-        this.velocityZ = this.motionZ = par5;
+    public void setVelocity(double vx, double vy, double vz) {
+        this.velocityX = this.motionX = vx;
+        this.velocityY = this.motionY = vy;
+        this.velocityZ = this.motionZ = vz;
     }
 
     public void onUpdate() {
@@ -149,23 +150,23 @@ public class QueenHead extends EntityLiving {
                     this.boatPosRotationIncrements--;
                 }
             } else {
-                List var5 = this.worldObj
+                List entities = this.worldObj
                     .getEntitiesWithinAABB(TheQueen.class, this.boundingBox.expand(32.0, 32.0, 32.0));
-                Iterator var2 = var5.iterator();
-                Entity var3 = null;
-                TheQueen var4 = null;
-                if (var2.hasNext()) {
-                    var3 = (Entity) var2.next();
-                    var4 = (TheQueen) var3;
-                    this.posY = var4.posY + 12.0;
-                    this.posX = var4.posX - 30.0 * Math.sin(Math.toRadians(var4.rotationYawHead));
-                    this.posZ = var4.posZ + 30.0 * Math.cos(Math.toRadians(var4.rotationYawHead));
-                    this.rotationYaw = var4.rotationYaw;
-                    this.rotationYawHead = var4.rotationYawHead;
-                    this.motionX = var4.motionX;
-                    this.motionY = var4.motionY;
-                    this.motionZ = var4.motionZ;
-                    this.setHealth(var4.getHealth());
+                Iterator iterator = entities.iterator();
+                Entity entity = null;
+                TheQueen theQueen = null;
+                if (iterator.hasNext()) {
+                    entity = (Entity) iterator.next();
+                    theQueen = (TheQueen) entity;
+                    this.posY = theQueen.posY + 12.0;
+                    this.posX = theQueen.posX - 30.0 * Math.sin(Math.toRadians(theQueen.rotationYawHead));
+                    this.posZ = theQueen.posZ + 30.0 * Math.cos(Math.toRadians(theQueen.rotationYawHead));
+                    this.rotationYaw = theQueen.rotationYaw;
+                    this.rotationYawHead = theQueen.rotationYawHead;
+                    this.motionX = theQueen.motionX;
+                    this.motionY = theQueen.motionY;
+                    this.motionZ = theQueen.motionZ;
+                    this.setHealth(theQueen.getHealth());
                 } else {
                     this.setDead();
                 }

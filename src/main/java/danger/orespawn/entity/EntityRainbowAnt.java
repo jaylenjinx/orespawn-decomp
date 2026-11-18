@@ -14,8 +14,8 @@ import danger.orespawn.world.dimension.OreSpawnTeleporter;
 
 public class EntityRainbowAnt extends EntityAnt {
 
-    public EntityRainbowAnt(World par1World) {
-        super(par1World);
+    public EntityRainbowAnt(World world) {
+        super(world);
         this.setSize(0.1F, 0.1F);
         this.experienceValue = 0;
         this.getNavigator()
@@ -36,27 +36,26 @@ public class EntityRainbowAnt extends EntityAnt {
     }
 
     @Override
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        if (par1EntityPlayer == null) {
+    public boolean interact(EntityPlayer player) {
+        if (player == null) {
             return false;
-        } else if (!(par1EntityPlayer instanceof EntityPlayerMP)) {
+        } else if (!(player instanceof EntityPlayerMP)) {
             return false;
         } else {
-            ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-            if (var2 != null && var2.stackSize <= 0) {
-                par1EntityPlayer.inventory
-                    .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-                var2 = null;
+            ItemStack currentItem = player.inventory.getCurrentItem();
+            if (currentItem != null && currentItem.stackSize <= 0) {
+                player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                currentItem = null;
             }
 
-            if (var2 != null) {
+            if (currentItem != null) {
                 return false;
             } else {
-                if (par1EntityPlayer.dimension != OreSpawnMain.DimensionID3) {
+                if (player.dimension != OreSpawnMain.DimensionID3) {
                     MinecraftServer.getServer()
                         .getConfigurationManager()
                         .transferPlayerToDimension(
-                            (EntityPlayerMP) par1EntityPlayer,
+                            (EntityPlayerMP) player,
                             OreSpawnMain.DimensionID3,
                             new OreSpawnTeleporter(
                                 MinecraftServer.getServer()
@@ -67,7 +66,7 @@ public class EntityRainbowAnt extends EntityAnt {
                     MinecraftServer.getServer()
                         .getConfigurationManager()
                         .transferPlayerToDimension(
-                            (EntityPlayerMP) par1EntityPlayer,
+                            (EntityPlayerMP) player,
                             0,
                             new OreSpawnTeleporter(
                                 MinecraftServer.getServer()

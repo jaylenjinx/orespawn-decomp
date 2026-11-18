@@ -17,31 +17,31 @@ public class RenderDungeonBeast extends RenderLiving {
     private float scale = 1.0F;
     private static final ResourceLocation texture = new ResourceLocation("orespawn", "Botwtexture.png");
 
-    public RenderDungeonBeast(ModelDungeonBeast par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderDungeonBeast(ModelDungeonBeast modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelDungeonBeast) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderDungeonBeast(DungeonBeast par1EntityDungeonBeast, double par2, double par4, double par6,
-        float par8, float par9) {
-        super.doRender(par1EntityDungeonBeast, par2, par4, par6, par8, par9);
+    public void renderDungeonBeast(DungeonBeast entityDungeonBeast, double x, double y, double z, float yaw,
+        float partialTicks) {
+        super.doRender(entityDungeonBeast, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderDungeonBeast((DungeonBeast) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderDungeonBeast((DungeonBeast) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderDungeonBeast((DungeonBeast) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderDungeonBeast((DungeonBeast) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(DungeonBeast par1Entity, float par2) {
+    protected void preRenderScale(DungeonBeast entity, float f) {
         GL11.glScalef(this.scale, this.scale, this.scale);
     }
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
-        this.preRenderScale((DungeonBeast) par1EntityLiving, par2);
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((DungeonBeast) entity, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

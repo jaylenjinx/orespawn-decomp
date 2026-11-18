@@ -50,8 +50,8 @@ public class RubberDucky extends EntityTameable {
     private int ty = 0;
     private int tz = 0;
 
-    public RubberDucky(World par1World) {
-        super(par1World);
+    public RubberDucky(World world) {
+        super(world);
         this.moveSpeed = 0.22F;
         this.setSize(0.33F, 0.5F);
         this.getNavigator()
@@ -134,11 +134,11 @@ public class RubberDucky extends EntityTameable {
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
         Entity w = null;
-        w = par1DamageSource.getEntity();
-        ret = super.attackEntityFrom(par1DamageSource, par2);
+        w = source.getEntity();
+        ret = super.attackEntityFrom(source, amount);
         this.setSitting(false);
         if (!this.worldObj.isRemote && w != null
             && w instanceof EntityPlayer
@@ -193,24 +193,24 @@ public class RubberDucky extends EntityTameable {
         return 1;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     protected boolean isAIEnabled() {
         return true;
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
     protected String getLivingSound() {
@@ -241,24 +241,23 @@ public class RubberDucky extends EntityTameable {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (super.interact(par1EntityPlayer)) {
+        if (super.interact(player)) {
             return true;
-        } else
-            if (var2 != null && var2.getItem() == Items.fish && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+        } else if (currentItem != null && currentItem.getItem() == Items.fish
+            && player.getDistanceSqToEntity(this) < 16.0) {
                 if (!this.isTamed()) {
                     if (!this.worldObj.isRemote) {
                         if (this.rand.nextInt(2) == 0) {
                             this.setTamed(true);
                             this.func_152115_b(
-                                par1EntityPlayer.getUniqueID()
+                                player.getUniqueID()
                                     .toString());
                             this.playTameEffect(true);
                             this.worldObj.setEntityState(this, (byte) 7);
@@ -268,7 +267,7 @@ public class RubberDucky extends EntityTameable {
                             this.worldObj.setEntityState(this, (byte) 6);
                         }
                     }
-                } else if (this.func_152114_e(par1EntityPlayer)) {
+                } else if (this.func_152114_e(player)) {
                     if (this.worldObj.isRemote) {
                         this.playTameEffect(true);
                         this.worldObj.setEntityState(this, (byte) 7);
@@ -279,19 +278,18 @@ public class RubberDucky extends EntityTameable {
                     }
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
-            } else if (this.isTamed() && var2 != null
-                && var2.getItem() == Item.getItemFromBlock(Blocks.deadbush)
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                && this.func_152114_e(par1EntityPlayer)) {
+            } else if (this.isTamed() && currentItem != null
+                && currentItem.getItem() == Item.getItemFromBlock(Blocks.deadbush)
+                && player.getDistanceSqToEntity(this) < 16.0
+                && this.func_152114_e(player)) {
                     if (!this.worldObj.isRemote) {
                         this.setTamed(false);
                         this.func_152115_b("");
@@ -299,27 +297,25 @@ public class RubberDucky extends EntityTameable {
                         this.worldObj.setEntityState(this, (byte) 6);
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
-                } else if (this.isTamed() && this.func_152114_e(par1EntityPlayer)
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
-                        if (!this.isSitting() && this.getKillCount() < 5) {
-                            this.setSitting(true);
-                        } else {
-                            this.setSitting(false);
-                        }
-
-                        return true;
+                } else if (this.isTamed() && this.func_152114_e(player) && player.getDistanceSqToEntity(this) < 16.0) {
+                    if (!this.isSitting() && this.getKillCount() < 5) {
+                        this.setSitting(true);
                     } else {
-                        return true;
+                        this.setSitting(false);
                     }
+
+                    return true;
+                } else {
+                    return true;
+                }
     }
 
     private boolean scan_it(int x, int y, int z, int dx, int dy, int dz) {
@@ -353,26 +349,26 @@ public class RubberDucky extends EntityTameable {
             }
         }
 
-        for (int var12 = -dx; var12 <= dx; var12++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dz; j <= dz; j++) {
-                Block bidx = this.worldObj.getBlock(x + var12, y + dy, z + j);
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y + dy;
                         this.tz = z + j;
                         found++;
                     }
                 }
 
-                bidx = this.worldObj.getBlock(x + var12, y - dy, z + j);
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y - dy;
                         this.tz = z + j;
                         found++;
@@ -381,26 +377,26 @@ public class RubberDucky extends EntityTameable {
             }
         }
 
-        for (int var13 = -dx; var13 <= dx; var13++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dy; j <= dy; j++) {
-                Block bidxx = this.worldObj.getBlock(x + var13, y + j, z + dz);
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z + dz;
                         found++;
                     }
                 }
 
-                bidxx = this.worldObj.getBlock(x + var13, y + j, z - dz);
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z - dz;
                         found++;
@@ -478,38 +474,38 @@ public class RubberDucky extends EntityTameable {
         }
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         float i = 1.0F;
         if (this.getKillCount() >= 5) {
             i = 2.0F;
         }
 
-        return par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), i);
+        return target.attackEntityFrom(DamageSource.causeMobDamage(this), i);
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof AttackSquid) {
+            } else if (target instanceof AttackSquid) {
                 return true;
-            } else if (par1EntityLiving instanceof EntitySquid) {
+            } else if (target instanceof EntitySquid) {
                 return true;
             } else {
-                if (par1EntityLiving instanceof RubberDucky && this.worldObj.rand.nextInt(10) == 1) {
-                    this.buddy = par1EntityLiving;
+                if (target instanceof RubberDucky && this.worldObj.rand.nextInt(10) == 1) {
+                    this.buddy = target;
                 }
 
-                if (this.getKillCount() >= 5 && par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (this.getKillCount() >= 5 && target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     return !p.capabilities.isCreativeMode;
                 } else {
                     return false;
@@ -521,12 +517,12 @@ public class RubberDucky extends EntityTameable {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(8.0, 4.0, 8.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
             EntityLivingBase e = this.getAttackTarget();
             if (e != null && e.isEntityAlive()) {
                 return e;
@@ -534,11 +530,11 @@ public class RubberDucky extends EntityTameable {
                 this.setAttackTarget(null);
                 this.buddy = null;
 
-                while (var2.hasNext()) {
-                    var3 = (Entity) var2.next();
-                    var4 = (EntityLivingBase) var3;
-                    if (this.isSuitableTarget(var4, false)) {
-                        return var4;
+                while (iterator.hasNext()) {
+                    entity = (Entity) iterator.next();
+                    target = (EntityLivingBase) entity;
+                    if (this.isSuitableTarget(target, false)) {
+                        return target;
                     }
                 }
 
@@ -547,14 +543,14 @@ public class RubberDucky extends EntityTameable {
         }
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("Killcount", this.killcount);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("Killcount", this.killcount);
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.killcount = par1NBTTagCompound.getInteger("Killcount");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.killcount = tag.getInteger("Killcount");
         this.setKillCount(this.killcount);
     }
 
@@ -562,17 +558,17 @@ public class RubberDucky extends EntityTameable {
         return this.dataWatcher.getWatchableObjectByte(23);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(23, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(23, (byte) attacking);
     }
 
     public final int getKillCount() {
         return this.dataWatcher.getWatchableObjectByte(22);
     }
 
-    public final void setKillCount(int par1) {
-        this.dataWatcher.updateObject(22, (byte) par1);
-        this.killcount = par1;
+    public final void setKillCount(int killcount2) {
+        this.dataWatcher.updateObject(22, (byte) killcount2);
+        this.killcount = killcount2;
     }
 
     public boolean getCanSpawnHere() {
@@ -612,15 +608,15 @@ public class RubberDucky extends EntityTameable {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public RubberDucky spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public RubberDucky spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new RubberDucky(this.worldObj);
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.fish;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.fish;
     }
 
-    public boolean isBreedingItem(ItemStack par1ItemStack) {
-        return par1ItemStack.getItem() == OreSpawnMain.MyCrystalApple;
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
     }
 }

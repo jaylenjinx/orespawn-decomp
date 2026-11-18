@@ -20,25 +20,25 @@ public class EntityThrownRock extends EntityThrowable {
     private int myage = 0;
     private float my_rotation = 0.0F;
 
-    public EntityThrownRock(World par1World) {
-        super(par1World);
+    public EntityThrownRock(World world) {
+        super(world);
     }
 
-    public EntityThrownRock(World par1World, int par2) {
-        super(par1World);
+    public EntityThrownRock(World world, int n) {
+        super(world);
     }
 
-    public EntityThrownRock(World par1World, EntityLivingBase par2EntityLiving) {
-        super(par1World, par2EntityLiving);
+    public EntityThrownRock(World world, EntityLivingBase living) {
+        super(world, living);
     }
 
-    public EntityThrownRock(World par1World, EntityLivingBase par2EntityLiving, int par3) {
-        super(par1World, par2EntityLiving);
-        this.rock_type = par3;
+    public EntityThrownRock(World world, EntityLivingBase living, int n) {
+        super(world, living);
+        this.rock_type = n;
     }
 
-    public EntityThrownRock(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public EntityThrownRock(World world, double x, double y, double z) {
+        super(world, x, y, z);
     }
 
     protected void entityInit() {
@@ -50,20 +50,20 @@ public class EntityThrownRock extends EntityThrowable {
         return this.dataWatcher.getWatchableObjectInt(20);
     }
 
-    public void setRockType(int par1) {
+    public void setRockType(int n) {
         if (this.worldObj != null) {
             if (!this.worldObj.isRemote) {
-                this.rock_type = par1;
-                this.dataWatcher.updateObject(20, par1);
+                this.rock_type = n;
+                this.dataWatcher.updateObject(20, n);
             }
         }
     }
 
-    protected void onImpact(MovingObjectPosition par1MovingObjectPosition) {
+    protected void onImpact(MovingObjectPosition hit) {
         if (!this.isDead) {
             if (!this.worldObj.isRemote) {
-                if (par1MovingObjectPosition.entityHit != null && this.getThrower() != null) {
-                    Entity e = par1MovingObjectPosition.entityHit;
+                if (hit.entityHit != null && this.getThrower() != null) {
+                    Entity e = hit.entityHit;
                     if (this.rock_type == 1 && e != this.getThrower()) {
                         e.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) this.getThrower()), 2.0F);
                         double ks = 0.1;
@@ -267,9 +267,9 @@ public class EntityThrownRock extends EntityThrowable {
                     }
                 } else if (this.rock_type != 0) {
                     int played = 0;
-                    int x = par1MovingObjectPosition.blockX;
-                    int y = par1MovingObjectPosition.blockY;
-                    int z = par1MovingObjectPosition.blockZ;
+                    int x = hit.blockX;
+                    int y = hit.blockY;
+                    int z = hit.blockZ;
 
                     for (int i = -1; i <= 1; i++) {
                         for (int j = -1; j <= 1; j++) {

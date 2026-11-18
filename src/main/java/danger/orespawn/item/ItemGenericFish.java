@@ -13,14 +13,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemGenericFish extends ItemFood {
 
-    public ItemGenericFish(int par1, int par2, float par3, boolean par4) {
-        super(par2, par3, par4);
+    public ItemGenericFish(int n, int n2, float f, boolean flag) {
+        super(n2, f, flag);
     }
 
-    public void onFoodEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        super.onFoodEaten(par1ItemStack, par2World, par3EntityPlayer);
-        if (!par2World.isRemote && par2World.rand.nextInt(4) == 1) {
-            par3EntityPlayer.addPotionEffect(new PotionEffect(Potion.hunger.id, 20, 0));
+    public void onFoodEaten(ItemStack stack, World world, EntityPlayer player) {
+        super.onFoodEaten(stack, world, player);
+        if (!world.isRemote && world.rand.nextInt(4) == 1) {
+            player.addPotionEffect(new PotionEffect(Potion.hunger.id, 20, 0));
         }
     }
 

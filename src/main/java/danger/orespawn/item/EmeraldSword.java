@@ -18,22 +18,22 @@ public class EmeraldSword extends ItemSword {
     private int weaponDamage;
     private final ToolMaterial toolMaterial;
 
-    public EmeraldSword(int par1, ToolMaterial par2EnumToolMaterial) {
-        super(par2EnumToolMaterial);
-        this.toolMaterial = par2EnumToolMaterial;
+    public EmeraldSword(int n, ToolMaterial enumToolMaterial) {
+        super(enumToolMaterial);
+        this.toolMaterial = enumToolMaterial;
         this.weaponDamage = 15;
         this.maxStackSize = 1;
         this.setMaxDamage(1300);
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {}
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {}
 
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {}
 
-    public void onUpdate(ItemStack stack, World par2World, Entity par3Entity, int par4, boolean par5) {}
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {}
 
-    public int getDamageVsEntity(Entity par1Entity) {
+    public int getDamageVsEntity(Entity entity) {
         return this.weaponDamage;
     }
 
@@ -41,12 +41,12 @@ public class EmeraldSword extends ItemSword {
         return "Emerald";
     }
 
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLiving par2EntityLiving, EntityLiving par3EntityLiving) {
-        par1ItemStack.damageItem(1, par3EntityLiving);
+    public boolean hitEntity(ItemStack stack, EntityLiving target, EntityLiving attacker) {
+        stack.damageItem(1, attacker);
         return true;
     }
 
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 3000;
     }
 

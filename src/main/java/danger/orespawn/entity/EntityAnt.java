@@ -26,8 +26,8 @@ public class EntityAnt extends EntityAnimal {
     private static final ResourceLocation texture4 = new ResourceLocation("orespawn", "unstableant.png");
     private static final ResourceLocation texture5 = new ResourceLocation("orespawn", "termite.png");
 
-    public EntityAnt(World par1World) {
-        super(par1World);
+    public EntityAnt(World world) {
+        super(world);
         this.setSize(0.1F, 0.1F);
         this.experienceValue = 0;
         this.getNavigator()
@@ -70,27 +70,26 @@ public class EntityAnt extends EntityAnimal {
         super.onUpdate();
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        if (par1EntityPlayer == null) {
+    public boolean interact(EntityPlayer player) {
+        if (player == null) {
             return false;
-        } else if (!(par1EntityPlayer instanceof EntityPlayerMP)) {
+        } else if (!(player instanceof EntityPlayerMP)) {
             return false;
         } else {
-            ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-            if (var2 != null && var2.stackSize <= 0) {
-                par1EntityPlayer.inventory
-                    .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-                var2 = null;
+            ItemStack currentItem = player.inventory.getCurrentItem();
+            if (currentItem != null && currentItem.stackSize <= 0) {
+                player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                currentItem = null;
             }
 
-            if (var2 != null) {
+            if (currentItem != null) {
                 return false;
             } else {
-                if (par1EntityPlayer.dimension != OreSpawnMain.DimensionID) {
+                if (player.dimension != OreSpawnMain.DimensionID) {
                     MinecraftServer.getServer()
                         .getConfigurationManager()
                         .transferPlayerToDimension(
-                            (EntityPlayerMP) par1EntityPlayer,
+                            (EntityPlayerMP) player,
                             OreSpawnMain.DimensionID,
                             new OreSpawnTeleporter(
                                 MinecraftServer.getServer()
@@ -101,7 +100,7 @@ public class EntityAnt extends EntityAnimal {
                     MinecraftServer.getServer()
                         .getConfigurationManager()
                         .transferPlayerToDimension(
-                            (EntityPlayerMP) par1EntityPlayer,
+                            (EntityPlayerMP) player,
                             0,
                             new OreSpawnTeleporter(
                                 MinecraftServer.getServer()
@@ -139,15 +138,15 @@ public class EntityAnt extends EntityAnimal {
         return 0.0F;
     }
 
-    protected void playStepSound(int par1, int par2, int par3, int par4) {}
+    protected void playStepSound(int n, int n2, int n3, int n4) {}
 
-    protected void dropFewItems(boolean par1, int par2) {}
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {}
 
     protected boolean canTriggerWalking() {
         return true;
     }
 
-    public EntityAgeable createChild(EntityAgeable var1) {
+    public EntityAgeable createChild(EntityAgeable partner) {
         return null;
     }
 
@@ -156,8 +155,8 @@ public class EntityAnt extends EntityAnimal {
     }
 
     private int findBuddies() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(EntityAnt.class, this.boundingBox.expand(20.0, 10.0, 20.0));
-        return var5.size();
+        List entities = this.worldObj.getEntitiesWithinAABB(EntityAnt.class, this.boundingBox.expand(20.0, 10.0, 20.0));
+        return entities.size();
     }
 
     public void updateAITick() {

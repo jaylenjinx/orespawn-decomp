@@ -45,8 +45,8 @@ public class EntityButterfly extends EntityAmbientCreature {
     private int force_sync = 25;
     private ChunkCoordinates currentFlightTarget = null;
 
-    public EntityButterfly(World par1World) {
-        super(par1World);
+    public EntityButterfly(World world) {
+        super(world);
         this.butterfly_type = OreSpawnMain.OreSpawnRand.nextInt(4);
         this.setSize(0.4F, 0.4F);
         this.getNavigator()
@@ -119,7 +119,7 @@ public class EntityButterfly extends EntityAmbientCreature {
         return true;
     }
 
-    protected void collideWithEntity(Entity par1Entity) {}
+    protected void collideWithEntity(Entity entity) {}
 
     protected void collideWithNearbyEntities() {}
 
@@ -167,60 +167,61 @@ public class EntityButterfly extends EntityAmbientCreature {
                 }
             }
 
-            double var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.5 - this.motionX) * 0.1F;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.7F - this.motionY) * 0.1F;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.5 - this.motionZ) * 0.1F;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx = this.currentFlightTarget.posX + 0.5 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx) * 0.5 - this.motionX) * 0.1F;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.7F - this.motionY) * 0.1F;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.5 - this.motionZ) * 0.1F;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float rotationYaw = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 0.5F;
-            this.rotationYaw += var8;
+            this.rotationYaw += rotationYaw;
         }
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         if (OreSpawnMain.OreSpawnRand.nextInt(2) != 0) {
             return false;
         } else {
             return this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL ? false
-                : par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), 1.0F);
+                : target.attackEntityFrom(DamageSource.causeMobDamage(this), 1.0F);
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (target instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) target;
                 return !p.capabilities.isCreativeMode;
             } else {
-                return par1EntityLiving instanceof EntityHorse;
+                return target instanceof EntityHorse;
             }
     }
 
     private EntityLivingBase findSomethingToAttack() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(8.0, 5.0, 8.0));
-        Collections.sort(var5, this.TargetSorter);
-        Iterator var2 = var5.iterator();
-        Entity var3 = null;
-        EntityLivingBase var4 = null;
+        List entities = this.worldObj
+            .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(8.0, 5.0, 8.0));
+        Collections.sort(entities, this.TargetSorter);
+        Iterator iterator = entities.iterator();
+        Entity entity = null;
+        EntityLivingBase target = null;
 
-        while (var2.hasNext()) {
-            var3 = (Entity) var2.next();
-            var4 = (EntityLivingBase) var3;
-            if (this.isSuitableTarget(var4, false)) {
-                return var4;
+        while (iterator.hasNext()) {
+            entity = (Entity) iterator.next();
+            target = (EntityLivingBase) entity;
+            if (this.isSuitableTarget(target, false)) {
+                return target;
             }
         }
 
@@ -245,35 +246,34 @@ public class EntityButterfly extends EntityAmbientCreature {
         return false;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean doesEntityNotTriggerPressurePlate() {
         return true;
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        if (par1EntityPlayer == null) {
+    public boolean interact(EntityPlayer player) {
+        if (player == null) {
             return false;
-        } else if (!(par1EntityPlayer instanceof EntityPlayerMP)) {
+        } else if (!(player instanceof EntityPlayerMP)) {
             return false;
         } else {
-            ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-            if (var2 != null && var2.stackSize <= 0) {
-                par1EntityPlayer.inventory
-                    .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-                var2 = null;
+            ItemStack currentItem = player.inventory.getCurrentItem();
+            if (currentItem != null && currentItem.stackSize <= 0) {
+                player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                currentItem = null;
             }
 
-            if (var2 != null) {
+            if (currentItem != null) {
                 return false;
             } else {
-                if (par1EntityPlayer.dimension != OreSpawnMain.DimensionID6) {
+                if (player.dimension != OreSpawnMain.DimensionID6) {
                     MinecraftServer.getServer()
                         .getConfigurationManager()
                         .transferPlayerToDimension(
-                            (EntityPlayerMP) par1EntityPlayer,
+                            (EntityPlayerMP) player,
                             OreSpawnMain.DimensionID6,
                             new OreSpawnTeleporter(
                                 MinecraftServer.getServer()
@@ -284,7 +284,7 @@ public class EntityButterfly extends EntityAmbientCreature {
                     MinecraftServer.getServer()
                         .getConfigurationManager()
                         .transferPlayerToDimension(
-                            (EntityPlayerMP) par1EntityPlayer,
+                            (EntityPlayerMP) player,
                             0,
                             new OreSpawnTeleporter(
                                 MinecraftServer.getServer()
@@ -330,13 +330,13 @@ public class EntityButterfly extends EntityAmbientCreature {
 
     public void initCreature() {}
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("ButterflyType", this.butterfly_type);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("ButterflyType", this.butterfly_type);
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.butterfly_type = par1NBTTagCompound.getInteger("ButterflyType");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.butterfly_type = tag.getInteger("ButterflyType");
     }
 }

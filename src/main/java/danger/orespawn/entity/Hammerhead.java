@@ -36,8 +36,8 @@ public class Hammerhead extends EntityMob {
     private float moveSpeed = 0.35F;
     private EntityLivingBase rt = null;
 
-    public Hammerhead(World par1World) {
-        super(par1World);
+    public Hammerhead(World world) {
+        super(world);
         this.setSize(3.0F, 5.0F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -117,38 +117,38 @@ public class Hammerhead extends EntityMob {
         return Items.beef;
     }
 
-    private void dropItemRand(Item index, int par1) {
-        EntityItem var3 = new EntityItem(
+    private void dropItemRand(Item index, int n) {
+        EntityItem entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
             this.posY + 2.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
-            new ItemStack(index, par1, 0));
-        this.worldObj.spawnEntityInWorld(var3);
+            new ItemStack(index, n, 0));
+        this.worldObj.spawnEntityInWorld(entityItem);
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
-        for (int var4 = 0; var4 < 8; var4++) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        for (int i = 0; i < 8; i++) {
             this.dropItemRand(Items.experience_bottle, 1);
         }
 
-        for (int var41 = 0; var41 < 10; var41++) {
+        for (int i = 0; i < 10; i++) {
             this.dropItemRand(OreSpawnMain.MyExperienceCatcher, 1);
         }
 
-        for (int var5 = 0; var5 < 16; var5++) {
+        for (int i = 0; i < 16; i++) {
             this.dropItemRand(OreSpawnMain.CreeperLauncher, 1);
         }
 
-        for (int var6 = 0; var6 < 4; var6++) {
+        for (int i = 0; i < 4; i++) {
             this.dropItemRand(Item.getItemFromBlock(OreSpawnMain.CreeperRepellent), 1);
         }
 
-        for (int var7 = 0; var7 < 6; var7++) {
+        for (int i = 0; i < 6; i++) {
             this.dropItemRand(Items.beef, 1);
         }
 
-        for (int var8 = 0; var8 < 2; var8++) {
+        for (int i = 0; i < 2; i++) {
             this.dropItemRand(OreSpawnMain.MyExperienceTreeSeed, 1);
         }
 
@@ -159,35 +159,35 @@ public class Hammerhead extends EntityMob {
 
     public void initCreature() {}
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        if (!super.attackEntityAsMob(par1Entity)) {
+    public boolean attackEntityAsMob(Entity target) {
+        if (!super.attackEntityAsMob(target)) {
             return false;
         } else {
-            if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
+            if (target != null && target instanceof EntityLivingBase) {
                 double ks = 1.1;
                 double inair = 0.85;
-                float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-                if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+                float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+                if (target.isDead || target instanceof EntityPlayer) {
                     inair *= 2.0;
                 }
 
-                par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+                target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
             }
 
             return true;
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        if (!par1DamageSource.getDamageType()
+        if (!source.getDamageType()
             .equals("cactus")) {
-            ret = super.attackEntityFrom(par1DamageSource, par2);
-            Entity e = par1DamageSource.getEntity();
+            ret = super.attackEntityFrom(source, amount);
+            Entity e = source.getEntity();
             if (e != null && e instanceof EntityLivingBase) {
                 this.rt = (EntityLivingBase) e;
             }
@@ -240,23 +240,23 @@ public class Hammerhead extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof Hammerhead) {
+            } else if (target instanceof Hammerhead) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (target instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) target;
                 return !p.capabilities.isCreativeMode;
             } else {
-                return par1EntityLiving instanceof EntityMob ? true : MyUtils.isAttackableNonMob(par1EntityLiving);
+                return target instanceof EntityMob ? true : MyUtils.isAttackableNonMob(target);
             }
     }
 
@@ -264,18 +264,18 @@ public class Hammerhead extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(18.0, 9.0, 18.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -287,8 +287,8 @@ public class Hammerhead extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public boolean getCanSpawnHere() {
@@ -317,11 +317,11 @@ public class Hammerhead extends EntityMob {
         } else if (this.worldObj.isDaytime()) {
             return false;
         } else {
-            for (int var10 = -1; var10 < 1; var10++) {
+            for (int i = -1; i < 1; i++) {
                 for (int j = -1; j < 1; j++) {
                     for (int ix = 1; ix < 6; ix++) {
                         Block bid = this.worldObj
-                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + var10);
+                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
                         if (bid != Blocks.air) {
                             return false;
                         }

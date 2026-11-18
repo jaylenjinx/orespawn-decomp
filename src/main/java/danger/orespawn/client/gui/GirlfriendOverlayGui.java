@@ -84,9 +84,9 @@ public class GirlfriendOverlayGui extends Gui {
             Entity entity = null;
             EntityPlayer player = null;
             if (!this.mc.gameSettings.hideGUI && this.mc.currentScreen == null) {
-                EntityPlayer var20 = this.mc.thePlayer;
-                if (var20 != null) {
-                    OreSpawnMain.current_dimension = var20.worldObj.provider.dimensionId;
+                EntityPlayer thePlayer = this.mc.thePlayer;
+                if (thePlayer != null) {
+                    OreSpawnMain.current_dimension = thePlayer.worldObj.provider.dimensionId;
                     if (this.mc.gameSettings.fancyGraphics) {
                         OreSpawnMain.FastGraphicsLeaves = 0;
                     } else {
@@ -96,7 +96,7 @@ public class GirlfriendOverlayGui extends Gui {
                     if (OreSpawnMain.GuiOverlayEnable != 0) {
                         entity = this.mc.pointedEntity;
                         if (entity == null) {
-                            entity = OreSpawnMain.getPointedAtEntity(this.mc.theWorld, var20, 16.0);
+                            entity = OreSpawnMain.getPointedAtEntity(this.mc.theWorld, thePlayer, 16.0);
                             if (entity == null) {
                                 return;
                             }
@@ -109,7 +109,7 @@ public class GirlfriendOverlayGui extends Gui {
                         if (entity instanceof Girlfriend) {
                             Girlfriend gf = null;
                             gf = (Girlfriend) entity;
-                            if (!gf.func_152114_e(var20)) {
+                            if (!gf.func_152114_e(thePlayer)) {
                                 return;
                             }
 
@@ -131,7 +131,7 @@ public class GirlfriendOverlayGui extends Gui {
                         if (entity instanceof Boyfriend) {
                             Boyfriend gfx = null;
                             gfx = (Boyfriend) entity;
-                            if (!gfx.func_152114_e(var20)) {
+                            if (!gfx.func_152114_e(thePlayer)) {
                                 return;
                             }
 
@@ -153,7 +153,7 @@ public class GirlfriendOverlayGui extends Gui {
                         if (entity instanceof ThePrince) {
                             ThePrince gfxx = null;
                             gfxx = (ThePrince) entity;
-                            if (!gfxx.func_152114_e(var20)) {
+                            if (!gfxx.func_152114_e(thePlayer)) {
                                 return;
                             }
 
@@ -171,7 +171,7 @@ public class GirlfriendOverlayGui extends Gui {
                         if (entity instanceof ThePrincess) {
                             ThePrincess gfxxx = null;
                             gfxxx = (ThePrincess) entity;
-                            if (!gfxxx.func_152114_e(var20)) {
+                            if (!gfxxx.func_152114_e(thePlayer)) {
                                 return;
                             }
 
@@ -189,7 +189,7 @@ public class GirlfriendOverlayGui extends Gui {
                         if (entity instanceof ThePrinceTeen) {
                             ThePrinceTeen gfxxxx = null;
                             gfxxxx = (ThePrinceTeen) entity;
-                            if (!gfxxxx.func_152114_e(var20)) {
+                            if (!gfxxxx.func_152114_e(thePlayer)) {
                                 return;
                             }
 
@@ -211,7 +211,7 @@ public class GirlfriendOverlayGui extends Gui {
                         if (entity instanceof ThePrinceAdult) {
                             ThePrinceAdult gfxxxxx = null;
                             gfxxxxx = (ThePrinceAdult) entity;
-                            if (!gfxxxxx.func_152114_e(var20)) {
+                            if (!gfxxxxx.func_152114_e(thePlayer)) {
                                 return;
                             }
 
@@ -513,7 +513,7 @@ public class GirlfriendOverlayGui extends Gui {
                             int barWidthFilled = (int) (gfHealth * (barWidth + 1));
                             int x = width / 2 - barWidth / 2;
                             int y = 25;
-                            if (var20.isInsideOfMaterial(Material.water) || var20.getTotalArmorValue() > 0) {
+                            if (thePlayer.isInsideOfMaterial(Material.water) || thePlayer.getTotalArmorValue() > 0) {
                                 y -= 10;
                             }
 

@@ -7,8 +7,8 @@ import net.minecraft.world.World;
 
 public class EntityLavaLovingItem extends EntityItem {
 
-    public EntityLavaLovingItem(World par1World, double par2, double par4, double par6, ItemStack par8ItemStack) {
-        super(par1World, par2, par4, par6, par8ItemStack);
+    public EntityLavaLovingItem(World world, double x, double y, double z, ItemStack stack) {
+        super(world, x, y, z, stack);
         this.fireResistance = 300;
         this.isImmuneToFire = true;
         this.hurtResistantTime = 300;
@@ -26,9 +26,9 @@ public class EntityLavaLovingItem extends EntityItem {
         this.hurtResistantTime = 0;
     }
 
-    protected void dealFireDamage(float par1) {
+    protected void dealFireDamage(float amount) {
         if (!this.isImmuneToFire) {
-            this.attackEntityFrom(DamageSource.inFire, par1);
+            this.attackEntityFrom(DamageSource.inFire, amount);
         }
     }
 }

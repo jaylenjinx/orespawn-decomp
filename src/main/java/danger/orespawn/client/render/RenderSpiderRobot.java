@@ -17,37 +17,36 @@ public class RenderSpiderRobot extends RenderLiving {
     private float scale = 1.0F;
     private static final ResourceLocation texture = new ResourceLocation("orespawn", "SpiderRobottexture.png");
 
-    public RenderSpiderRobot(ModelSpiderRobot par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderSpiderRobot(ModelSpiderRobot modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelSpiderRobot) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderSpiderRobot(SpiderRobot par1EntitySpiderRobot, double par2, double par4, double par6, float par8,
-        float par9) {
+    public void renderSpiderRobot(SpiderRobot entitySpiderRobot, double x, double y, double z, float f, float f2) {
         GL11.glPushMatrix();
-        GL11.glTranslatef((float) par2, (float) par4, (float) par6);
-        GL11.glRotatef(180.0F - par8, 0.0F, 1.0F, 0.0F);
+        GL11.glTranslatef((float) x, (float) y, (float) z);
+        GL11.glRotatef(180.0F - f, 0.0F, 1.0F, 0.0F);
         this.bindTexture(texture);
         GL11.glScalef(-1.0F, -1.0F, 1.0F);
-        this.model.render(par1EntitySpiderRobot, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
+        this.model.render(entitySpiderRobot, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
         GL11.glPopMatrix();
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderSpiderRobot((SpiderRobot) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderSpiderRobot((SpiderRobot) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderSpiderRobot((SpiderRobot) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderSpiderRobot((SpiderRobot) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(SpiderRobot par1Entity, float par2) {
+    protected void preRenderScale(SpiderRobot entity, float f) {
         GL11.glScalef(this.scale, this.scale, this.scale);
     }
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
-        this.preRenderScale((SpiderRobot) par1EntityLiving, par2);
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((SpiderRobot) entity, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

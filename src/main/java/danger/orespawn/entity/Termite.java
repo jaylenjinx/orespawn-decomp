@@ -32,8 +32,8 @@ public class Termite extends EntityAnt {
     private int ty = 0;
     private int tz = 0;
 
-    public Termite(World par1World) {
-        super(par1World);
+    public Termite(World world) {
+        super(world);
         this.setSize(0.2F, 0.2F);
         this.moveSpeed = 0.2F;
         this.experienceValue = 1;
@@ -63,44 +63,43 @@ public class Termite extends EntityAnt {
         return 5;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         if (OreSpawnMain.OreSpawnRand.nextInt(15) != 0) {
             return false;
         } else {
             return this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL ? false
-                : par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), 1.0F);
+                : target.attackEntityFrom(DamageSource.causeMobDamage(this), 1.0F);
         }
     }
 
     @Override
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        if (par1EntityPlayer == null) {
+    public boolean interact(EntityPlayer player) {
+        if (player == null) {
             return false;
-        } else if (!(par1EntityPlayer instanceof EntityPlayerMP)) {
+        } else if (!(player instanceof EntityPlayerMP)) {
             return false;
         } else {
-            ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-            if (var2 != null && var2.stackSize <= 0) {
-                par1EntityPlayer.inventory
-                    .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-                var2 = null;
+            ItemStack currentItem = player.inventory.getCurrentItem();
+            if (currentItem != null && currentItem.stackSize <= 0) {
+                player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                currentItem = null;
             }
 
-            if (var2 != null) {
-                par1EntityPlayer.addChatComponentMessage(new ChatComponentText("Empty your hand!"));
+            if (currentItem != null) {
+                player.addChatComponentMessage(new ChatComponentText("Empty your hand!"));
                 return false;
             } else {
-                if (par1EntityPlayer.dimension != OreSpawnMain.DimensionID5) {
-                    for (int i = 0; i < par1EntityPlayer.inventory.mainInventory.length; i++) {
-                        if (par1EntityPlayer.inventory.mainInventory[i] != null) {
-                            par1EntityPlayer.addChatComponentMessage(new ChatComponentText("Empty your inventory!"));
+                if (player.dimension != OreSpawnMain.DimensionID5) {
+                    for (int i = 0; i < player.inventory.mainInventory.length; i++) {
+                        if (player.inventory.mainInventory[i] != null) {
+                            player.addChatComponentMessage(new ChatComponentText("Empty your inventory!"));
                             return false;
                         }
                     }
 
-                    for (int var4 = 0; var4 < par1EntityPlayer.inventory.armorInventory.length; var4++) {
-                        if (par1EntityPlayer.inventory.armorInventory[var4] != null) {
-                            par1EntityPlayer.addChatComponentMessage(new ChatComponentText("Take off your armor!"));
+                    for (int i = 0; i < player.inventory.armorInventory.length; i++) {
+                        if (player.inventory.armorInventory[i] != null) {
+                            player.addChatComponentMessage(new ChatComponentText("Take off your armor!"));
                             return false;
                         }
                     }
@@ -108,7 +107,7 @@ public class Termite extends EntityAnt {
                     MinecraftServer.getServer()
                         .getConfigurationManager()
                         .transferPlayerToDimension(
-                            (EntityPlayerMP) par1EntityPlayer,
+                            (EntityPlayerMP) player,
                             OreSpawnMain.DimensionID5,
                             new OreSpawnTeleporter(
                                 MinecraftServer.getServer()
@@ -119,7 +118,7 @@ public class Termite extends EntityAnt {
                     MinecraftServer.getServer()
                         .getConfigurationManager()
                         .transferPlayerToDimension(
-                            (EntityPlayerMP) par1EntityPlayer,
+                            (EntityPlayerMP) player,
                             0,
                             new OreSpawnTeleporter(
                                 MinecraftServer.getServer()
@@ -200,26 +199,26 @@ public class Termite extends EntityAnt {
             }
         }
 
-        for (int var12 = -dx; var12 <= dx; var12++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dz; j <= dz; j++) {
-                Block bidx = this.worldObj.getBlock(x + var12, y + dy, z + j);
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
                 if (this.isWood(bidx)) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y + dy;
                         this.tz = z + j;
                         found++;
                     }
                 }
 
-                bidx = this.worldObj.getBlock(x + var12, y - dy, z + j);
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
                 if (this.isWood(bidx)) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y - dy;
                         this.tz = z + j;
                         found++;
@@ -228,26 +227,26 @@ public class Termite extends EntityAnt {
             }
         }
 
-        for (int var13 = -dx; var13 <= dx; var13++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dy; j <= dy; j++) {
-                Block bidxx = this.worldObj.getBlock(x + var13, y + j, z + dz);
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
                 if (this.isWood(bidxx)) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z + dz;
                         found++;
                     }
                 }
 
-                bidxx = this.worldObj.getBlock(x + var13, y + j, z - dz);
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
                 if (this.isWood(bidxx)) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z - dz;
                         found++;
@@ -285,7 +284,7 @@ public class Termite extends EntityAnt {
                     }
                 }
 
-                boolean var3 = false;
+                boolean flag = false;
                 if (this.closest < 99999) {
                     this.getNavigator()
                         .tryMoveToXYZ(this.tx, this.ty, this.tz, 1.0);
@@ -325,18 +324,18 @@ public class Termite extends EntityAnt {
     }
 
     private int findBuddies() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(Termite.class, this.boundingBox.expand(3.0, 3.0, 3.0));
-        return var5.size();
+        List entities = this.worldObj.getEntitiesWithinAABB(Termite.class, this.boundingBox.expand(3.0, 3.0, 3.0));
+        return entities.size();
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
         }
 
-        return var8;
+        return entity;
     }
 }

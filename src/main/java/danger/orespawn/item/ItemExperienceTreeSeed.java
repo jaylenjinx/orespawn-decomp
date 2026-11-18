@@ -20,8 +20,8 @@ public class ItemExperienceTreeSeed extends Item {
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World world, int x, int y, int z,
-        int par7, float par8, float par9, float par10) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+        float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
             Block bid = world.getBlock(x, y, z);
             if (bid != Blocks.grass && bid != Blocks.dirt && bid != Blocks.farmland) {
@@ -42,8 +42,8 @@ public class ItemExperienceTreeSeed extends Item {
             }
         }
 
-        if (!par2EntityPlayer.capabilities.isCreativeMode) {
-            par1ItemStack.stackSize--;
+        if (!player.capabilities.isCreativeMode) {
+            stack.stackSize--;
         }
 
         return true;

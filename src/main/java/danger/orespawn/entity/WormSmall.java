@@ -20,8 +20,8 @@ public class WormSmall extends EntityMob {
     public int upcount = 50;
     public int downcount = 0;
 
-    public WormSmall(World par1World) {
-        super(par1World);
+    public WormSmall(World world) {
+        super(world);
         this.setSize(0.25F, 1.0F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -71,7 +71,7 @@ public class WormSmall extends EntityMob {
         return true;
     }
 
-    protected void collideWithEntity(Entity par1Entity) {}
+    protected void collideWithEntity(Entity entity) {}
 
     protected void collideWithNearbyEntities() {}
 
@@ -205,7 +205,7 @@ public class WormSmall extends EntityMob {
                                 }
 
                                 boots.damageItem(bid, this);
-                                EntityItem var3 = new EntityItem(
+                                EntityItem entityItem = new EntityItem(
                                     this.worldObj,
                                     this.posX + OreSpawnMain.OreSpawnRand.nextInt(5)
                                         - OreSpawnMain.OreSpawnRand.nextInt(5),
@@ -213,7 +213,7 @@ public class WormSmall extends EntityMob {
                                     this.posZ + OreSpawnMain.OreSpawnRand.nextInt(5)
                                         - OreSpawnMain.OreSpawnRand.nextInt(5),
                                     boots);
-                                this.worldObj.spawnEntityInWorld(var3);
+                                this.worldObj.spawnEntityInWorld(entityItem);
                             }
                         }
                     }
@@ -226,9 +226,9 @@ public class WormSmall extends EntityMob {
         return false;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean doesEntityNotTriggerPressurePlate() {
         return true;
@@ -240,10 +240,10 @@ public class WormSmall extends EntityMob {
 
     public void initCreature() {}
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        return par1DamageSource.getDamageType()
-            .equals("inWall") ? ret : super.attackEntityFrom(par1DamageSource, par2);
+        return source.getDamageType()
+            .equals("inWall") ? ret : super.attackEntityFrom(source, amount);
     }
 
     protected Item getDropItem() {

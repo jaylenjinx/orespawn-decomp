@@ -21,8 +21,8 @@ public class ZooCage extends Item {
         this.cage_size = j;
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer Player, World world, int cposx, int cposy, int cposz,
-        int par7, float par8, float par9, float par10) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer Player, World world, int cposx, int cposy, int cposz,
+        int side, float hitX, float hitY, float hitZ) {
         int bid = 0;
         int dirx = 0;
         int dirz = 0;
@@ -61,7 +61,7 @@ public class ZooCage extends Item {
             }
 
             if (!Player.capabilities.isCreativeMode) {
-                par1ItemStack.stackSize--;
+                stack.stackSize--;
             }
 
             return true;

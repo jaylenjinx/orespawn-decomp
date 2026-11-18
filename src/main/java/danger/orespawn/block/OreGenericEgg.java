@@ -19,12 +19,11 @@ public class OreGenericEgg extends Block {
         this.setCreativeTab(CreativeTabs.tabBlock);
     }
 
-    public void dropBlockAsItemWithChance(World par1World, int par2, int par3, int par4, int par5, float par6,
-        int par7) {
-        super.dropBlockAsItemWithChance(par1World, par2, par3, par4, par5, par6, par7);
-        int j1 = 5 + par1World.rand.nextInt(3) + par1World.rand.nextInt(3);
-        if (par1World.rand.nextInt(2) == 1) {
-            this.dropXpOnBlockBreak(par1World, par2, par3, par4, j1);
+    public void dropBlockAsItemWithChance(World world, int x, int y, int z, int meta, float chance, int fortune) {
+        super.dropBlockAsItemWithChance(world, x, y, z, meta, chance, fortune);
+        int j1 = 5 + world.rand.nextInt(3) + world.rand.nextInt(3);
+        if (world.rand.nextInt(2) == 1) {
+            this.dropXpOnBlockBreak(world, x, y, z, j1);
         }
     }
 

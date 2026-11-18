@@ -23,20 +23,19 @@ public class RenderElevator extends Render {
         this.modelElevator = new ModelElevator();
     }
 
-    public void renderElevator(Elevator par1EntityElevator, double par2, double par4, double par6, float par8,
-        float par9) {
+    public void renderElevator(Elevator entityElevator, double x, double y, double z, float f, float f5) {
         GL11.glPushMatrix();
-        GL11.glTranslatef((float) par2, (float) par4, (float) par6);
-        GL11.glRotatef(180.0F - par8, 0.0F, 1.0F, 0.0F);
-        float f2 = par1EntityElevator.getTimeSinceHit() - par9;
-        float f3 = par1EntityElevator.getDamageTaken() - par9;
+        GL11.glTranslatef((float) x, (float) y, (float) z);
+        GL11.glRotatef(180.0F - f, 0.0F, 1.0F, 0.0F);
+        float f2 = entityElevator.getTimeSinceHit() - f5;
+        float f3 = entityElevator.getDamageTaken() - f5;
         if (f3 < 0.0F) {
             f3 = 0.0F;
         }
 
         if (f2 > 0.0F) {
             GL11.glRotatef(
-                MathHelper.sin(f2) * f2 * f3 / 10.0F * par1EntityElevator.getForwardDirection(),
+                MathHelper.sin(f2) * f2 * f3 / 10.0F * entityElevator.getForwardDirection(),
                 1.0F,
                 0.0F,
                 0.0F);
@@ -45,14 +44,14 @@ public class RenderElevator extends Render {
         float f4 = 0.75F;
         GL11.glScalef(f4, f4, f4);
         GL11.glScalef(1.0F / f4, 1.0F / f4, 1.0F / f4);
-        this.bindTexture(par1EntityElevator.getTexture());
+        this.bindTexture(entityElevator.getTexture());
         GL11.glScalef(-1.0F, -1.0F, 1.0F);
-        this.modelElevator.render(par1EntityElevator, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
+        this.modelElevator.render(entityElevator, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
         GL11.glPopMatrix();
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderElevator((Elevator) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderElevator((Elevator) entity, x, y, z, yaw, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

@@ -18,17 +18,17 @@ public class ItemAcid extends Item {
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            par1ItemStack.stackSize--;
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (!player.capabilities.isCreativeMode) {
+            stack.stackSize--;
         }
 
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 3.0F, 1.0F);
-        if (!par2World.isRemote) {
-            par2World.spawnEntityInWorld(new Acid(par2World, par3EntityPlayer));
+        world.playSoundAtEntity(player, "random.bow", 3.0F, 1.0F);
+        if (!world.isRemote) {
+            world.spawnEntityInWorld(new Acid(world, player));
         }
 
-        return par1ItemStack;
+        return stack;
     }
 
     @SideOnly(Side.CLIENT)

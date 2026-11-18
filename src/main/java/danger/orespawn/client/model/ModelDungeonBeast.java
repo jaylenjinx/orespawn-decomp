@@ -638,8 +638,8 @@ public class ModelDungeonBeast extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6,
-        Entity par7Entity) {
-        super.setRotationAngles(par1, par2, par3, par4, par5, par6, par7Entity);
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
+        float headPitch, float scale, Entity entity) {
+        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
     }
 }

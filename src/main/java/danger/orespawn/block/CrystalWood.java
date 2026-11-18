@@ -11,7 +11,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class CrystalWood extends Block {
 
-    public CrystalWood(int par1, float f1, float f2) {
+    public CrystalWood(int n, float f1, float f2) {
         super(Material.wood);
         this.setCreativeTab(CreativeTabs.tabBlock);
         this.setTickRandomly(false);
@@ -20,7 +20,7 @@ public class CrystalWood extends Block {
     }
 
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int par1, int par2) {
+    public IIcon getIcon(int side, int meta) {
         return this.blockIcon;
     }
 

@@ -46,22 +46,22 @@ public class CrystalMaze {
             OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + i, yy + 2, zz + zw * csz - 1, Blocks.air, 0);
         }
 
-        for (int var12 = 0; var12 < zw * csz; var12++) {
+        for (int i = 0; i < zw * csz; i++) {
             for (int j = 0; j < zw * csz; j++) {
-                OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + j, yy - 1, zz + var12, Blocks.bedrock, 0);
-                OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + j, yy + 3, zz + var12, Blocks.bedrock, 0);
+                OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + j, yy - 1, zz + i, Blocks.bedrock, 0);
+                OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + j, yy + 3, zz + i, Blocks.bedrock, 0);
             }
         }
 
         for (int k = 0; k < 4; k++) {
-            int var13 = world.rand.nextInt(zw * csz);
+            int roll = world.rand.nextInt(zw * csz);
             int j = world.rand.nextInt(zw * csz);
-            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + j, yy + 3, zz + var13, OreSpawnMain.CrystalStone, 0);
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + j, yy + 3, zz + roll, OreSpawnMain.CrystalStone, 0);
         }
 
-        int var14 = world.rand.nextInt(zw * csz);
+        int roll = world.rand.nextInt(zw * csz);
         int j = world.rand.nextInt(zw * csz);
-        OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + j, yy - 1, zz + var14, OreSpawnMain.CrystalStone, 0);
+        OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + j, yy - 1, zz + roll, OreSpawnMain.CrystalStone, 0);
     }
 
     private void makeMaze(World world, int xx, int yy, int zz, int xw, int zw, int csz, int b, Chunk chunk) {
@@ -92,18 +92,18 @@ public class CrystalMaze {
         int top = 16;
         int bottom = 64;
 
-        for (int var27 = 0; var27 < gridw; var27++) {
-            cells[var27][0] = cells[var27][0] | top;
-            cells[var27][gridh - 1] = cells[var27][gridh - 1] | bottom;
+        for (int i = 0; i < gridw; i++) {
+            cells[i][0] = cells[i][0] | top;
+            cells[i][gridh - 1] = cells[i][gridh - 1] | bottom;
         }
 
         Vector outlist = new Vector(gridw * gridh);
         Vector inlist = new Vector(10, 10);
         Vector frontlist = new Vector(10, 10);
 
-        for (int var28 = 0; var28 < gridw; var28++) {
-            for (int var31 = 0; var31 < gridh; var31++) {
-                outlist.addElement(new Point(var28, var31));
+        for (int i = 0; i < gridw; i++) {
+            for (int j = 0; j < gridh; j++) {
+                outlist.addElement(new Point(i, j));
             }
         }
 
@@ -121,16 +121,16 @@ public class CrystalMaze {
 
         current_cell = null;
 
-        for (int var29 = 0; var29 < gridw; var29++) {
-            for (int var32 = 0; var32 < gridh; var32++) {
-                int val = cells[var29][var32];
+        for (int i = 0; i < gridw; i++) {
+            for (int j = 0; j < gridh; j++) {
+                int val = cells[i][j];
                 if ((val & 1) != 0) {
                     this.drawSide(
                         world,
-                        var29 * cellsize,
-                        var32 * cellsize,
-                        (var29 + 1) * cellsize,
-                        var32 * cellsize,
+                        i * cellsize,
+                        j * cellsize,
+                        (i + 1) * cellsize,
+                        j * cellsize,
                         xx,
                         yy,
                         zz,
@@ -144,10 +144,10 @@ public class CrystalMaze {
                 if ((val & 2) != 0) {
                     this.drawSide(
                         world,
-                        (var29 + 1) * cellsize - 1,
-                        var32 * cellsize,
-                        (var29 + 1) * cellsize - 1,
-                        (var32 + 1) * cellsize,
+                        (i + 1) * cellsize - 1,
+                        j * cellsize,
+                        (i + 1) * cellsize - 1,
+                        (j + 1) * cellsize,
                         xx,
                         yy,
                         zz,
@@ -161,10 +161,10 @@ public class CrystalMaze {
                 if ((val & 4) != 0) {
                     this.drawSide(
                         world,
-                        var29 * cellsize,
-                        (var32 + 1) * cellsize - 1,
-                        (var29 + 1) * cellsize,
-                        (var32 + 1) * cellsize - 1,
+                        i * cellsize,
+                        (j + 1) * cellsize - 1,
+                        (i + 1) * cellsize,
+                        (j + 1) * cellsize - 1,
                         xx,
                         yy,
                         zz,
@@ -178,10 +178,10 @@ public class CrystalMaze {
                 if ((val & 8) != 0) {
                     this.drawSide(
                         world,
-                        var29 * cellsize,
-                        var32 * cellsize,
-                        var29 * cellsize,
-                        (var32 + 1) * cellsize,
+                        i * cellsize,
+                        j * cellsize,
+                        i * cellsize,
+                        (j + 1) * cellsize,
                         xx,
                         yy,
                         zz,
@@ -346,10 +346,10 @@ public class CrystalMaze {
             }
         }
 
-        for (int var10 = 0; var10 < 5; var10++) {
+        for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 6; j++) {
                 for (int k = 0; k < 30; k++) {
-                    OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, x - var10, y + j, z + k, Blocks.air, 0);
+                    OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, x - i, y + j, z + k, Blocks.air, 0);
                 }
             }
         }

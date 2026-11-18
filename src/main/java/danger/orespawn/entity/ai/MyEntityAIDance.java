@@ -18,9 +18,9 @@ public class MyEntityAIDance extends EntityAIBase {
     public int dance_move = 0;
     public int is_dancing = 0;
 
-    public MyEntityAIDance(Girlfriend par1EntityTameable) {
-        this.thePet = par1EntityTameable;
-        this.theWorld = par1EntityTameable.worldObj;
+    public MyEntityAIDance(Girlfriend pet) {
+        this.thePet = pet;
+        this.theWorld = pet.worldObj;
     }
 
     public boolean is_dance_block(Block bid) {
@@ -170,14 +170,14 @@ public class MyEntityAIDance extends EntityAIBase {
             this.thePet.posY + 3.0,
             this.thePet.posZ + 4.0);
 
-        for (Girlfriend var3 : this.theWorld.getEntitiesWithinAABB(Girlfriend.class, bb)) {
-            if (var3.getEntityId() < tempid) {
-                if (var3.Dance.is_dancing == 1) {
-                    this.ticker = var3.Dance.ticker;
-                    this.dance_move = var3.Dance.dance_move;
+        for (Girlfriend entity : this.theWorld.getEntitiesWithinAABB(Girlfriend.class, bb)) {
+            if (entity.getEntityId() < tempid) {
+                if (entity.Dance.is_dancing == 1) {
+                    this.ticker = entity.Dance.ticker;
+                    this.dance_move = entity.Dance.dance_move;
                 }
 
-                tempid = var3.getEntityId();
+                tempid = entity.getEntityId();
             }
         }
 

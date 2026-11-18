@@ -44,8 +44,8 @@ public class SpitBug extends EntityMob {
     private float moveSpeed = 0.33F;
     private int stream_count = 0;
 
-    public SpitBug(World par1World) {
-        super(par1World);
+    public SpitBug(World world) {
+        super(world);
         this.setSize(2.0F, 2.0F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -189,68 +189,68 @@ public class SpitBug extends EntityMob {
         }
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(3) - OreSpawnMain.OreSpawnRand.nextInt(3),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(3) - OreSpawnMain.OreSpawnRand.nextInt(3),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         int i = 1 + this.worldObj.rand.nextInt(3);
 
-        for (int var4 = 0; var4 < i; var4++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(OreSpawnMain.MyAmethyst, 1);
         }
     }
 
     public void initCreature() {}
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         double ks = 0.5;
         double inair = 0.1;
-        int var2 = 6;
-        if (!super.attackEntityAsMob(par1Entity)) {
+        int n = 6;
+        if (!super.attackEntityAsMob(target)) {
             return false;
         } else {
-            if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
-                float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-                if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+            if (target != null && target instanceof EntityLivingBase) {
+                float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+                if (target.isDead || target instanceof EntityPlayer) {
                     inair *= 2.0;
                 }
 
-                par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+                target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
             }
 
             return true;
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
         if (this.hurt_timer > 0) {
             return false;
         } else {
-            if (!par1DamageSource.getDamageType()
+            if (!source.getDamageType()
                 .equals("cactus")
-                && !par1DamageSource.getDamageType()
+                && !source.getDamageType()
                     .equals("fall")) {
-                ret = super.attackEntityFrom(par1DamageSource, par2);
+                ret = super.attackEntityFrom(source, amount);
                 this.hurt_timer = 15;
-                Entity e = par1DamageSource.getEntity();
+                Entity e = source.getEntity();
                 if (e != null && e instanceof EntityLiving) {
                     this.setAttackTarget((EntityLiving) e);
                     this.setTarget(e);
@@ -316,29 +316,29 @@ public class SpitBug extends EntityMob {
         double xzoff = 1.5;
         if (this.stream_count > 0) {
             this.setAttacking(1);
-            Acid var2 = new Acid(
+            Acid acid = new Acid(
                 this.worldObj,
                 e.posX - this.posX,
                 e.posY + 0.75 - (this.posY + yoff),
                 e.posZ - this.posZ);
-            var2.setLocationAndAngles(
+            acid.setLocationAndAngles(
                 this.posX - xzoff * Math.sin(Math.toRadians(this.rotationYawHead)),
                 this.posY + yoff,
                 this.posZ + xzoff * Math.cos(Math.toRadians(this.rotationYaw)),
                 this.rotationYawHead,
                 this.rotationPitch);
-            double var3 = e.posX - var2.posX;
-            double var5 = e.posY + 0.25 - var2.posY;
-            double var7 = e.posZ - var2.posZ;
-            float var9 = MathHelper.sqrt_double(var3 * var3 + var7 * var7) * 0.2F;
-            var2.setThrowableHeading(var3, var5 + var9, var7, 1.1F, 6.0F);
+            double dx = e.posX - acid.posX;
+            double dy = e.posY + 0.25 - acid.posY;
+            double dz = e.posZ - acid.posZ;
+            float f = MathHelper.sqrt_double(dx * dx + dz * dz) * 0.2F;
+            acid.setThrowableHeading(dx, dy + f, dz, 1.1F, 6.0F);
             this.worldObj.playSoundAtEntity(
                 this,
                 "random.bow",
                 0.75F,
                 1.0F / (this.getRNG()
                     .nextFloat() * 0.4F + 0.8F));
-            this.worldObj.spawnEntityInWorld(var2);
+            this.worldObj.spawnEntityInWorld(acid);
             this.stream_count--;
         } else {
             this.setAttacking(0);
@@ -349,35 +349,35 @@ public class SpitBug extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EnderReaper) {
+            } else if (target instanceof EnderReaper) {
                 return false;
-            } else if (par1EntityLiving instanceof EnderKnight) {
+            } else if (target instanceof EnderKnight) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityEnderman) {
+            } else if (target instanceof EntityEnderman) {
                 return false;
-            } else if (par1EntityLiving instanceof Hydrolisc) {
+            } else if (target instanceof Hydrolisc) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityCreeper) {
+            } else if (target instanceof EntityCreeper) {
                 return false;
-            } else if (par1EntityLiving instanceof SpitBug) {
+            } else if (target instanceof SpitBug) {
                 return false;
-            } else if (par1EntityLiving instanceof TrooperBug) {
+            } else if (target instanceof TrooperBug) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -391,18 +391,18 @@ public class SpitBug extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(12.0, 7.0, 12.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -414,8 +414,8 @@ public class SpitBug extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public boolean getCanSpawnHere() {
@@ -442,11 +442,11 @@ public class SpitBug extends EntityMob {
         } else if (!this.isValidLightLevel()) {
             return false;
         } else {
-            for (int var10 = -2; var10 < 2; var10++) {
+            for (int i = -2; i < 2; i++) {
                 for (int j = -2; j < 2; j++) {
                     for (int ix = 1; ix < 4; ix++) {
                         Block bid = this.worldObj
-                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + var10);
+                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
                         if (bid != Blocks.air) {
                             return false;
                         }

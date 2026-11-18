@@ -24,18 +24,18 @@ public class ItemSpawnEgg extends Item {
         this.setCreativeTab(CreativeTabs.tabMisc);
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4,
-        int par5, int par6, int par7, float par8, float par9, float par10) {
-        if (par3World.isRemote) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+        float hitX, float hitY, float hitZ) {
+        if (world.isRemote) {
             return true;
         } else {
-            Entity ent = spawn_something(this.my_id, par3World, par4 + 0.5, par5 + 1.01, par6 + 0.5);
-            if (ent != null && ent instanceof EntityLiving && par1ItemStack.hasDisplayName()) {
-                ((EntityLiving) ent).setCustomNameTag(par1ItemStack.getDisplayName());
+            Entity ent = spawn_something(this.my_id, world, x + 0.5, y + 1.01, z + 0.5);
+            if (ent != null && ent instanceof EntityLiving && stack.hasDisplayName()) {
+                ((EntityLiving) ent).setCustomNameTag(stack.getDisplayName());
             }
 
-            if (!par2EntityPlayer.capabilities.isCreativeMode) {
-                par1ItemStack.stackSize--;
+            if (!player.capabilities.isCreativeMode) {
+                stack.stackSize--;
             }
 
             return true;
@@ -482,21 +482,21 @@ public class ItemSpawnEgg extends Item {
         return ent;
     }
 
-    public static Entity spawnCreature(World par0World, int par1, String name, double par2, double par4, double par6) {
-        Entity var8 = null;
+    public static Entity spawnCreature(World world, int n, String name, double x, double y, double z) {
+        Entity entity = null;
         if (name == null) {
-            var8 = EntityList.createEntityByID(par1, par0World);
+            entity = EntityList.createEntityByID(n, world);
         } else {
-            var8 = EntityList.createEntityByName(name, par0World);
+            entity = EntityList.createEntityByName(name, world);
         }
 
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
     @SideOnly(Side.CLIENT)

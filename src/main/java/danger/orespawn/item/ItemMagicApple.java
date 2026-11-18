@@ -78,20 +78,20 @@ public class ItemMagicApple extends Item {
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        par1ItemStack.addEnchantment(Enchantment.fortune, 2);
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+        stack.addEnchantment(Enchantment.fortune, 2);
     }
 
-    private Entity spawnCreature(World par0World, int par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByID(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+    private Entity spawnCreature(World world, int n, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByID(n, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
@@ -101,32 +101,32 @@ public class ItemMagicApple extends Item {
         }
     }
 
-    public void onUpdate(ItemStack stack, World par2World, Entity par3Entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
         this.onUsingTick(stack, (EntityPlayer) null, 0);
     }
 
     private Boolean isBoringBlock(World world, int x, int y, int z) {
-        Block var1x = world.getBlock(x, y, z);
-        if (var1x == Blocks.tallgrass) {
+        Block block = world.getBlock(x, y, z);
+        if (block == Blocks.tallgrass) {
             return true;
-        } else if (var1x == Blocks.cactus) {
+        } else if (block == Blocks.cactus) {
             return true;
-        } else if (var1x == Blocks.red_flower) {
+        } else if (block == Blocks.red_flower) {
             return true;
-        } else if (var1x == Blocks.yellow_flower) {
+        } else if (block == Blocks.yellow_flower) {
             return true;
-        } else if (var1x == Blocks.leaves) {
+        } else if (block == Blocks.leaves) {
             return true;
-        } else if (var1x == Blocks.snow) {
+        } else if (block == Blocks.snow) {
             return true;
-        } else if (var1x == OreSpawnMain.MyStrawberryPlant) {
+        } else if (block == OreSpawnMain.MyStrawberryPlant) {
             return true;
-        } else if (var1x == OreSpawnMain.MyAppleLeaves) {
+        } else if (block == OreSpawnMain.MyAppleLeaves) {
             return true;
         } else if (world.isAirBlock(x, y, z)) {
             return true;
         } else {
-            return var1x == null ? true : false;
+            return block == null ? true : false;
         }
     }
 
@@ -134,26 +134,26 @@ public class ItemMagicApple extends Item {
         if (world.isAirBlock(x, y, z)) {
             return true;
         } else {
-            Block var1x = world.getBlock(x, y, z);
-            if (var1x == Blocks.stone) {
+            Block block = world.getBlock(x, y, z);
+            if (block == Blocks.stone) {
                 return false;
             } else {
-                return var1x == Blocks.bedrock ? false : true;
+                return block == Blocks.bedrock ? false : true;
             }
         }
     }
 
-    private void growVines(World world, int par2, int par3, int par4, int par5, int par6, Chunk chunk) {
-        if (world.getBlock(par2, par3, par4) == Blocks.air) {
-            this.FastSetBlock(world, par2, par3, par4, Blocks.vine, par5, 2, chunk);
+    private void growVines(World world, int x, int y, int z, int im, int n, Chunk chunk) {
+        if (world.getBlock(x, y, z) == Blocks.air) {
+            this.FastSetBlock(world, x, y, z, Blocks.vine, im, 2, chunk);
 
-            while (par6 > 0) {
-                if (world.getBlock(par2, --par3, par4) != Blocks.air) {
+            while (n > 0) {
+                if (world.getBlock(x, --y, z) != Blocks.air) {
                     return;
                 }
 
-                this.FastSetBlock(world, par2, par3, par4, Blocks.vine, par5, 2, chunk);
-                par6--;
+                this.FastSetBlock(world, x, y, z, Blocks.vine, im, 2, chunk);
+                n--;
             }
         }
     }
@@ -224,18 +224,18 @@ public class ItemMagicApple extends Item {
                             lw = 0;
                         }
 
-                        for (int var34 = -lw; var34 <= lw; var34++) {
-                            int realxx = x + var34 * Math.abs(dirz) + xaccum + dirx;
-                            int realzx = z + var34 * Math.abs(dirx) + zaccum + dirz;
+                        for (int k = -lw; k <= lw; k++) {
+                            int realxx = x + k * Math.abs(dirz) + xaccum + dirx;
+                            int realzx = z + k * Math.abs(dirx) + zaccum + dirz;
                             if (this.isBoringBlock(world, realxx, y + n, realzx)) {
                                 if (tree_type >= 0) {
                                     this.FastSetBlock(world, realxx, y + n, realzx, leafID, tree_type, 2, chunk);
                                     if (n == 0 && tree_type == 3
                                         && lw != 0
-                                        && (var34 == lw || var34 == -lw)
+                                        && (k == lw || k == -lw)
                                         && this.rand.nextInt(5) == 0) {
                                         if (dirx == 0) {
-                                            if (var34 == lw) {
+                                            if (k == lw) {
                                                 this.growVines(
                                                     world,
                                                     realxx + 1,
@@ -254,7 +254,7 @@ public class ItemMagicApple extends Item {
                                                     this.rand.nextInt(10),
                                                     chunk);
                                             }
-                                        } else if (var34 == lw) {
+                                        } else if (k == lw) {
                                             this.growVines(
                                                 world,
                                                 realxx,
@@ -427,105 +427,105 @@ public class ItemMagicApple extends Item {
         }
 
         current_y = y;
-        boolean var36 = false;
+        boolean flag = false;
 
-        for (int var34 = -t_radius; this_width >= 0; this_height += this.rand.nextInt(t_radius)) {
+        for (int i = -t_radius; this_width >= 0; this_height += this.rand.nextInt(t_radius)) {
             if (this_width != t_radius) {
                 base_height = 0;
             }
 
             for (int jxxxx = 0; jxxxx < this_height + base_height; jxxxx++) {
-                var36 = false;
+                flag = false;
 
-                for (int var29 = -this_width; var29 <= this_width; var29++) {
-                    if (this.isBoringBaseBlock(world, x + var29, current_y, z - this_width)) {
+                for (int k = -this_width; k <= this_width; k++) {
+                    if (this.isBoringBaseBlock(world, x + k, current_y, z - this_width)) {
                         if (tree_type >= 0) {
-                            this.FastSetBlock(world, x + var29, current_y, z - this_width, ID, tree_type, 2, chunk);
+                            this.FastSetBlock(world, x + k, current_y, z - this_width, ID, tree_type, 2, chunk);
                         } else {
-                            this.FastSetBlock(world, x + var29, current_y, z - this_width, ID, 0, 2, chunk);
+                            this.FastSetBlock(world, x + k, current_y, z - this_width, ID, 0, 2, chunk);
                         }
                     }
 
-                    if (this.isBoringBaseBlock(world, x + var29, current_y, z + this_width)) {
+                    if (this.isBoringBaseBlock(world, x + k, current_y, z + this_width)) {
                         if (tree_type >= 0) {
-                            this.FastSetBlock(world, x + var29, current_y, z + this_width, ID, tree_type, 2, chunk);
+                            this.FastSetBlock(world, x + k, current_y, z + this_width, ID, tree_type, 2, chunk);
                         } else {
-                            this.FastSetBlock(world, x + var29, current_y, z + this_width, ID, 0, 2, chunk);
+                            this.FastSetBlock(world, x + k, current_y, z + this_width, ID, 0, 2, chunk);
                         }
                     }
 
-                    if (this.isBoringBaseBlock(world, x - this_width, current_y, z + var29)) {
+                    if (this.isBoringBaseBlock(world, x - this_width, current_y, z + k)) {
                         if (tree_type >= 0) {
-                            this.FastSetBlock(world, x - this_width, current_y, z + var29, ID, tree_type, 2, chunk);
+                            this.FastSetBlock(world, x - this_width, current_y, z + k, ID, tree_type, 2, chunk);
                         } else {
-                            this.FastSetBlock(world, x - this_width, current_y, z + var29, ID, 0, 2, chunk);
+                            this.FastSetBlock(world, x - this_width, current_y, z + k, ID, 0, 2, chunk);
                         }
                     }
 
-                    if (this.isBoringBaseBlock(world, x + this_width, current_y, z + var29)) {
+                    if (this.isBoringBaseBlock(world, x + this_width, current_y, z + k)) {
                         if (tree_type >= 0) {
-                            this.FastSetBlock(world, x + this_width, current_y, z + var29, ID, tree_type, 2, chunk);
+                            this.FastSetBlock(world, x + this_width, current_y, z + k, ID, tree_type, 2, chunk);
                         } else {
-                            this.FastSetBlock(world, x + this_width, current_y, z + var29, ID, 0, 2, chunk);
+                            this.FastSetBlock(world, x + this_width, current_y, z + k, ID, 0, 2, chunk);
                         }
                     }
                 }
 
                 if (this_width != 0 || jxxxx < this_height / 2) {
                     platform_looper = 1;
-                    if (var34 == 0 && this_width >= 2 || var34 == this_width
-                        || var34 == this_width - 1 && jxxxx == this_height + base_height - 1) {
+                    if (i == 0 && this_width >= 2 || i == this_width
+                        || i == this_width - 1 && jxxxx == this_height + base_height - 1) {
                         platform_looper++;
-                        if (var34 != 0 && this_width >= 3) {
+                        if (i != 0 && this_width >= 3) {
                             platform_looper++;
                         }
 
-                        if (var34 == 0) {
-                            var36 = true;
+                        if (i == 0) {
+                            flag = true;
                         }
                     }
 
                     for (int k = 0; k < platform_looper; k++) {
-                        if (this.isBoringBlock(world, x - var34, current_y, z - this_width - 1)) {
-                            this.FastSetBlock(world, x - var34, current_y, z - this_width - 1, stepID, 0, 2, chunk);
+                        if (this.isBoringBlock(world, x - i, current_y, z - this_width - 1)) {
+                            this.FastSetBlock(world, x - i, current_y, z - this_width - 1, stepID, 0, 2, chunk);
                         }
 
-                        if (this.isBoringBlock(world, x + var34, current_y, z + this_width + 1)) {
-                            this.FastSetBlock(world, x + var34, current_y, z + this_width + 1, stepID, 0, 2, chunk);
+                        if (this.isBoringBlock(world, x + i, current_y, z + this_width + 1)) {
+                            this.FastSetBlock(world, x + i, current_y, z + this_width + 1, stepID, 0, 2, chunk);
                         }
 
-                        if (this.isBoringBlock(world, x - this_width - 1, current_y, z + var34)) {
-                            this.FastSetBlock(world, x - this_width - 1, current_y, z + var34, stepID, 0, 2, chunk);
+                        if (this.isBoringBlock(world, x - this_width - 1, current_y, z + i)) {
+                            this.FastSetBlock(world, x - this_width - 1, current_y, z + i, stepID, 0, 2, chunk);
                         }
 
-                        if (this.isBoringBlock(world, x + this_width + 1, current_y, z - var34)) {
-                            this.FastSetBlock(world, x + this_width + 1, current_y, z - var34, stepID, 0, 2, chunk);
+                        if (this.isBoringBlock(world, x + this_width + 1, current_y, z - i)) {
+                            this.FastSetBlock(world, x + this_width + 1, current_y, z - i, stepID, 0, 2, chunk);
                         }
 
                         if (this_width >= 3) {
-                            if (this.isBoringBlock(world, x - var34, current_y, z - this_width - 2)) {
-                                this.FastSetBlock(world, x - var34, current_y, z - this_width - 2, stepID, 0, 2, chunk);
+                            if (this.isBoringBlock(world, x - i, current_y, z - this_width - 2)) {
+                                this.FastSetBlock(world, x - i, current_y, z - this_width - 2, stepID, 0, 2, chunk);
                             }
 
-                            if (this.isBoringBlock(world, x + var34, current_y, z + this_width + 2)) {
-                                this.FastSetBlock(world, x + var34, current_y, z + this_width + 2, stepID, 0, 2, chunk);
+                            if (this.isBoringBlock(world, x + i, current_y, z + this_width + 2)) {
+                                this.FastSetBlock(world, x + i, current_y, z + this_width + 2, stepID, 0, 2, chunk);
                             }
 
-                            if (this.isBoringBlock(world, x - this_width - 2, current_y, z + var34)) {
-                                this.FastSetBlock(world, x - this_width - 2, current_y, z + var34, stepID, 0, 2, chunk);
+                            if (this.isBoringBlock(world, x - this_width - 2, current_y, z + i)) {
+                                this.FastSetBlock(world, x - this_width - 2, current_y, z + i, stepID, 0, 2, chunk);
                             }
 
-                            if (this.isBoringBlock(world, x + this_width + 2, current_y, z - var34)) {
-                                this.FastSetBlock(world, x + this_width + 2, current_y, z - var34, stepID, 0, 2, chunk);
+                            if (this.isBoringBlock(world, x + this_width + 2, current_y, z - i)) {
+                                this.FastSetBlock(world, x + this_width + 2, current_y, z - i, stepID, 0, 2, chunk);
                             }
                         }
 
                         if (platform_looper != 1) {
-                            var34++;
+                            i++;
                         }
                     }
 
-                    if (var36) {
+                    if (flag) {
                         for (int m = -this_width; m <= this_width; m++) {
                             for (int n = -this_width; n <= this_width; n++) {
                                 if (this.isBoringBlock(world, x + m, current_y, z + n)) {
@@ -636,17 +636,17 @@ public class ItemMagicApple extends Item {
                 }
 
                 current_y++;
-                if (!var36) {
-                    var34++;
+                if (!flag) {
+                    i++;
                 }
 
-                if (var34 > this_width) {
-                    var34 = -this_width;
+                if (i > this_width) {
+                    i = -this_width;
                 }
             }
 
-            if (Math.abs(var34) > --this_width) {
-                var34 = -this_width;
+            if (Math.abs(i) > --this_width) {
+                i = -this_width;
             }
         }
 
@@ -654,25 +654,25 @@ public class ItemMagicApple extends Item {
             this.FastSetBlock(world, x, current_y, z, Blocks.emerald_block, 0, 2, chunk);
             this.FastSetBlock(world, x, current_y + 1, z, Blocks.emerald_block, 0, 2, chunk);
             if (stepID == Blocks.diamond_block) {
-                Entity var8x = null;
-                var8x = EntityList.createEntityByName("The King", world);
-                if (var8x != null) {
-                    var8x.setLocationAndAngles(x, current_y + 4, z, world.rand.nextFloat() * 360.0F, 0.0F);
-                    world.spawnEntityInWorld(var8x);
-                    ((EntityLiving) var8x).playLivingSound();
-                    ((TheKing) var8x).setGuardMode(1);
+                Entity entity = null;
+                entity = EntityList.createEntityByName("The King", world);
+                if (entity != null) {
+                    entity.setLocationAndAngles(x, current_y + 4, z, world.rand.nextFloat() * 360.0F, 0.0F);
+                    world.spawnEntityInWorld(entity);
+                    ((EntityLiving) entity).playLivingSound();
+                    ((TheKing) entity).setGuardMode(1);
                 }
             }
 
             if (stepID == OreSpawnMain.MyBlockAmethystBlock) {
-                Entity var8x = null;
-                var8x = EntityList.createEntityByName("The Queen", world);
-                if (var8x != null) {
-                    var8x.setLocationAndAngles(x, current_y + 4, z, world.rand.nextFloat() * 360.0F, 0.0F);
-                    world.spawnEntityInWorld(var8x);
-                    ((EntityLiving) var8x).playLivingSound();
-                    ((TheQueen) var8x).setGuardMode(1);
-                    ((TheQueen) var8x).setBadMood(1);
+                Entity entity = null;
+                entity = EntityList.createEntityByName("The Queen", world);
+                if (entity != null) {
+                    entity.setLocationAndAngles(x, current_y + 4, z, world.rand.nextFloat() * 360.0F, 0.0F);
+                    world.spawnEntityInWorld(entity);
+                    ((EntityLiving) entity).playLivingSound();
+                    ((TheQueen) entity).setGuardMode(1);
+                    ((TheQueen) entity).setBadMood(1);
                 }
             }
         }
@@ -685,10 +685,10 @@ public class ItemMagicApple extends Item {
         double curx = startx;
         double curz = startz;
 
-        for (double var30 = 0.0; var30 < branchlen; var30 += 0.5) {
+        for (double i = 0.0; i < branchlen; i += 0.5) {
             curx += 0.5 * Math.sin(Math.toRadians(curangle));
             curz += 0.5 * Math.cos(Math.toRadians(curangle));
-            double tw = width - width * var30 / branchlen;
+            double tw = width - width * i / branchlen;
 
             for (double wd = 0.0; wd <= tw; wd += 0.5) {
                 Block id = leafID;
@@ -793,10 +793,10 @@ public class ItemMagicApple extends Item {
         cury = 1;
 
         while (rad > 0.0) {
-            for (int var29 = 0; var29 < 360; var29++) {
-                double dt = rad * Math.sin(Math.toRadians(var29)) + 0.5;
+            for (int i = 0; i < 360; i++) {
+                double dt = rad * Math.sin(Math.toRadians(i)) + 0.5;
                 curx = (int) dt;
-                dt = rad * Math.cos(Math.toRadians(var29)) + 0.5;
+                dt = rad * Math.cos(Math.toRadians(i)) + 0.5;
                 curz = (int) dt;
                 if (this.isBoringBaseBlock(world, x + curx, y + cury, z + curz)) {
                     if (tree_type >= 0) {
@@ -806,10 +806,10 @@ public class ItemMagicApple extends Item {
                     }
                 }
 
-                if (var29 >= stepindex - 1 && var29 <= stepindex + 1 && rad > 1.0) {
-                    dt = (rad + 1.9) * Math.sin(Math.toRadians(var29)) + 0.5;
+                if (i >= stepindex - 1 && i <= stepindex + 1 && rad > 1.0) {
+                    dt = (rad + 1.9) * Math.sin(Math.toRadians(i)) + 0.5;
                     curx = (int) dt;
-                    dt = (rad + 1.9) * Math.cos(Math.toRadians(var29)) + 0.5;
+                    dt = (rad + 1.9) * Math.cos(Math.toRadians(i)) + 0.5;
                     curz = (int) dt;
 
                     for (int m = -1; m <= 1; m++) {
@@ -850,10 +850,10 @@ public class ItemMagicApple extends Item {
 
             if (cury % 6 == 0 && rad > 3.0) {
                 for (double dr = rad - 0.25; dr > 0.0; dr -= 0.25) {
-                    for (int var30 = 0; var30 < 360; var30++) {
-                        double dtx = dr * Math.sin(Math.toRadians(var30)) + 0.5;
+                    for (int j = 0; j < 360; j++) {
+                        double dtx = dr * Math.sin(Math.toRadians(j)) + 0.5;
                         curx = (int) dtx;
-                        dtx = dr * Math.cos(Math.toRadians(var30)) + 0.5;
+                        dtx = dr * Math.cos(Math.toRadians(j)) + 0.5;
                         curz = (int) dtx;
                         if (this.isBoringBaseBlock(world, x + curx, y + cury, z + curz)) {
                             if (tree_type >= 0) {
@@ -935,10 +935,10 @@ public class ItemMagicApple extends Item {
         cury = 1;
 
         while (rad > 0.0) {
-            for (int var28 = 0; var28 < 360; var28++) {
-                double dt = rad * Math.sin(Math.toRadians(var28));
+            for (int i = 0; i < 360; i++) {
+                double dt = rad * Math.sin(Math.toRadians(i));
                 float fcurx = (float) dt;
-                dt = rad * Math.cos(Math.toRadians(var28));
+                dt = rad * Math.cos(Math.toRadians(i));
                 float fcurz = (float) dt;
                 if (this.isBoringBaseBlock(world, (int) (fx + fcurx), y + cury, (int) (fz + fcurz))) {
                     if (tree_type >= 0) {
@@ -984,10 +984,10 @@ public class ItemMagicApple extends Item {
 
             if (cury % 6 == 0 && rad > 3.0) {
                 for (double dr = rad - 0.25; dr > 0.0; dr -= 0.25) {
-                    for (int var29 = 0; var29 < 360; var29++) {
-                        double dt = dr * Math.sin(Math.toRadians(var29));
+                    for (int j = 0; j < 360; j++) {
+                        double dt = dr * Math.sin(Math.toRadians(j));
                         float fcurx = (float) dt;
-                        dt = dr * Math.cos(Math.toRadians(var29));
+                        dt = dr * Math.cos(Math.toRadians(j));
                         float fcurz = (float) dt;
                         if (this.isBoringBaseBlock(world, (int) (fx + fcurx), y + cury, (int) (fz + fcurz))) {
                             if (tree_type >= 0) {
@@ -1062,10 +1062,10 @@ public class ItemMagicApple extends Item {
         OreSpawnMain.setBlockSuperFast(world, ix, iy, iz, id, im, 2, chunk);
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World world, int clickedX,
-        int clickedY, int clickedZ, int par7, float par8, float par9, float par10) {
-        Block var1x = world.getBlock(clickedX, clickedY, clickedZ);
-        if (var1x != Blocks.grass && var1x != Blocks.farmland && var1x != Blocks.dirt) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int clickedX, int clickedY,
+        int clickedZ, int side, float hitX, float hitY, float hitZ) {
+        Block block = world.getBlock(clickedX, clickedY, clickedZ);
+        if (block != Blocks.grass && block != Blocks.farmland && block != Blocks.dirt) {
             return false;
         } else {
             int tree_type = this.rand.nextInt(4);
@@ -1079,10 +1079,10 @@ public class ItemMagicApple extends Item {
                 world.setBlock(clickedX, clickedY, clickedZ, Blocks.gold_block, 0, 2);
             }
 
-            for (int var3x = 0; var3x < 6; var3x++) {
-                par2EntityPlayer.worldObj
+            for (int i = 0; i < 6; i++) {
+                player.worldObj
                     .spawnParticle("largesmoke", clickedX + 0.5F, clickedY + 1 + 0.25F, clickedZ + 0.5F, 0.0, 0.0, 0.0);
-                par2EntityPlayer.worldObj.spawnParticle(
+                player.worldObj.spawnParticle(
                     "largeexplode",
                     clickedX + 0.5F,
                     clickedY + 1 + 0.25F,
@@ -1090,11 +1090,11 @@ public class ItemMagicApple extends Item {
                     0.0,
                     0.0,
                     0.0);
-                par2EntityPlayer.worldObj
+                player.worldObj
                     .spawnParticle("reddust", clickedX + 0.5F, clickedY + 1 + 0.25F, clickedZ + 0.5F, 0.0, 0.0, 0.0);
             }
 
-            par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer, "random.explode", 2.8F, 1.5F);
+            player.worldObj.playSoundAtEntity(player, "random.explode", 2.8F, 1.5F);
             if (!world.isRemote) {
                 int rand_treetype = this.rand.nextInt(100);
                 if (rand_treetype >= 20) {
@@ -1187,8 +1187,8 @@ public class ItemMagicApple extends Item {
                 }
             }
 
-            if (!par2EntityPlayer.capabilities.isCreativeMode) {
-                par1ItemStack.stackSize--;
+            if (!player.capabilities.isCreativeMode) {
+                stack.stackSize--;
             }
 
             return true;

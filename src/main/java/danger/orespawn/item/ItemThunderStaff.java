@@ -22,41 +22,41 @@ public class ItemThunderStaff extends Item {
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (par1ItemStack.getMaxDamage() - par1ItemStack.getItemDamage() <= 1) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (stack.getMaxDamage() - stack.getItemDamage() <= 1) {
+            return stack;
         } else {
             double xzoff = 1.0;
             double yoff = 1.55;
-            ThunderBolt lb = new ThunderBolt(par2World, par3EntityPlayer);
+            ThunderBolt lb = new ThunderBolt(world, player);
             lb.setLocationAndAngles(
-                par3EntityPlayer.posX - xzoff * Math.sin(Math.toRadians(par3EntityPlayer.rotationYawHead + 45.0F)),
-                par3EntityPlayer.posY + yoff,
-                par3EntityPlayer.posZ + xzoff * Math.cos(Math.toRadians(par3EntityPlayer.rotationYawHead + 45.0F)),
-                par3EntityPlayer.rotationYawHead,
-                par3EntityPlayer.rotationPitch);
+                player.posX - xzoff * Math.sin(Math.toRadians(player.rotationYawHead + 45.0F)),
+                player.posY + yoff,
+                player.posZ + xzoff * Math.cos(Math.toRadians(player.rotationYawHead + 45.0F)),
+                player.rotationYawHead,
+                player.rotationPitch);
             lb.motionX *= 3.0;
             lb.motionY *= 3.0;
             lb.motionZ *= 3.0;
-            par2World.spawnEntityInWorld(lb);
-            par3EntityPlayer.swingItem();
-            par3EntityPlayer.addVelocity(
-                Math.cos(Math.toRadians(par3EntityPlayer.rotationYawHead - 90.0F)) * 0.5,
+            world.spawnEntityInWorld(lb);
+            player.swingItem();
+            player.addVelocity(
+                Math.cos(Math.toRadians(player.rotationYawHead - 90.0F)) * 0.5,
                 0.15,
-                Math.sin(Math.toRadians(par3EntityPlayer.rotationYawHead - 90.0F)) * 0.5);
-            par1ItemStack.damageItem(1, par3EntityPlayer);
-            return par1ItemStack;
+                Math.sin(Math.toRadians(player.rotationYawHead - 90.0F)) * 0.5);
+            stack.damageItem(1, player);
+            return stack;
         }
     }
 
-    public void onUpdate(ItemStack par1ItemStack, World world, Entity par3Entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
         if (world.isRaining() && world.isThundering()) {
             if (this.ticker > 0) {
                 this.ticker--;
             }
 
-            if (this.ticker <= 0 && par1ItemStack.getItemDamage() > 0) {
-                par1ItemStack.setItemDamage(par1ItemStack.getItemDamage() - 1);
+            if (this.ticker <= 0 && stack.getItemDamage() > 0) {
+                stack.setItemDamage(stack.getItemDamage() - 1);
                 this.ticker = 50;
             }
         }

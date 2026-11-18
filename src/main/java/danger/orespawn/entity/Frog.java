@@ -34,8 +34,8 @@ public class Frog extends EntityAnimal {
     private int singing = 0;
     private int jumpcount = 0;
 
-    public Frog(World par1World) {
-        super(par1World);
+    public Frog(World world) {
+        super(world);
         this.setSize(0.75F, 0.75F);
         this.experienceValue = 5;
         this.TargetSorter = new GenericTargetSorter(this);
@@ -75,8 +75,8 @@ public class Frog extends EntityAnimal {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public void setSinging(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public void setSinging(int n) {
+        this.dataWatcher.updateObject(20, (byte) n);
     }
 
     private void jumpAround() {
@@ -112,13 +112,11 @@ public class Frog extends EntityAnimal {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        if (par1EntityPlayer != null && par1EntityPlayer.isSneaking()
-            && par1EntityPlayer.inventory.getCurrentItem() == null) {
-            World world = par1EntityPlayer.worldObj;
+    public boolean interact(EntityPlayer player) {
+        if (player != null && player.isSneaking() && player.inventory.getCurrentItem() == null) {
+            World world = player.worldObj;
             this.setDead();
-            par1EntityPlayer.worldObj
-                .playSoundAtEntity(par1EntityPlayer, "random.explode", 1.0F, world.rand.nextFloat() * 0.2F + 0.9F);
+            player.worldObj.playSoundAtEntity(player, "random.explode", 1.0F, world.rand.nextFloat() * 0.2F + 0.9F);
             if (!world.isRemote) {
                 if (world.rand.nextInt(2) == 0) {
                     Boyfriend ent = null;
@@ -134,7 +132,7 @@ public class Frog extends EntityAnimal {
                     }
                 }
             } else {
-                for (int var3 = 0; var3 < 16; var3++) {
+                for (int i = 0; i < 16; i++) {
                     world.spawnParticle(
                         "smoke",
                         (float) this.posX + world.rand.nextFloat() - world.rand.nextFloat(),
@@ -199,40 +197,40 @@ public class Frog extends EntityAnimal {
         return 0.7F;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
-    protected void playStepSound(int par1, int par2, int par3, int par4) {}
+    protected void playStepSound(int n, int n2, int n3, int n4) {}
 
-    private void dropItemRand(Item index, int par1) {
-        EntityItem var3 = new EntityItem(
+    private void dropItemRand(Item index, int n) {
+        EntityItem entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
-            new ItemStack(index, par1, 0));
-        this.worldObj.spawnEntityInWorld(var3);
+            new ItemStack(index, n, 0));
+        this.worldObj.spawnEntityInWorld(entityItem);
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         for (int i = 0; i < 4; i++) {
             this.dropItemRand(Items.slime_ball, 1);
         }
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        boolean var4 = par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), 3.0F);
-        if (par1Entity.isDead) {
+    public boolean attackEntityAsMob(Entity target) {
+        boolean flag = target.attackEntityFrom(DamageSource.causeMobDamage(this), 3.0F);
+        if (target.isDead) {
             this.heal(1.0F);
         }
 
-        return var4;
+        return flag;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        ret = super.attackEntityFrom(par1DamageSource, par2);
+        ret = super.attackEntityFrom(source, amount);
         if (!this.worldObj.isRemote && this.jumpcount <= 0) {
             this.jumpAround();
             this.jumpcount = 25;
@@ -252,13 +250,13 @@ public class Frog extends EntityAnimal {
         return true;
     }
 
-    public EntityAgeable createChild(EntityAgeable var1) {
+    public EntityAgeable createChild(EntityAgeable partner) {
         return null;
     }
 
     private int findBuddies() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(Frog.class, this.boundingBox.expand(20.0, 8.0, 20.0));
-        return var5.size();
+        List entities = this.worldObj.getEntitiesWithinAABB(Frog.class, this.boundingBox.expand(20.0, 8.0, 20.0));
+        return entities.size();
     }
 
     public boolean getCanSpawnHere() {
@@ -292,28 +290,28 @@ public class Frog extends EntityAnimal {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityAnt) {
+            } else if (target instanceof EntityAnt) {
                 return true;
-            } else if (par1EntityLiving instanceof EntityButterfly) {
+            } else if (target instanceof EntityButterfly) {
                 return true;
-            } else if (par1EntityLiving instanceof Cricket) {
+            } else if (target instanceof Cricket) {
                 return true;
-            } else if (par1EntityLiving instanceof EntityMosquito) {
+            } else if (target instanceof EntityMosquito) {
                 return true;
             } else {
-                return par1EntityLiving instanceof Firefly ? true : par1EntityLiving instanceof WormSmall;
+                return target instanceof Firefly ? true : target instanceof WormSmall;
             }
     }
 
@@ -321,18 +319,18 @@ public class Frog extends EntityAnimal {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(8.0, 3.0, 8.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -340,15 +338,15 @@ public class Frog extends EntityAnimal {
         }
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 }

@@ -35,8 +35,8 @@ public class Hydrolisc extends EntityTameable {
     private int ty = 0;
     private int tz = 0;
 
-    public Hydrolisc(World par1World) {
-        super(par1World);
+    public Hydrolisc(World world) {
+        super(world);
         this.setSize(0.5F, 0.5F);
         this.fireResistance = 100;
         this.getNavigator()
@@ -109,26 +109,26 @@ public class Hydrolisc extends EntityTameable {
             }
         }
 
-        for (int var12 = -dx; var12 <= dx; var12++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dz; j <= dz; j++) {
-                Block bidx = this.worldObj.getBlock(x + var12, y + dy, z + j);
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y + dy;
                         this.tz = z + j;
                         found++;
                     }
                 }
 
-                bidx = this.worldObj.getBlock(x + var12, y - dy, z + j);
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y - dy;
                         this.tz = z + j;
                         found++;
@@ -137,26 +137,26 @@ public class Hydrolisc extends EntityTameable {
             }
         }
 
-        for (int var13 = -dx; var13 <= dx; var13++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dy; j <= dy; j++) {
-                Block bidxx = this.worldObj.getBlock(x + var13, y + j, z + dz);
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z + dz;
                         found++;
                     }
                 }
 
-                bidxx = this.worldObj.getBlock(x + var13, y + j, z - dz);
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z - dz;
                         found++;
@@ -168,8 +168,8 @@ public class Hydrolisc extends EntityTameable {
         return found != 0;
     }
 
-    protected void fall(float par1) {
-        float i = MathHelper.ceiling_float_int(par1 - 3.0F);
+    protected void fall(float distance) {
+        float i = MathHelper.ceiling_float_int(distance - 3.0F);
         if (i > 0.0F) {
             if (i > 3.0F) {
                 this.playSound("damage.fallbig", 1.0F, 1.0F);
@@ -259,24 +259,23 @@ public class Hydrolisc extends EntityTameable {
         return (int) this.getHealth();
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (super.interact(par1EntityPlayer)) {
+        if (super.interact(player)) {
             return true;
-        } else
-            if (var2 != null && var2.getItem() == Items.fish && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+        } else if (currentItem != null && currentItem.getItem() == Items.fish
+            && player.getDistanceSqToEntity(this) < 16.0) {
                 if (!this.isTamed()) {
                     if (!this.worldObj.isRemote) {
                         if (this.rand.nextInt(2) == 0) {
                             this.setTamed(true);
                             this.func_152115_b(
-                                par1EntityPlayer.getUniqueID()
+                                player.getUniqueID()
                                     .toString());
                             this.playTameEffect(true);
                             this.worldObj.setEntityState(this, (byte) 7);
@@ -286,7 +285,7 @@ public class Hydrolisc extends EntityTameable {
                             this.worldObj.setEntityState(this, (byte) 6);
                         }
                     }
-                } else if (this.func_152114_e(par1EntityPlayer)) {
+                } else if (this.func_152114_e(player)) {
                     if (this.worldObj.isRemote) {
                         this.playTameEffect(true);
                         this.worldObj.setEntityState(this, (byte) 7);
@@ -297,19 +296,18 @@ public class Hydrolisc extends EntityTameable {
                     }
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
-            } else if (this.isTamed() && var2 != null
-                && var2.getItem() == Item.getItemFromBlock(Blocks.deadbush)
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                && this.func_152114_e(par1EntityPlayer)) {
+            } else if (this.isTamed() && currentItem != null
+                && currentItem.getItem() == Item.getItemFromBlock(Blocks.deadbush)
+                && player.getDistanceSqToEntity(this) < 16.0
+                && this.func_152114_e(player)) {
                     if (!this.worldObj.isRemote) {
                         this.setTamed(false);
                         this.func_152115_b("");
@@ -317,45 +315,44 @@ public class Hydrolisc extends EntityTameable {
                         this.worldObj.setEntityState(this, (byte) 6);
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
-                } else if (this.isTamed() && var2 != null
-                    && var2.getItem() == Items.name_tag
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                    && this.func_152114_e(par1EntityPlayer)) {
-                        this.setCustomNameTag(var2.getDisplayName());
-                        if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                            var2.stackSize--;
-                            if (var2.stackSize <= 0) {
-                                par1EntityPlayer.inventory
-                                    .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                } else if (this.isTamed() && currentItem != null
+                    && currentItem.getItem() == Items.name_tag
+                    && player.getDistanceSqToEntity(this) < 16.0
+                    && this.func_152114_e(player)) {
+                        this.setCustomNameTag(currentItem.getDisplayName());
+                        if (!player.capabilities.isCreativeMode) {
+                            currentItem.stackSize--;
+                            if (currentItem.stackSize <= 0) {
+                                player.inventory
+                                    .setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                             }
                         }
 
                         return true;
-                    } else if (this.isTamed() && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0
-                        && this.func_152114_e(par1EntityPlayer)) {
-                            if (!this.isSitting()) {
-                                this.setSitting(true);
-                            } else {
-                                this.setSitting(false);
-                            }
-
-                            return true;
+                    } else
+                    if (this.isTamed() && player.getDistanceSqToEntity(this) < 16.0 && this.func_152114_e(player)) {
+                        if (!this.isSitting()) {
+                            this.setSitting(true);
                         } else {
-                            return false;
+                            this.setSitting(false);
                         }
+
+                        return true;
+                    } else {
+                        return false;
+                    }
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.fish;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.fish;
     }
 
     protected String getLivingSound() {
@@ -378,13 +375,13 @@ public class Hydrolisc extends EntityTameable {
         return Items.fish;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
-        int var3 = 0;
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int roll = 0;
         if (this.isTamed()) {
-            var3 = this.rand.nextInt(5);
-            var3 += 2;
+            roll = this.rand.nextInt(5);
+            roll += 2;
 
-            for (int var4 = 0; var4 < var3; var4++) {
+            for (int i = 0; i < roll; i++) {
                 this.dropItem(Items.fish, 1);
             }
         }
@@ -395,14 +392,14 @@ public class Hydrolisc extends EntityTameable {
             : (this.rand.nextFloat() - this.rand.nextFloat()) * 0.1F + 1.0F;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        float p2 = par2;
-        if (par2 > 10.0F) {
+        float p2 = amount;
+        if (amount > 10.0F) {
             p2 = 10.0F;
         }
 
-        return super.attackEntityFrom(par1DamageSource, p2);
+        return super.attackEntityFrom(source, p2);
     }
 
     protected boolean canDespawn() {
@@ -413,11 +410,11 @@ public class Hydrolisc extends EntityTameable {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public Hydrolisc spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public Hydrolisc spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new Hydrolisc(this.worldObj);
     }
 
-    public boolean isBreedingItem(ItemStack par1ItemStack) {
-        return par1ItemStack.getItem() == OreSpawnMain.MyCrystalApple;
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
     }
 }

@@ -49,8 +49,8 @@ public class SpiderRobot extends EntityLiving {
     private int didonce = 0;
     private int rideTicker = 0;
 
-    public SpiderRobot(World par1World) {
-        super(par1World);
+    public SpiderRobot(World world) {
+        super(world);
         this.setSize(3.25F, 2.25F);
         this.riddenByEntity = null;
         this.TargetSorter = new GenericTargetSorter(this);
@@ -60,15 +60,15 @@ public class SpiderRobot extends EntityLiving {
         this.experienceValue = OreSpawnMain.SpiderRobot_stats.health / 2;
     }
 
-    public SpiderRobot(World par1World, double par2, double par4, double par6) {
-        this(par1World);
-        this.setPosition(par2, par4 + this.yOffset, par6);
+    public SpiderRobot(World world, double x, double y, double z) {
+        this(world);
+        this.setPosition(x, y + this.yOffset, z);
         this.motionX = 0.0;
         this.motionY = 0.0;
         this.motionZ = 0.0;
-        this.prevPosX = par2;
-        this.prevPosY = par4;
-        this.prevPosZ = par6;
+        this.prevPosX = x;
+        this.prevPosY = y;
+        this.prevPosZ = z;
     }
 
     protected void applyEntityAttributes() {
@@ -270,32 +270,32 @@ public class SpiderRobot extends EntityLiving {
             float realv = (float) Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
             int i = 0;
 
-            for (int var22 = 0; var22 < 8; var22++) {
+            for (int i2 = 0; i2 < 8; i2++) {
                 int fcount = 0;
-                this.renderdata.footingticker[var22]++;
-                this.renderdata.realposx[var22] = (float) (this.posX - this.renderdata.legoff[var22] * Math.sin(
+                this.renderdata.footingticker[i2]++;
+                this.renderdata.realposx[i2] = (float) (this.posX - this.renderdata.legoff[i2] * Math.sin(
                     Math.toRadians(MathHelper.wrapAngleTo180_double(this.rotationYaw + 90.0F))
-                        + this.renderdata.ymid[var22]));
-                this.renderdata.realposz[var22] = (float) (this.posZ + this.renderdata.legoff[var22] * Math.cos(
+                        + this.renderdata.ymid[i2]));
+                this.renderdata.realposz[i2] = (float) (this.posZ + this.renderdata.legoff[i2] * Math.cos(
                     Math.toRadians(MathHelper.wrapAngleTo180_double(this.rotationYaw + 90.0F))
-                        + this.renderdata.ymid[var22]));
-                this.renderdata.realposy[var22] = (float) this.posY + this.renderdata.yoff[var22];
-                int it = this.renderdata.footingticker[var22]
-                    + this.renderdata.footingticker[this.renderdata.pairedwith[var22]];
-                if (it > 50 && this.renderdata.footingticker[var22]
-                    > this.renderdata.footingticker[this.renderdata.pairedwith[var22]]) {
-                    this.renderdata.footingticker[var22] = 0;
+                        + this.renderdata.ymid[i2]));
+                this.renderdata.realposy[i2] = (float) this.posY + this.renderdata.yoff[i2];
+                int it = this.renderdata.footingticker[i2]
+                    + this.renderdata.footingticker[this.renderdata.pairedwith[i2]];
+                if (it > 50 && this.renderdata.footingticker[i2]
+                    > this.renderdata.footingticker[this.renderdata.pairedwith[i2]]) {
+                    this.renderdata.footingticker[i2] = 0;
                 }
 
-                d1 = this.renderdata.realposx[var22] - this.renderdata.foot_xpos[var22];
-                d2 = this.renderdata.realposy[var22] - this.renderdata.foot_ypos[var22];
-                d3 = this.renderdata.realposz[var22] - this.renderdata.foot_zpos[var22];
+                d1 = this.renderdata.realposx[i2] - this.renderdata.foot_xpos[i2];
+                d2 = this.renderdata.realposy[i2] - this.renderdata.foot_ypos[i2];
+                d3 = this.renderdata.realposz[i2] - this.renderdata.foot_zpos[i2];
                 float dd = (float) Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
                 dd *= 16.0F;
                 float da = (float) (Math.abs(
-                    this.renderdata.ycurrentangle[var22]
+                    this.renderdata.ycurrentangle[i2]
                         - (Math.toRadians(MathHelper.wrapAngleTo180_double(this.rotationYaw))
-                            + this.renderdata.ymid[var22]))
+                            + this.renderdata.ymid[i2]))
                     % (Math.PI * 2));
                 if (da > Math.PI) {
                     da = (float) (da - (Math.PI * 2));
@@ -307,53 +307,49 @@ public class SpiderRobot extends EntityLiving {
 
                 da = Math.abs(da);
                 if (dd > 294.0F || dd < 32.0F
-                    || da > Math.abs(this.renderdata.yrange[var22]) * 8.0F / 7.0F
-                    || Math.abs(this.renderdata.udcurrentangle[var22]) > 1.25
-                    || this.renderdata.footingticker[var22] == 0) {
-                    this.findNewFooting(var22);
-                    d1 = this.renderdata.realposx[var22] - this.renderdata.foot_xpos[var22];
-                    d2 = this.renderdata.realposy[var22] - this.renderdata.foot_ypos[var22];
-                    d3 = this.renderdata.realposz[var22] - this.renderdata.foot_zpos[var22];
+                    || da > Math.abs(this.renderdata.yrange[i2]) * 8.0F / 7.0F
+                    || Math.abs(this.renderdata.udcurrentangle[i2]) > 1.25
+                    || this.renderdata.footingticker[i2] == 0) {
+                    this.findNewFooting(i2);
+                    d1 = this.renderdata.realposx[i2] - this.renderdata.foot_xpos[i2];
+                    d2 = this.renderdata.realposy[i2] - this.renderdata.foot_ypos[i2];
+                    d3 = this.renderdata.realposz[i2] - this.renderdata.foot_zpos[i2];
                     dd = (float) Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
                     dd *= 16.0F;
                 }
 
-                float c1 = (float) (99.0 * Math.cos(this.renderdata.p2xangle[var22] - this.renderdata.p1xangle[var22]));
+                float c1 = (float) (99.0 * Math.cos(this.renderdata.p2xangle[i2] - this.renderdata.p1xangle[i2]));
                 float c2 = 99.0F;
-                float c3 = (float) (99.0 * Math.cos(this.renderdata.p2xangle[var22] - this.renderdata.p3xangle[var22]));
+                float c3 = (float) (99.0 * Math.cos(this.renderdata.p2xangle[i2] - this.renderdata.p3xangle[i2]));
                 float cc = c1 + c2 + c3;
                 float diff = cc - dd;
-                this.renderdata.pxvelocity[var22] = this
-                    .getNewVelocity(realv, (float) (diff * Math.PI / 360.0), this.renderdata.pxvelocity[var22]);
-                if (this.renderdata.pxvelocity[var22] == 0.0F || Math.abs(diff) < 8.0F) {
+                this.renderdata.pxvelocity[i2] = this
+                    .getNewVelocity(realv, (float) (diff * Math.PI / 360.0), this.renderdata.pxvelocity[i2]);
+                if (this.renderdata.pxvelocity[i2] == 0.0F || Math.abs(diff) < 8.0F) {
                     fcount++;
                 }
 
-                this.renderdata.p1xangle[var22] = this.renderdata.p1xangle[var22] + this.renderdata.pxvelocity[var22];
-                this.renderdata.p2xangle[var22] = 0.0;
-                this.renderdata.p3xangle[var22] = -this.renderdata.p1xangle[var22];
-                if (this.renderdata.uppoint[var22] != 0.0F) {
-                    dd = (float) Math
-                        .atan2(dd, (this.renderdata.realposy[var22] - this.renderdata.uppoint[var22]) * 16.0);
+                this.renderdata.p1xangle[i2] = this.renderdata.p1xangle[i2] + this.renderdata.pxvelocity[i2];
+                this.renderdata.p2xangle[i2] = 0.0;
+                this.renderdata.p3xangle[i2] = -this.renderdata.p1xangle[i2];
+                if (this.renderdata.uppoint[i2] != 0.0F) {
+                    dd = (float) Math.atan2(dd, (this.renderdata.realposy[i2] - this.renderdata.uppoint[i2]) * 16.0);
                 } else {
-                    dd = (float) Math
-                        .atan2(dd, (this.renderdata.realposy[var22] - this.renderdata.foot_ypos[var22]) * 16.0);
+                    dd = (float) Math.atan2(dd, (this.renderdata.realposy[i2] - this.renderdata.foot_ypos[i2]) * 16.0);
                 }
 
-                this.renderdata.udwantedangle[var22] = (float) (dd - (Math.PI / 2));
+                this.renderdata.udwantedangle[i2] = (float) (dd - (Math.PI / 2));
 
-                while (this.renderdata.udwantedangle[var22] > Math.PI) {
-                    this.renderdata.udwantedangle[var22] = (float) (this.renderdata.udwantedangle[var22]
-                        - (Math.PI * 2));
+                while (this.renderdata.udwantedangle[i2] > Math.PI) {
+                    this.renderdata.udwantedangle[i2] = (float) (this.renderdata.udwantedangle[i2] - (Math.PI * 2));
                 }
 
-                while (this.renderdata.udwantedangle[var22] < -Math.PI) {
-                    this.renderdata.udwantedangle[var22] = (float) (this.renderdata.udwantedangle[var22]
-                        + (Math.PI * 2));
+                while (this.renderdata.udwantedangle[i2] < -Math.PI) {
+                    this.renderdata.udwantedangle[i2] = (float) (this.renderdata.udwantedangle[i2] + (Math.PI * 2));
                 }
 
-                double rhm = this.renderdata.udwantedangle[var22];
-                double rhdir = this.renderdata.udcurrentangle[var22];
+                double rhm = this.renderdata.udwantedangle[i2];
+                double rhdir = this.renderdata.udcurrentangle[i2];
                 double rdv = (rhm - rhdir) % (Math.PI * 2);
 
                 while (rdv > Math.PI) {
@@ -365,14 +361,14 @@ public class SpiderRobot extends EntityLiving {
                 }
 
                 diff = (float) rdv;
-                this.renderdata.udvelocity[var22] = this
-                    .getNewVelocity(realv * 2.0F, diff, this.renderdata.udvelocity[var22]);
-                if (this.renderdata.udvelocity[var22] == 0.0F || Math.abs(diff) < 0.03490658503988659) {
-                    this.renderdata.uppoint[var22] = 0.0F;
+                this.renderdata.udvelocity[i2] = this
+                    .getNewVelocity(realv * 2.0F, diff, this.renderdata.udvelocity[i2]);
+                if (this.renderdata.udvelocity[i2] == 0.0F || Math.abs(diff) < 0.03490658503988659) {
+                    this.renderdata.uppoint[i2] = 0.0F;
                     fcount++;
                 }
 
-                rhdir += this.renderdata.udvelocity[var22];
+                rhdir += this.renderdata.udvelocity[i2];
 
                 while (rhdir > Math.PI) {
                     rhdir -= Math.PI * 2;
@@ -382,13 +378,13 @@ public class SpiderRobot extends EntityLiving {
                     rhdir += Math.PI * 2;
                 }
 
-                dd = this.renderdata.udcurrentangle[var22] = (float) rhdir;
-                this.renderdata.uddisplayangle[var22] = dd;
-                d1 = this.renderdata.realposx[var22] - this.renderdata.foot_xpos[var22];
-                d3 = this.renderdata.realposz[var22] - this.renderdata.foot_zpos[var22];
+                dd = this.renderdata.udcurrentangle[i2] = (float) rhdir;
+                this.renderdata.uddisplayangle[i2] = dd;
+                d1 = this.renderdata.realposx[i2] - this.renderdata.foot_xpos[i2];
+                d3 = this.renderdata.realposz[i2] - this.renderdata.foot_zpos[i2];
                 dd = (float) Math.atan2(d3, d1);
-                rhm = this.renderdata.ywantedangle[var22] = dd;
-                rhdir = this.renderdata.ycurrentangle[var22];
+                rhm = this.renderdata.ywantedangle[i2] = dd;
+                rhdir = this.renderdata.ycurrentangle[i2];
                 rdv = (rhm - rhdir) % (Math.PI * 2);
                 if (rdv > Math.PI) {
                     rdv -= Math.PI * 2;
@@ -399,25 +395,22 @@ public class SpiderRobot extends EntityLiving {
                 }
 
                 diff = (float) rdv;
-                this.renderdata.yvelocity[var22] = this.getNewVelocity(realv, diff, this.renderdata.yvelocity[var22]);
-                if (this.renderdata.yvelocity[var22] == 0.0F || Math.abs(diff) < 0.03490658503988659) {
+                this.renderdata.yvelocity[i2] = this.getNewVelocity(realv, diff, this.renderdata.yvelocity[i2]);
+                if (this.renderdata.yvelocity[i2] == 0.0F || Math.abs(diff) < 0.03490658503988659) {
                     fcount++;
                 }
 
-                this.renderdata.ycurrentangle[var22] = this.renderdata.ycurrentangle[var22]
-                    + this.renderdata.yvelocity[var22];
+                this.renderdata.ycurrentangle[i2] = this.renderdata.ycurrentangle[i2] + this.renderdata.yvelocity[i2];
 
-                while (this.renderdata.ycurrentangle[var22] > Math.PI) {
-                    this.renderdata.ycurrentangle[var22] = (float) (this.renderdata.ycurrentangle[var22]
-                        - (Math.PI * 2));
+                while (this.renderdata.ycurrentangle[i2] > Math.PI) {
+                    this.renderdata.ycurrentangle[i2] = (float) (this.renderdata.ycurrentangle[i2] - (Math.PI * 2));
                 }
 
-                while (this.renderdata.ycurrentangle[var22] < -Math.PI) {
-                    this.renderdata.ycurrentangle[var22] = (float) (this.renderdata.ycurrentangle[var22]
-                        + (Math.PI * 2));
+                while (this.renderdata.ycurrentangle[i2] < -Math.PI) {
+                    this.renderdata.ycurrentangle[i2] = (float) (this.renderdata.ycurrentangle[i2] + (Math.PI * 2));
                 }
 
-                dd = (float) (this.renderdata.ycurrentangle[var22]
+                dd = (float) (this.renderdata.ycurrentangle[i2]
                     - Math.toRadians(MathHelper.wrapAngleTo180_double(this.rotationYaw))
                     - (Math.PI / 2));
 
@@ -429,34 +422,34 @@ public class SpiderRobot extends EntityLiving {
                     dd = (float) (dd + (Math.PI * 2));
                 }
 
-                this.renderdata.ydisplayangle[var22] = dd;
+                this.renderdata.ydisplayangle[i2] = dd;
                 if (fcount == 3) {
-                    this.renderdata.footup[var22] = 0;
+                    this.renderdata.footup[i2] = 0;
                     Block bid = this.worldObj.getBlock(
-                        (int) this.renderdata.foot_xpos[var22],
-                        (int) this.renderdata.foot_ypos[var22],
-                        (int) this.renderdata.foot_zpos[var22]);
+                        (int) this.renderdata.foot_xpos[i2],
+                        (int) this.renderdata.foot_ypos[i2],
+                        (int) this.renderdata.foot_zpos[i2]);
                     if (bid == Blocks.tallgrass && this.riddenByEntity != null
                         && this.worldObj.getGameRules()
                             .getGameRuleBooleanValue("mobGriefing")) {
                         this.worldObj.setBlock(
-                            (int) this.renderdata.foot_xpos[var22],
-                            (int) this.renderdata.foot_ypos[var22],
-                            (int) this.renderdata.foot_zpos[var22],
+                            (int) this.renderdata.foot_xpos[i2],
+                            (int) this.renderdata.foot_ypos[i2],
+                            (int) this.renderdata.foot_zpos[i2],
                             Blocks.air);
                     }
 
                     bid = this.worldObj.getBlock(
-                        (int) this.renderdata.foot_xpos[var22],
-                        (int) this.renderdata.foot_ypos[var22] - 1,
-                        (int) this.renderdata.foot_zpos[var22]);
+                        (int) this.renderdata.foot_xpos[i2],
+                        (int) this.renderdata.foot_ypos[i2] - 1,
+                        (int) this.renderdata.foot_zpos[i2]);
                     if (bid == Blocks.grass && this.riddenByEntity != null
                         && this.worldObj.getGameRules()
                             .getGameRuleBooleanValue("mobGriefing")) {
                         this.worldObj.setBlock(
-                            (int) this.renderdata.foot_xpos[var22],
-                            (int) this.renderdata.foot_ypos[var22] - 1,
-                            (int) this.renderdata.foot_zpos[var22],
+                            (int) this.renderdata.foot_xpos[i2],
+                            (int) this.renderdata.foot_ypos[i2] - 1,
+                            (int) this.renderdata.foot_zpos[i2],
                             Blocks.dirt);
                     }
                 }
@@ -668,55 +661,56 @@ public class SpiderRobot extends EntityLiving {
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
-        if (par1DamageSource.getDamageType()
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        if (source.getDamageType()
             .equals("inWall")) {
             return false;
-        } else if (par1DamageSource.getDamageType()
+        } else if (source.getDamageType()
             .equals("cactus")) {
                 return false;
-            } else if (par1DamageSource.getDamageType()
+            } else if (source.getDamageType()
                 .equals("inFire")) {
                     return false;
-                } else if (par1DamageSource.getDamageType()
+                } else if (source.getDamageType()
                     .equals("onFire")) {
                         return false;
-                    } else if (par1DamageSource.getDamageType()
+                    } else if (source.getDamageType()
                         .equals("magic")) {
                             return false;
                         } else {
-                            return par1DamageSource.getDamageType()
-                                .equals("starve") ? false : super.attackEntityFrom(par1DamageSource, par2);
+                            return source.getDamageType()
+                                .equals("starve") ? false : super.attackEntityFrom(source, amount);
                         }
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean canBeCollidedWith() {
         return !this.isDead;
     }
 
     @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch,
+        int posRotationIncrements) {
         if (this.riddenByEntity != null) {
-            this.boatPosRotationIncrements = par9 + 8;
+            this.boatPosRotationIncrements = posRotationIncrements + 8;
         } else {
-            this.boatPosRotationIncrements = par9 + 6;
+            this.boatPosRotationIncrements = posRotationIncrements + 6;
         }
 
-        this.boatX = par1;
-        this.boatY = par3;
-        this.boatZ = par5;
-        this.boatYaw = par7;
-        this.boatPitch = par8;
+        this.boatX = x;
+        this.boatY = y;
+        this.boatZ = z;
+        this.boatYaw = yaw;
+        this.boatPitch = pitch;
     }
 
     @SideOnly(Side.CLIENT)
-    public void setVelocity(double par1, double par3, double par5) {
+    public void setVelocity(double vx, double vy, double vz) {
         if (this.riddenByEntity == null) {
-            super.setVelocity(par1, par3, par5);
+            super.setVelocity(vx, vy, vz);
         }
     }
 
@@ -927,20 +921,20 @@ public class SpiderRobot extends EntityLiving {
                 if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer) {
                     EntityPlayer pp = (EntityPlayer) this.riddenByEntity;
                     obstruction_factor = 0.0;
-                    int var75 = 3;
-                    var75 += (int) (velocity * 6.0);
+                    int n = 3;
+                    n += (int) (velocity * 6.0);
 
-                    for (int k = 1; k < var75; k++) {
-                        for (int i = 1; i < var75 * 3; i++) {
+                    for (int k = 1; k < n; k++) {
+                        for (int i = 1; i < n * 3; i++) {
                             for (int j = -90; j <= 90; j += 30) {
                                 double dx = i * Math.cos(Math.toRadians(this.rotationYaw + 90.0F + j));
                                 double dz = i * Math.sin(Math.toRadians(this.rotationYaw + 90.0F + j));
-                                Block var79 = this.worldObj
+                                Block block = this.worldObj
                                     .getBlock((int) (this.posX + dx), (int) this.posY - k, (int) (this.posZ + dz));
-                                if (var79 != Blocks.air && var79 != Blocks.water
-                                    && var79 != Blocks.flowing_water
-                                    && var79 != Blocks.lava
-                                    && var79 != Blocks.flowing_lava) {
+                                if (block != Blocks.air && block != Blocks.water
+                                    && block != Blocks.flowing_water
+                                    && block != Blocks.lava
+                                    && block != Blocks.flowing_lava) {
                                     obstruction_factor += 0.03;
                                 }
                             }
@@ -1077,23 +1071,23 @@ public class SpiderRobot extends EntityLiving {
         return this.riddenByEntity == null;
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {}
+    public void writeEntityToNBT(NBTTagCompound tag) {}
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {}
+    public void readEntityFromNBT(NBTTagCompound tag) {}
 
     public float getShadowSize() {
         return 0.95F;
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (var2 != null && var2.getItem() == Items.iron_ingot && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+        if (currentItem != null && currentItem.getItem() == Items.iron_ingot
+            && player.getDistanceSqToEntity(this) < 25.0) {
             if (!this.worldObj.isRemote) {
                 float f = this.getMaxHealth() - this.getHealth();
                 if (f > 100.0F) {
@@ -1105,22 +1099,21 @@ public class SpiderRobot extends EntityLiving {
                 }
             }
 
-            if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                var2.stackSize--;
-                if (var2.stackSize <= 0) {
-                    par1EntityPlayer.inventory
-                        .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+            if (!player.capabilities.isCreativeMode) {
+                currentItem.stackSize--;
+                if (currentItem.stackSize <= 0) {
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                 }
             }
 
             return true;
         } else if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer
-            && this.riddenByEntity != par1EntityPlayer) {
+            && this.riddenByEntity != player) {
                 return true;
             } else {
                 if (!this.worldObj.isRemote && this.riddenByEntity == null
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
-                    par1EntityPlayer.mountEntity(this);
+                    && player.getDistanceSqToEntity(this) < 16.0) {
+                    player.mountEntity(this);
                     this.worldObj.playSoundAtEntity(this, "orespawn:robotspidermount", 0.65F, 1.0F);
                 }
 
@@ -1130,50 +1123,50 @@ public class SpiderRobot extends EntityLiving {
 
     private void feetFindSomethingToHit() {
         if (OreSpawnMain.PlayNicely == 0) {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(20.0, 8.0, 20.0));
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase living = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.feetisSuitableTarget(var4, false)) {
-                    this.feetattackEntityAsMob(var4);
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                living = (EntityLivingBase) entity;
+                if (this.feetisSuitableTarget(living, false)) {
+                    this.feetattackEntityAsMob(living);
                 }
             }
         }
     }
 
-    private boolean feetisSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean feetisSuitableTarget(EntityLivingBase living, boolean flag) {
+        if (living == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (living == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!living.isEntityAlive()) {
             return false;
-        } else if (par1EntityLiving instanceof SpiderRobot) {
+        } else if (living instanceof SpiderRobot) {
             return false;
-        } else if (par1EntityLiving instanceof EntitySpider) {
+        } else if (living instanceof EntitySpider) {
             return false;
-        } else if (par1EntityLiving instanceof SpiderDriver) {
+        } else if (living instanceof SpiderDriver) {
             return false;
-        } else if (par1EntityLiving instanceof EntityCaveSpider) {
+        } else if (living instanceof EntityCaveSpider) {
             return false;
-        } else if (par1EntityLiving == this.riddenByEntity) {
+        } else if (living == this.riddenByEntity) {
             return false;
         } else {
-            float d1 = (float) (par1EntityLiving.posX - this.posX);
-            float d2 = (float) (par1EntityLiving.posY - this.posY);
-            float d3 = (float) (par1EntityLiving.posZ - this.posZ);
+            float d1 = (float) (living.posX - this.posX);
+            float d2 = (float) (living.posY - this.posY);
+            float d3 = (float) (living.posZ - this.posZ);
             float dd = (float) Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
             if (dd > 18.0F) {
                 return false;
             } else if (dd < 12.0F) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (living instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) living;
                 return !p.capabilities.isCreativeMode;
             } else {
                 return true;
@@ -1181,20 +1174,20 @@ public class SpiderRobot extends EntityLiving {
         }
     }
 
-    public boolean feetattackEntityAsMob(Entity par1Entity) {
+    public boolean feetattackEntityAsMob(Entity entity) {
         boolean ret = false;
-        if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
+        if (entity != null && entity instanceof EntityLivingBase) {
             double ks = 0.6;
             double inair = 0.1;
-            float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-            ret = par1Entity
+            float f3 = (float) Math.atan2(entity.posZ - this.posZ, entity.posX - this.posX);
+            ret = entity
                 .attackEntityFrom(DamageSource.causeMobDamage(this), OreSpawnMain.SpiderRobot_stats.attack / 10.0F);
-            if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+            if (entity.isDead || entity instanceof EntityPlayer) {
                 inair *= 2.0;
             }
 
             if (ret) {
-                par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+                entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
             }
         }
 
@@ -1205,17 +1198,17 @@ public class SpiderRobot extends EntityLiving {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(20.0, 12.0, 20.0));
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -1223,30 +1216,30 @@ public class SpiderRobot extends EntityLiving {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (par1EntityLiving instanceof SpiderRobot) {
+        } else if (target instanceof SpiderRobot) {
             return false;
-        } else if (par1EntityLiving instanceof EntitySpider) {
+        } else if (target instanceof EntitySpider) {
             return false;
-        } else if (par1EntityLiving instanceof SpiderDriver) {
+        } else if (target instanceof SpiderDriver) {
             return false;
-        } else if (par1EntityLiving instanceof EntityCaveSpider) {
+        } else if (target instanceof EntityCaveSpider) {
             return false;
-        } else if (par1EntityLiving == this.riddenByEntity) {
+        } else if (target == this.riddenByEntity) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
             } else {
-                double rr = Math.atan2(par1EntityLiving.posZ - this.posZ, par1EntityLiving.posX - this.posX);
+                double rr = Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
                 double rhdir = Math.toRadians((this.rotationYaw + 90.0F) % 360.0F);
                 double pi = 3.1415926545;
                 double rdd = Math.abs(rr - rhdir) % (pi * 2.0);
@@ -1255,12 +1248,12 @@ public class SpiderRobot extends EntityLiving {
                 }
 
                 rdd = Math.abs(rdd);
-                if (this.getDistanceSqToEntity(par1EntityLiving) < 36.0) {
+                if (this.getDistanceSqToEntity(target) < 36.0) {
                     return true;
                 } else if (rdd > 0.75) {
                     return false;
-                } else if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                } else if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     return !p.capabilities.isCreativeMode;
                 } else {
                     return true;
@@ -1268,19 +1261,19 @@ public class SpiderRobot extends EntityLiving {
             }
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         boolean ret = false;
-        if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
+        if (target != null && target instanceof EntityLivingBase) {
             double ks = 1.2;
             double inair = 0.15;
-            float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-            ret = par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), OreSpawnMain.SpiderRobot_stats.attack);
-            if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+            float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+            ret = target.attackEntityFrom(DamageSource.causeMobDamage(this), OreSpawnMain.SpiderRobot_stats.attack);
+            if (target.isDead || target instanceof EntityPlayer) {
                 inair *= 2.0;
             }
 
             if (ret) {
-                par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+                target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
             }
         }
 
@@ -1291,37 +1284,37 @@ public class SpiderRobot extends EntityLiving {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     protected Item getDropItem() {
         return null;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         ItemStack is = null;
         int i = 14 + this.worldObj.rand.nextInt(14);
 
-        for (int var4 = 0; var4 < i; var4++) {
-            int var3 = this.worldObj.rand.nextInt(15);
-            switch (var3) {
+        for (int i2 = 0; i2 < i; i2++) {
+            int roll = this.worldObj.rand.nextInt(15);
+            switch (roll) {
                 case 0:
                     is = this.dropItemRand(Items.redstone, 1);
                     break;

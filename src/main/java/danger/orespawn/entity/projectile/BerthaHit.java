@@ -18,23 +18,23 @@ public class BerthaHit extends EntityThrowable {
 
     private int hit_type = 0;
 
-    public BerthaHit(World par1World) {
-        super(par1World);
+    public BerthaHit(World world) {
+        super(world);
     }
 
-    public BerthaHit(World par1World, int par2) {
-        super(par1World);
+    public BerthaHit(World world, int n) {
+        super(world);
     }
 
-    public BerthaHit(World par1World, EntityLivingBase par2EntityLiving) {
-        super(par1World, par2EntityLiving);
+    public BerthaHit(World world, EntityLivingBase living) {
+        super(world, living);
         this.setSize(0.33F, 0.33F);
         this.setLocationAndAngles(
-            par2EntityLiving.posX,
-            par2EntityLiving.posY + par2EntityLiving.getEyeHeight(),
-            par2EntityLiving.posZ,
-            par2EntityLiving.rotationYaw,
-            par2EntityLiving.rotationPitch);
+            living.posX,
+            living.posY + living.getEyeHeight(),
+            living.posZ,
+            living.rotationYaw,
+            living.rotationPitch);
         this.posX = this.posX - MathHelper.cos(this.rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
         this.posY -= 0.1;
         this.posZ = this.posZ - MathHelper.sin(this.rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
@@ -51,22 +51,22 @@ public class BerthaHit extends EntityThrowable {
         this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, this.func_70182_d(), 0.1F);
     }
 
-    public BerthaHit(World par1World, EntityLivingBase par2EntityLiving, int par3) {
-        super(par1World, par2EntityLiving);
+    public BerthaHit(World world, EntityLivingBase living, int n) {
+        super(world, living);
     }
 
-    public BerthaHit(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public BerthaHit(World world, double x, double y, double z) {
+        super(world, x, y, z);
     }
 
     public void setHitType(int i) {
         this.hit_type = i;
     }
 
-    protected void onImpact(MovingObjectPosition par1MovingObjectPosition) {
+    protected void onImpact(MovingObjectPosition hit) {
         if (!this.isDead) {
-            if (par1MovingObjectPosition.entityHit != null && this.getThrower() != null) {
-                Entity e = par1MovingObjectPosition.entityHit;
+            if (hit.entityHit != null && this.getThrower() != null) {
+                Entity e = hit.entityHit;
                 if (OreSpawnMain.big_bertha_pvp == 0 && e instanceof EntityPlayer || e instanceof Girlfriend
                     || e instanceof Boyfriend) {
                     this.setDead();

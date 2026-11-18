@@ -13,7 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockUranium extends Block {
 
-    public BlockUranium(int par1) {
+    public BlockUranium(int n) {
         super(Material.rock);
         this.setHardness(5.0F);
         this.setResistance(5.0F);
@@ -26,62 +26,62 @@ public class BlockUranium extends Block {
     }
 
     @SideOnly(Side.CLIENT)
-    public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        if (par1World.rand.nextInt(20) == 0) {
-            this.sparkle(par1World, par2, par3, par4);
+    public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
+        if (world.rand.nextInt(20) == 0) {
+            this.sparkle(world, x, y, z);
         }
     }
 
-    private void sparkle(World par1World, int par2, int par3, int par4) {
-        Random var5 = par1World.rand;
-        double var6 = 0.0625;
+    private void sparkle(World world, int x, int y, int z) {
+        Random rand = world.rand;
+        double d = 0.0625;
 
-        for (int var8 = 0; var8 < 6; var8++) {
-            double var9 = par2 + var5.nextFloat();
-            double var11 = par3 + var5.nextFloat();
-            double var13 = par4 + var5.nextFloat();
-            if (var8 == 0 && !par1World.getBlock(par2, par3 + 1, par4)
+        for (int i = 0; i < 6; i++) {
+            double x2 = x + rand.nextFloat();
+            double y2 = y + rand.nextFloat();
+            double z2 = z + rand.nextFloat();
+            if (i == 0 && !world.getBlock(x, y + 1, z)
                 .isOpaqueCube()) {
-                var11 = par3 + 1 + var6;
+                y2 = y + 1 + d;
             }
 
-            if (var8 == 1 && !par1World.getBlock(par2, par3 - 1, par4)
+            if (i == 1 && !world.getBlock(x, y - 1, z)
                 .isOpaqueCube()) {
-                var11 = par3 + 0 - var6;
+                y2 = y + 0 - d;
             }
 
-            if (var8 == 2 && !par1World.getBlock(par2, par3, par4 + 1)
+            if (i == 2 && !world.getBlock(x, y, z + 1)
                 .isOpaqueCube()) {
-                var13 = par4 + 1 + var6;
+                z2 = z + 1 + d;
             }
 
-            if (var8 == 3 && !par1World.getBlock(par2, par3, par4 - 1)
+            if (i == 3 && !world.getBlock(x, y, z - 1)
                 .isOpaqueCube()) {
-                var13 = par4 + 0 - var6;
+                z2 = z + 0 - d;
             }
 
-            if (var8 == 4 && !par1World.getBlock(par2 + 1, par3, par4)
+            if (i == 4 && !world.getBlock(x + 1, y, z)
                 .isOpaqueCube()) {
-                var9 = par2 + 1 + var6;
+                x2 = x + 1 + d;
             }
 
-            if (var8 == 5 && !par1World.getBlock(par2 - 1, par3, par4)
+            if (i == 5 && !world.getBlock(x - 1, y, z)
                 .isOpaqueCube()) {
-                var9 = par2 + 0 - var6;
+                x2 = x + 0 - d;
             }
 
-            if (var9 < par2 || var9 > par2 + 1 || var11 < 0.0 || var11 > par3 + 1 || var13 < par4 || var13 > par4 + 1) {
-                int which = par1World.rand.nextInt(3);
+            if (x2 < x || x2 > x + 1 || y2 < 0.0 || y2 > y + 1 || z2 < z || z2 > z + 1) {
+                int which = world.rand.nextInt(3);
                 if (which == 0) {
-                    par1World.spawnParticle("flame", var9, var11, var13, 0.0, 0.0, 0.0);
+                    world.spawnParticle("flame", x2, y2, z2, 0.0, 0.0, 0.0);
                 }
 
                 if (which == 1) {
-                    par1World.spawnParticle("smoke", var9, var11, var13, 0.0, 0.0, 0.0);
+                    world.spawnParticle("smoke", x2, y2, z2, 0.0, 0.0, 0.0);
                 }
 
                 if (which == 2) {
-                    par1World.spawnParticle("reddust", var9, var11, var13, 0.0, 0.0, 0.0);
+                    world.spawnParticle("reddust", x2, y2, z2, 0.0, 0.0, 0.0);
                 }
             }
         }

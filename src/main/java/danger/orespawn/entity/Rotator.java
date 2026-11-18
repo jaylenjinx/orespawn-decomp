@@ -34,8 +34,8 @@ public class Rotator extends EntityMob {
     private int busy_fighting = 0;
     private int was_spawnered = 0;
 
-    public Rotator(World par1World) {
-        super(par1World);
+    public Rotator(World world) {
+        super(world);
         this.setSize(1.0F, 2.0F);
         this.experienceValue = 35;
         this.isImmuneToFire = true;
@@ -117,7 +117,7 @@ public class Rotator extends EntityMob {
         return true;
     }
 
-    protected void collideWithEntity(Entity par1Entity) {}
+    protected void collideWithEntity(Entity entity) {}
 
     public int mygetMaxHealth() {
         return OreSpawnMain.Rotator_stats.health;
@@ -233,16 +233,16 @@ public class Rotator extends EntityMob {
                 }
             }
 
-            double var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.4 - this.motionX) * 0.2;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.7F - this.motionY) * 0.20000000149011612;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.4 - this.motionZ) * 0.2;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx = this.currentFlightTarget.posX + 0.5 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx) * 0.4 - this.motionX) * 0.2;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.7F - this.motionY) * 0.20000000149011612;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.4 - this.motionZ) * 0.2;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 0.75F;
-            this.rotationYaw += var8 / 4.0F;
+            this.rotationYaw += f2 / 4.0F;
         }
     }
 
@@ -250,21 +250,21 @@ public class Rotator extends EntityMob {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean doesEntityNotTriggerPressurePlate() {
         return true;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        Entity e = par1DamageSource.getEntity();
+        Entity e = source.getEntity();
         if (e != null && e instanceof EntityArrow) {
             return false;
         } else {
-            ret = super.attackEntityFrom(par1DamageSource, par2);
+            ret = super.attackEntityFrom(source, amount);
             if (e != null && this.currentFlightTarget != null) {
                 this.currentFlightTarget.set((int) e.posX, (int) e.posY, (int) e.posZ);
             }
@@ -296,11 +296,11 @@ public class Rotator extends EntityMob {
         if (!this.isValidLightLevel()) {
             return false;
         } else {
-            for (int var10 = -1; var10 <= 1; var10++) {
+            for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
                     for (int ix = 1; ix < 3; ix++) {
                         Block bid = this.worldObj
-                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + var10);
+                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
                         if (bid != Blocks.air) {
                             return false;
                         }
@@ -318,58 +318,58 @@ public class Rotator extends EntityMob {
         return OreSpawnMain.Rotator_stats.defense;
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
                 }
 
-                if (par1EntityLiving instanceof Termite) {
+                if (target instanceof Termite) {
                     return false;
-                } else if (par1EntityLiving instanceof Vortex) {
+                } else if (target instanceof Vortex) {
                     return false;
-                } else if (par1EntityLiving instanceof Rotator) {
+                } else if (target instanceof Rotator) {
                     return false;
-                } else if (par1EntityLiving instanceof DungeonBeast) {
+                } else if (target instanceof DungeonBeast) {
                     return false;
-                } else if (par1EntityLiving instanceof Peacock) {
+                } else if (target instanceof Peacock) {
                     return false;
-                } else if (par1EntityLiving instanceof CrystalCow) {
+                } else if (target instanceof CrystalCow) {
                     return false;
-                } else if (par1EntityLiving instanceof Irukandji) {
+                } else if (target instanceof Irukandji) {
                     return false;
-                } else if (par1EntityLiving instanceof Skate) {
+                } else if (target instanceof Skate) {
                     return false;
-                } else if (par1EntityLiving instanceof Whale) {
+                } else if (target instanceof Whale) {
                     return false;
-                } else if (par1EntityLiving instanceof Flounder) {
+                } else if (target instanceof Flounder) {
                     return false;
-                } else if (par1EntityLiving instanceof Urchin) {
+                } else if (target instanceof Urchin) {
                     return false;
-                } else if (par1EntityLiving instanceof TerribleTerror) {
+                } else if (target instanceof TerribleTerror) {
                     return false;
-                } else if (par1EntityLiving instanceof LurkingTerror) {
+                } else if (target instanceof LurkingTerror) {
                     return false;
-                } else if (par1EntityLiving instanceof CloudShark) {
+                } else if (target instanceof CloudShark) {
                     return false;
-                } else if (par1EntityLiving instanceof Mothra) {
+                } else if (target instanceof Mothra) {
                     return false;
                 } else {
-                    return par1EntityLiving instanceof Bee ? false : !(par1EntityLiving instanceof Mantis);
+                    return target instanceof Bee ? false : !(target instanceof Mantis);
                 }
             }
     }
@@ -378,18 +378,18 @@ public class Rotator extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(12.0, 10.0, 12.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 

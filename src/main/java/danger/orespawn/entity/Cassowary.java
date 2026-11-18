@@ -24,8 +24,8 @@ public class Cassowary extends EntityAnimal {
 
     private float moveSpeed = 0.25F;
 
-    public Cassowary(World par1World) {
-        super(par1World);
+    public Cassowary(World world) {
+        super(world);
         this.setSize(0.5F, 1.2F);
         this.moveSpeed = 0.25F;
         this.fireResistance = 100;
@@ -96,12 +96,12 @@ public class Cassowary extends EntityAnimal {
         return Items.chicken;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
-        int var3 = 0;
-        var3 = this.rand.nextInt(3);
-        var3 += 2;
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int roll = 0;
+        roll = this.rand.nextInt(3);
+        roll += 2;
 
-        for (int var4 = 0; var4 < var3; var4++) {
+        for (int i = 0; i < roll; i++) {
             this.dropItem(Items.chicken, 1);
         }
     }
@@ -131,15 +131,15 @@ public class Cassowary extends EntityAnimal {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public Cassowary spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public Cassowary spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new Cassowary(this.worldObj);
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.apple;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.apple;
     }
 
-    public boolean isBreedingItem(ItemStack par1ItemStack) {
-        return par1ItemStack.getItem() == OreSpawnMain.MyCrystalApple;
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
     }
 }

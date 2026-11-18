@@ -46,8 +46,8 @@ public class EmperorScorpion extends EntityMob {
     private int hurt_timer = 0;
     private float moveSpeed = 0.35F;
 
-    public EmperorScorpion(World par1World) {
-        super(par1World);
+    public EmperorScorpion(World world) {
+        super(world);
         this.setSize(3.5F, 3.0F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -166,208 +166,208 @@ public class EmperorScorpion extends EntityMob {
         return Items.beef;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         this.dropItemRand(OreSpawnMain.MyEmperorScorpionScale, 1);
         this.dropItemRand(Items.item_frame, 1);
         int i = 4 + this.worldObj.rand.nextInt(5);
 
-        for (int var4 = 0; var4 < i; var4++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(Item.getItemFromBlock(Blocks.obsidian), 1);
         }
 
         i = 4 + this.worldObj.rand.nextInt(8);
 
-        for (int var7 = 0; var7 < i; var7++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(Items.beef, 1);
         }
 
         i = 1 + this.worldObj.rand.nextInt(5);
 
-        for (int var8 = 0; var8 < i; var8++) {
-            int var3 = this.worldObj.rand.nextInt(20);
-            switch (var3) {
+        for (int i2 = 0; i2 < i; i2++) {
+            int roll = this.worldObj.rand.nextInt(20);
+            switch (roll) {
                 case 0: {
                     ItemStack is = this.dropItemRand(OreSpawnMain.MyUltimateSword, 1);
                     break;
                 }
                 case 1:
-                    ItemStack var21 = this.dropItemRand(Items.diamond, 1);
+                    ItemStack stack = this.dropItemRand(Items.diamond, 1);
                     break;
                 case 2:
-                    ItemStack var20 = this.dropItemRand(Item.getItemFromBlock(Blocks.diamond_block), 1);
+                    ItemStack stack2 = this.dropItemRand(Item.getItemFromBlock(Blocks.diamond_block), 1);
                     break;
                 case 3:
-                    ItemStack var19 = this.dropItemRand(Items.diamond_sword, 1);
+                    ItemStack stack3 = this.dropItemRand(Items.diamond_sword, 1);
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var19.addEnchantment(Enchantment.sharpness, 1 + this.worldObj.rand.nextInt(5));
+                        stack3.addEnchantment(Enchantment.sharpness, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var19.addEnchantment(Enchantment.baneOfArthropods, 1 + this.worldObj.rand.nextInt(5));
+                        stack3.addEnchantment(Enchantment.baneOfArthropods, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var19.addEnchantment(Enchantment.knockback, 1 + this.worldObj.rand.nextInt(5));
+                        stack3.addEnchantment(Enchantment.knockback, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var19.addEnchantment(Enchantment.looting, 1 + this.worldObj.rand.nextInt(5));
+                        stack3.addEnchantment(Enchantment.looting, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var19.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack3.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var19.addEnchantment(Enchantment.fireAspect, 1 + this.worldObj.rand.nextInt(5));
+                        stack3.addEnchantment(Enchantment.fireAspect, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var19.addEnchantment(Enchantment.sharpness, 1 + this.worldObj.rand.nextInt(5));
+                        stack3.addEnchantment(Enchantment.sharpness, 1 + this.worldObj.rand.nextInt(5));
                     }
                     break;
                 case 4:
-                    ItemStack var18 = this.dropItemRand(Items.diamond_shovel, 1);
+                    ItemStack stack4 = this.dropItemRand(Items.diamond_shovel, 1);
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var18.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack4.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var18.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
+                        stack4.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
                     }
                     break;
                 case 5:
-                    ItemStack var17 = this.dropItemRand(Items.diamond_pickaxe, 1);
+                    ItemStack stack5 = this.dropItemRand(Items.diamond_pickaxe, 1);
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var17.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack5.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var17.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
+                        stack5.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var17.addEnchantment(Enchantment.fortune, 1 + this.worldObj.rand.nextInt(5));
+                        stack5.addEnchantment(Enchantment.fortune, 1 + this.worldObj.rand.nextInt(5));
                     }
                     break;
                 case 6:
-                    ItemStack var16 = this.dropItemRand(Items.diamond_axe, 1);
+                    ItemStack stack6 = this.dropItemRand(Items.diamond_axe, 1);
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var16.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack6.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var16.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
+                        stack6.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
                     }
                     break;
                 case 7:
-                    ItemStack var15 = this.dropItemRand(Items.diamond_hoe, 1);
+                    ItemStack stack7 = this.dropItemRand(Items.diamond_hoe, 1);
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var15.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack7.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var15.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
+                        stack7.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
                     }
                     break;
                 case 8:
-                    ItemStack var14 = this.dropItemRand(Items.diamond_helmet, 1);
+                    ItemStack stack8 = this.dropItemRand(Items.diamond_helmet, 1);
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var14.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
+                        stack8.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var14.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack8.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var14.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack8.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var14.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack8.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var14.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack8.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var14.addEnchantment(Enchantment.respiration, 1 + this.worldObj.rand.nextInt(2));
+                        stack8.addEnchantment(Enchantment.respiration, 1 + this.worldObj.rand.nextInt(2));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var14.addEnchantment(Enchantment.aquaAffinity, 1 + this.worldObj.rand.nextInt(5));
+                        stack8.addEnchantment(Enchantment.aquaAffinity, 1 + this.worldObj.rand.nextInt(5));
                     }
                     break;
                 case 9:
-                    ItemStack var13 = this.dropItemRand(Items.diamond_chestplate, 1);
+                    ItemStack stack9 = this.dropItemRand(Items.diamond_chestplate, 1);
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var13.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
+                        stack9.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var13.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack9.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var13.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack9.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var13.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack9.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var13.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack9.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
                     break;
                 case 10:
-                    ItemStack var12 = this.dropItemRand(Items.diamond_leggings, 1);
+                    ItemStack stack10 = this.dropItemRand(Items.diamond_leggings, 1);
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var12.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
+                        stack10.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var12.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack10.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var12.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack10.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var12.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
+                        stack10.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var12.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack10.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
                     break;
                 case 11:
-                    ItemStack var11 = this.dropItemRand(Items.diamond_boots, 1);
+                    ItemStack stack11 = this.dropItemRand(Items.diamond_boots, 1);
                     if (this.worldObj.rand.nextInt(6) == 1) {
-                        var11.addEnchantment(Enchantment.featherFalling, 5 + this.worldObj.rand.nextInt(5));
+                        stack11.addEnchantment(Enchantment.featherFalling, 5 + this.worldObj.rand.nextInt(5));
                     }
 
                     if (this.worldObj.rand.nextInt(2) == 1) {
-                        var11.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                        stack11.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
                     }
                     break;
                 case 12: {
@@ -377,53 +377,53 @@ public class EmperorScorpion extends EntityMob {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         double ks = 3.0;
         double inair = 0.2;
-        int var2 = 6;
-        if (!super.attackEntityAsMob(par1Entity)) {
+        int n = 6;
+        if (!super.attackEntityAsMob(target)) {
             return false;
         } else {
-            if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
+            if (target != null && target instanceof EntityLivingBase) {
                 if (this.worldObj.difficultySetting == EnumDifficulty.EASY) {
-                    var2 = 8;
+                    n = 8;
                     if (this.worldObj.difficultySetting == EnumDifficulty.NORMAL) {
-                        var2 = 10;
+                        n = 10;
                     } else if (this.worldObj.difficultySetting == EnumDifficulty.HARD) {
-                        var2 = 12;
+                        n = 12;
                     }
                 }
 
                 if (this.worldObj.rand.nextInt(3) == 1) {
-                    ((EntityLivingBase) par1Entity).addPotionEffect(new PotionEffect(Potion.poison.id, var2 * 15, 0));
+                    ((EntityLivingBase) target).addPotionEffect(new PotionEffect(Potion.poison.id, n * 15, 0));
                 }
 
-                float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-                if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+                float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+                if (target.isDead || target instanceof EntityPlayer) {
                     inair *= 2.0;
                 }
 
-                par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+                target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
             }
 
             return true;
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
         if (this.hurt_timer > 0) {
             return false;
         } else {
-            if (!par1DamageSource.getDamageType()
+            if (!source.getDamageType()
                 .equals("cactus")) {
-                ret = super.attackEntityFrom(par1DamageSource, par2);
+                ret = super.attackEntityFrom(source, amount);
                 this.hurt_timer = 30;
-                Entity e = par1DamageSource.getEntity();
+                Entity e = source.getEntity();
                 if (e != null && e instanceof EntityLiving) {
                     this.setAttackTarget((EntityLiving) e);
                     this.setTarget(e);
@@ -497,45 +497,45 @@ public class EmperorScorpion extends EntityMob {
         }
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+            } else if (MyUtils.isIgnoreable(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityEnderman) {
+            } else if (target instanceof EntityEnderman) {
                 return false;
-            } else if (par1EntityLiving instanceof EnderKnight) {
+            } else if (target instanceof EnderKnight) {
                 return false;
-            } else if (par1EntityLiving instanceof EnderReaper) {
+            } else if (target instanceof EnderReaper) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityCreeper) {
+            } else if (target instanceof EntityCreeper) {
                 return false;
-            } else if (par1EntityLiving instanceof Scorpion) {
+            } else if (target instanceof Scorpion) {
                 return false;
-            } else if (par1EntityLiving instanceof EmperorScorpion) {
+            } else if (target instanceof EmperorScorpion) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -549,18 +549,18 @@ public class EmperorScorpion extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(24.0, 6.0, 24.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -572,8 +572,8 @@ public class EmperorScorpion extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public boolean getCanSpawnHere() {

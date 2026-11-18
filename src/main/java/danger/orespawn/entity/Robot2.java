@@ -37,8 +37,8 @@ public class Robot2 extends EntityMob {
     private int just_for_fun = 0;
     private float moveSpeed = 0.3F;
 
-    public Robot2(World par1World) {
-        super(par1World);
+    public Robot2(World world) {
+        super(world);
         this.setSize(3.0F, 6.2F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -152,41 +152,41 @@ public class Robot2 extends EntityMob {
         return Item.getItemFromBlock(Blocks.iron_block);
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         ItemStack is = null;
-        int var5 = 2 + this.worldObj.rand.nextInt(8);
+        int n = 2 + this.worldObj.rand.nextInt(8);
 
-        for (int var4 = 0; var4 < var5; var4++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(Item.getItemFromBlock(Blocks.iron_block), 1);
         }
 
-        var5 = 5 + this.worldObj.rand.nextInt(6);
+        n = 5 + this.worldObj.rand.nextInt(6);
 
-        for (int var8 = 0; var8 < var5; var8++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(Items.iron_ingot, 1);
         }
 
         int i = 5 + this.worldObj.rand.nextInt(10);
 
-        for (int var9 = 0; var9 < i; var9++) {
-            int var3 = this.worldObj.rand.nextInt(15);
-            switch (var3) {
+        for (int i2 = 0; i2 < i; i2++) {
+            int roll = this.worldObj.rand.nextInt(15);
+            switch (roll) {
                 case 0:
                     is = this.dropItemRand(Items.redstone, 1);
                     break;
@@ -220,12 +220,12 @@ public class Robot2 extends EntityMob {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        return super.attackEntityAsMob(par1Entity);
+    public boolean attackEntityAsMob(Entity target) {
+        return super.attackEntityAsMob(target);
     }
 
     protected void destroyBlock(EntityLivingBase e) {
@@ -348,12 +348,12 @@ public class Robot2 extends EntityMob {
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        if (!par1DamageSource.getDamageType()
+        if (!source.getDamageType()
             .equals("cactus")) {
-            ret = super.attackEntityFrom(par1DamageSource, par2);
-            Entity e = par1DamageSource.getEntity();
+            ret = super.attackEntityFrom(source, amount);
+            Entity e = source.getEntity();
             if (e != null && e instanceof EntityLiving) {
                 this.setAttackTarget((EntityLiving) e);
                 this.setTarget(e);
@@ -367,23 +367,23 @@ public class Robot2 extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityMob) {
+            } else if (target instanceof EntityMob) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -397,14 +397,14 @@ public class Robot2 extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(14.0, 3.0, 14.0));
-            Collections.sort(var5, this.TargetSorter);
+            Collections.sort(entities, this.TargetSorter);
 
-            for (Entity var3 : (List<Entity>) var5) {
-                EntityLivingBase var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            for (Entity entity : (List<Entity>) entities) {
+                EntityLivingBase target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -416,8 +416,8 @@ public class Robot2 extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public boolean getCanSpawnHere() {
@@ -444,11 +444,11 @@ public class Robot2 extends EntityMob {
         } else if (this.worldObj.isDaytime()) {
             return false;
         } else {
-            for (int var10 = -1; var10 < 1; var10++) {
+            for (int i = -1; i < 1; i++) {
                 for (int j = -1; j <= 1; j++) {
                     for (int ix = 1; ix < 6; ix++) {
                         Block bid = this.worldObj
-                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + var10);
+                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
                         if (bid != Blocks.air && bid != Blocks.tallgrass) {
                             return false;
                         }

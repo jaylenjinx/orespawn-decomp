@@ -20,8 +20,8 @@ public class StepDown extends Item {
         this.setCreativeTab(CreativeTabs.tabTools);
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer Player, World world, int cposx, int cposy, int cposz,
-        int par7, float par8, float par9, float par10) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer Player, World world, int cposx, int cposy, int cposz,
+        int side, float hitX, float hitY, float hitZ) {
         int deltax = 0;
         int deltaz = 0;
         int length = 33;
@@ -71,7 +71,7 @@ public class StepDown extends Item {
         } else {
             Player.worldObj.playSoundAtEntity(Player, "random.explode", 1.0F, 1.5F);
             if (world.isRemote) {
-                for (int var3x = 0; var3x < 6; var3x++) {
+                for (int i = 0; i < 6; i++) {
                     world.spawnParticle(
                         "largesmoke",
                         x + world.rand.nextFloat() - world.rand.nextFloat(),
@@ -116,7 +116,7 @@ public class StepDown extends Item {
                 }
 
                 if (!Player.capabilities.isCreativeMode) {
-                    par1ItemStack.stackSize--;
+                    stack.stackSize--;
                 }
 
                 return true;

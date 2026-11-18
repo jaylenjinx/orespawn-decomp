@@ -37,8 +37,8 @@ public class Scorpion extends EntityMob {
     private RenderInfo renderdata = new RenderInfo();
     private float moveSpeed = 0.2F;
 
-    public Scorpion(World par1World) {
-        super(par1World);
+    public Scorpion(World world) {
+        super(world);
         this.setSize(0.85F, 0.55F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -154,12 +154,12 @@ public class Scorpion extends EntityMob {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        return super.attackEntityAsMob(par1Entity);
+    public boolean attackEntityAsMob(Entity target) {
+        return super.attackEntityAsMob(target);
     }
 
     protected void updateAITasks() {
@@ -187,49 +187,49 @@ public class Scorpion extends EntityMob {
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        if (!par1DamageSource.getDamageType()
+        if (!source.getDamageType()
             .equals("cactus")) {
-            ret = super.attackEntityFrom(par1DamageSource, par2);
+            ret = super.attackEntityFrom(source, amount);
         }
 
         return ret;
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof Ghost) {
+            } else if (target instanceof Ghost) {
                 return false;
-            } else if (par1EntityLiving instanceof GhostSkelly) {
+            } else if (target instanceof GhostSkelly) {
                 return false;
-            } else if (par1EntityLiving instanceof VelocityRaptor) {
+            } else if (target instanceof VelocityRaptor) {
                 return true;
-            } else if (par1EntityLiving instanceof EntitySpider) {
+            } else if (target instanceof EntitySpider) {
                 return true;
-            } else if (par1EntityLiving instanceof EntityCaveSpider) {
+            } else if (target instanceof EntityCaveSpider) {
                 return true;
-            } else if (par1EntityLiving instanceof Scorpion) {
+            } else if (target instanceof Scorpion) {
                 return false;
-            } else if (par1EntityLiving instanceof EmperorScorpion) {
+            } else if (target instanceof EmperorScorpion) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityCreeper) {
+            } else if (target instanceof EntityCreeper) {
                 return true;
-            } else if (par1EntityLiving instanceof EntityMob) {
+            } else if (target instanceof EntityMob) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -243,18 +243,18 @@ public class Scorpion extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(8.0, 3.0, 8.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -266,8 +266,8 @@ public class Scorpion extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public boolean getCanSpawnHere() {

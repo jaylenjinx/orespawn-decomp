@@ -81,8 +81,8 @@ public class Dragon extends EntityTameable {
     private int ty = 0;
     private int tz = 0;
 
-    public Dragon(World par1World) {
-        super(par1World);
+    public Dragon(World world) {
+        super(world);
         this.setSize(1.5F, 1.25F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -109,15 +109,15 @@ public class Dragon extends EntityTameable {
         this.renderdata = new RenderInfo();
     }
 
-    public Dragon(World par1World, double par2, double par4, double par6) {
-        this(par1World);
-        this.setPosition(par2, par4 + this.yOffset, par6);
+    public Dragon(World world, double x, double y, double z) {
+        this(world);
+        this.setPosition(x, y + this.yOffset, z);
         this.motionX = 0.0;
         this.motionY = 0.0;
         this.motionZ = 0.0;
-        this.prevPosX = par2;
-        this.prevPosY = par4;
-        this.prevPosZ = par6;
+        this.prevPosX = x;
+        this.prevPosY = y;
+        this.prevPosZ = z;
     }
 
     protected void applyEntityAttributes() {
@@ -148,9 +148,9 @@ public class Dragon extends EntityTameable {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     protected boolean canTriggerWalking() {
         return true;
@@ -246,26 +246,26 @@ public class Dragon extends EntityTameable {
             }
         }
 
-        for (int var12 = -dx; var12 <= dx; var12++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dz; j <= dz; j++) {
-                Block bidx = this.worldObj.getBlock(x + var12, y + dy, z + j);
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
                 if (bidx == Blocks.lava || bidx == Blocks.flowing_lava) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y + dy;
                         this.tz = z + j;
                         found++;
                     }
                 }
 
-                bidx = this.worldObj.getBlock(x + var12, y - dy, z + j);
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
                 if (bidx == Blocks.lava || bidx == Blocks.flowing_lava) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y - dy;
                         this.tz = z + j;
                         found++;
@@ -274,26 +274,26 @@ public class Dragon extends EntityTameable {
             }
         }
 
-        for (int var13 = -dx; var13 <= dx; var13++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dy; j <= dy; j++) {
-                Block bidxx = this.worldObj.getBlock(x + var13, y + j, z + dz);
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
                 if (bidxx == Blocks.lava || bidxx == Blocks.flowing_lava) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z + dz;
                         found++;
                     }
                 }
 
-                bidxx = this.worldObj.getBlock(x + var13, y + j, z - dz);
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
                 if (bidxx == Blocks.lava || bidxx == Blocks.flowing_lava) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z - dz;
                         found++;
@@ -345,75 +345,75 @@ public class Dragon extends EntityTameable {
         return Items.beef;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(5) - OreSpawnMain.OreSpawnRand.nextInt(5),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         int i = 1 + this.worldObj.rand.nextInt(6);
 
-        for (int var4 = 0; var4 < i; var4++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(Items.beef, 1);
         }
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         double ks = 1.75;
         double inair = 0.1;
         float iskraken = 1.0F;
-        if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
-            if (par1Entity instanceof Kraken) {
+        if (target != null && target instanceof EntityLivingBase) {
+            if (target instanceof Kraken) {
                 iskraken = 2.0F;
             }
 
-            par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), iskraken * 35.0F);
-            float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-            if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+            target.attackEntityFrom(DamageSource.causeMobDamage(this), iskraken * 35.0F);
+            float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+            if (target.isDead || target instanceof EntityPlayer) {
                 inair *= 2.0;
             }
 
-            par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+            target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
         }
 
         return true;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
         Entity e = null;
         if (this.hurt_timer > 0) {
             return false;
-        } else if (par1DamageSource.getDamageType()
+        } else if (source.getDamageType()
             .equals("cactus")) {
                 return ret;
-            } else if (par1DamageSource.getDamageType()
+            } else if (source.getDamageType()
                 .equals("inFire")) {
                     return ret;
-                } else if (par1DamageSource.getDamageType()
+                } else if (source.getDamageType()
                     .equals("onFire")) {
                         return ret;
-                    } else if (par1DamageSource.getDamageType()
+                    } else if (source.getDamageType()
                         .equals("lava")) {
                             return ret;
-                        } else if (par1DamageSource.getDamageType()
+                        } else if (source.getDamageType()
                             .equals("inWall")) {
                                 return ret;
                             } else {
                                 this.setSitting(false);
                                 this.setActivity(1);
-                                e = par1DamageSource.getEntity();
+                                e = source.getEntity();
                                 if (e != null && e instanceof BetterFireball && this.dragontype == 0) {
                                     e.setDead();
                                     return ret;
@@ -431,7 +431,7 @@ public class Dragon extends EntityTameable {
                                 } else if (e != null && e instanceof Spyro) {
                                     return false;
                                 } else {
-                                    ret = super.attackEntityFrom(par1DamageSource, par2);
+                                    ret = super.attackEntityFrom(source, amount);
                                     this.hurt_timer = 20;
                                     if (e != null && e instanceof EntityLivingBase) {
                                         if (this.isTamed() && e instanceof EntityPlayer) {
@@ -573,38 +573,38 @@ public class Dragon extends EntityTameable {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof LurkingTerror) {
+            } else if (target instanceof LurkingTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof EnderReaper) {
+            } else if (target instanceof EnderReaper) {
                 return false;
-            } else if (par1EntityLiving instanceof TerribleTerror) {
+            } else if (target instanceof TerribleTerror) {
                 return false;
-            } else if (par1EntityLiving instanceof LeafMonster) {
+            } else if (target instanceof LeafMonster) {
                 return false;
-            } else if (par1EntityLiving instanceof CreepingHorror) {
+            } else if (target instanceof CreepingHorror) {
                 return false;
-            } else if (par1EntityLiving instanceof Triffid) {
+            } else if (target instanceof Triffid) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityMob) {
+            } else if (target instanceof EntityMob) {
                 return true;
-            } else if (par1EntityLiving instanceof Mothra) {
+            } else if (target instanceof Mothra) {
                 return true;
-            } else if (par1EntityLiving instanceof Kraken) {
+            } else if (target instanceof Kraken) {
                 return true;
             } else {
-                return par1EntityLiving instanceof EntityPlayer ? false : false;
+                return target instanceof EntityPlayer ? false : false;
             }
     }
 
@@ -612,18 +612,18 @@ public class Dragon extends EntityTameable {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(20.0, 20.0, 20.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -658,20 +658,21 @@ public class Dragon extends EntityTameable {
     }
 
     @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
-        super.setPositionAndRotation2(par1, par3, par5, par7, par8, par9);
-        this.boatPosRotationIncrements = par9;
-        this.boatX = par1;
-        this.boatY = par3;
-        this.boatZ = par5;
-        this.boatYaw = par7;
-        this.boatPitch = par8;
-        this.boatYawHead = par7;
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch,
+        int posRotationIncrements) {
+        super.setPositionAndRotation2(x, y, z, yaw, pitch, posRotationIncrements);
+        this.boatPosRotationIncrements = posRotationIncrements;
+        this.boatX = x;
+        this.boatY = y;
+        this.boatZ = z;
+        this.boatYaw = yaw;
+        this.boatPitch = pitch;
+        this.boatYawHead = yaw;
     }
 
     @SideOnly(Side.CLIENT)
-    public void setVelocity(double par1, double par3, double par5) {
-        super.setVelocity(par1, par3, par5);
+    public void setVelocity(double vx, double vy, double vz) {
+        super.setVelocity(vx, vy, vz);
     }
 
     public void onUpdate() {
@@ -719,9 +720,9 @@ public class Dragon extends EntityTameable {
         int has_owner = 0;
         EntityLivingBase e = null;
         double speed_factor = 0.5;
-        double var1 = 0.0;
-        double var3 = 0.0;
-        double var5 = 0.0;
+        double dx2 = 0.0;
+        double dx3 = 0.0;
+        double dy = 0.0;
         double yoff = 1.25;
         double xzoff = 2.25;
         double gh = 1.25;
@@ -864,11 +865,11 @@ public class Dragon extends EntityTameable {
                                             this.posZ + xzoff * Math.cos(Math.toRadians(this.rotationYaw)),
                                             this.rotationYawHead,
                                             this.rotationPitch);
-                                        var3 = e.posX - wb.posX;
-                                        var5 = e.posY + 0.25 - wb.posY;
-                                        double var7 = e.posZ - wb.posZ;
-                                        float var9 = MathHelper.sqrt_double(var3 * var3 + var7 * var7) * 0.2F;
-                                        wb.setThrowableHeading(var3, var5 + var9, var7, 1.4F, 5.0F);
+                                        dx3 = e.posX - wb.posX;
+                                        dy = e.posY + 0.25 - wb.posY;
+                                        double dz = e.posZ - wb.posZ;
+                                        float f = MathHelper.sqrt_double(dx3 * dx3 + dz * dz) * 0.2F;
+                                        wb.setThrowableHeading(dx3, dy + f, dz, 1.4F, 5.0F);
                                         this.worldObj.playSoundAtEntity(
                                             this,
                                             "random.bow",
@@ -890,11 +891,11 @@ public class Dragon extends EntityTameable {
                                             this.rotationPitch);
                                         ib.setSpecial();
                                         ib.setIceBall();
-                                        var3 = e.posX - ib.posX;
-                                        var5 = e.posY + 0.25 - ib.posY;
-                                        double var7 = e.posZ - ib.posZ;
-                                        float var9 = MathHelper.sqrt_double(var3 * var3 + var7 * var7) * 0.2F;
-                                        ib.setThrowableHeading(var3, var5 + var9, var7, 1.4F, 5.0F);
+                                        dx3 = e.posX - ib.posX;
+                                        dy = e.posY + 0.25 - ib.posY;
+                                        double dz = e.posZ - ib.posZ;
+                                        float f = MathHelper.sqrt_double(dx3 * dx3 + dz * dz) * 0.2F;
+                                        ib.setThrowableHeading(dx3, dy + f, dz, 1.4F, 5.0F);
                                         this.worldObj.playSoundAtEntity(
                                             this,
                                             "random.fuse",
@@ -982,9 +983,9 @@ public class Dragon extends EntityTameable {
                 this.motionY += obstruction_factor * 0.05;
                 this.posY += obstruction_factor * 0.05;
                 speed_factor = 0.5;
-                var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-                var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-                var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+                dx2 = this.currentFlightTarget.posX + 0.5 - this.posX;
+                dx3 = this.currentFlightTarget.posY + 0.1 - this.posY;
+                dy = this.currentFlightTarget.posZ + 0.5 - this.posZ;
                 if (this.owner_flying != 0) {
                     speed_factor = 1.75;
                     if (this.isTamed() && this.getOwner() != null) {
@@ -995,13 +996,13 @@ public class Dragon extends EntityTameable {
                     }
                 }
 
-                this.motionX = this.motionX + (Math.signum(var1) - this.motionX) * 0.15 * speed_factor;
-                this.motionY = this.motionY + (Math.signum(var3) - this.motionY) * 0.21 * speed_factor;
-                this.motionZ = this.motionZ + (Math.signum(var5) - this.motionZ) * 0.15 * speed_factor;
-                float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-                float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+                this.motionX = this.motionX + (Math.signum(dx2) - this.motionX) * 0.15 * speed_factor;
+                this.motionY = this.motionY + (Math.signum(dx3) - this.motionY) * 0.21 * speed_factor;
+                this.motionZ = this.motionZ + (Math.signum(dy) - this.motionZ) * 0.15 * speed_factor;
+                float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+                float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
                 this.moveForward = (float) (0.75 * speed_factor);
-                this.rotationYaw += var8 / 4.0F;
+                this.rotationYaw += f2 / 4.0F;
                 this.moveEntity(this.motionX, this.motionY, this.motionZ);
             }
         }
@@ -1086,11 +1087,11 @@ public class Dragon extends EntityTameable {
                         }
 
                         obstruction_factor = 0.0;
-                        int var101 = 3;
-                        var101 += (int) (velocity * 7.0);
+                        int n = 3;
+                        n += (int) (velocity * 7.0);
 
-                        for (int k = 1; k < var101; k++) {
-                            for (int i = 1; i < var101 * 2; i++) {
+                        for (int k = 1; k < n; k++) {
+                            for (int i = 1; i < n * 2; i++) {
                                 double dx = i * Math.cos(Math.toRadians(this.rotationYaw + 90.0F));
                                 double dz = i * Math.sin(Math.toRadians(this.rotationYaw + 90.0F));
                                 bid = this.worldObj
@@ -1300,61 +1301,61 @@ public class Dragon extends EntityTameable {
                                 if (pp.moveStrafing > 0.001F) {
                                     double cx = this.posX - xzoff * Math.sin(Math.toRadians(this.rotationYaw));
                                     double cz = this.posZ + xzoff * Math.cos(Math.toRadians(this.rotationYaw));
-                                    WaterBall var2 = new WaterBall(this.worldObj, cx, this.posY + yoff, cz);
-                                    var2.setLocationAndAngles(
+                                    WaterBall waterBall = new WaterBall(this.worldObj, cx, this.posY + yoff, cz);
+                                    waterBall.setLocationAndAngles(
                                         cx,
                                         this.posY + yoff,
                                         cz,
                                         pp.rotationYaw + 90.0F,
                                         pp.rotationPitch);
-                                    double var3 = Math.cos(Math.toRadians(pp.rotationYawHead + 90.0F));
-                                    double var5 = -Math.sin(Math.toRadians(pp.rotationPitch));
-                                    double var77 = Math.sin(Math.toRadians(pp.rotationYawHead + 90.0F));
-                                    float var9 = MathHelper.sqrt_double(var3 * var3 + var77 * var77) * 0.2F;
-                                    var2.setThrowableHeading(var3, var5 + var9, var77, 1.4F, 5.0F);
-                                    var2.posX = var2.posX - this.motionX * 7.0;
-                                    var2.posY = var2.posY - this.motionY * 7.0;
-                                    var2.posZ = var2.posZ - this.motionZ * 7.0;
+                                    double vx = Math.cos(Math.toRadians(pp.rotationYawHead + 90.0F));
+                                    double d = -Math.sin(Math.toRadians(pp.rotationPitch));
+                                    double vz = Math.sin(Math.toRadians(pp.rotationYawHead + 90.0F));
+                                    float f = MathHelper.sqrt_double(vx * vx + vz * vz) * 0.2F;
+                                    waterBall.setThrowableHeading(vx, d + f, vz, 1.4F, 5.0F);
+                                    waterBall.posX = waterBall.posX - this.motionX * 7.0;
+                                    waterBall.posY = waterBall.posY - this.motionY * 7.0;
+                                    waterBall.posZ = waterBall.posZ - this.motionZ * 7.0;
                                     this.worldObj.playSoundAtEntity(
                                         this,
                                         "random.bow",
                                         0.75F,
                                         1.0F / (this.getRNG()
                                             .nextFloat() * 0.4F + 0.8F));
-                                    this.worldObj.spawnEntityInWorld(var2);
+                                    this.worldObj.spawnEntityInWorld(waterBall);
                                     this.fireballticker = 5;
                                 }
 
                                 if (pp.moveStrafing < -0.001F) {
                                     double cx = this.posX - xzoff * Math.sin(Math.toRadians(this.rotationYaw));
                                     double cz = this.posZ + xzoff * Math.cos(Math.toRadians(this.rotationYaw));
-                                    IceBall var2 = new IceBall(this.worldObj, cx, this.posY + yoff, cz);
-                                    var2.setLocationAndAngles(
+                                    IceBall iceBall = new IceBall(this.worldObj, cx, this.posY + yoff, cz);
+                                    iceBall.setLocationAndAngles(
                                         cx,
                                         this.posY + yoff,
                                         cz,
                                         pp.rotationYaw + 90.0F,
                                         pp.rotationPitch);
-                                    var2.setSpecial();
-                                    var2.setIceBall();
-                                    double var3 = Math.cos(Math.toRadians(pp.rotationYaw + 90.0F));
-                                    double var5 = -Math.sin(Math.toRadians(pp.rotationPitch));
-                                    double var77 = Math.sin(Math.toRadians(pp.rotationYaw + 90.0F));
-                                    float var9 = MathHelper.sqrt_double(var3 * var3 + var77 * var77) * 0.2F;
-                                    var2.setThrowableHeading(var3, var5 + var9, var77, 1.4F, 5.0F);
-                                    var2.posX = var2.posX - this.motionX * 7.0;
-                                    var2.posY = var2.posY - this.motionY * 7.0;
-                                    var2.posZ = var2.posZ - this.motionZ * 7.0;
-                                    var2.motionX *= 2.0;
-                                    var2.motionY *= 2.0;
-                                    var2.motionZ *= 2.0;
+                                    iceBall.setSpecial();
+                                    iceBall.setIceBall();
+                                    double vx = Math.cos(Math.toRadians(pp.rotationYaw + 90.0F));
+                                    double d = -Math.sin(Math.toRadians(pp.rotationPitch));
+                                    double vz = Math.sin(Math.toRadians(pp.rotationYaw + 90.0F));
+                                    float f = MathHelper.sqrt_double(vx * vx + vz * vz) * 0.2F;
+                                    iceBall.setThrowableHeading(vx, d + f, vz, 1.4F, 5.0F);
+                                    iceBall.posX = iceBall.posX - this.motionX * 7.0;
+                                    iceBall.posY = iceBall.posY - this.motionY * 7.0;
+                                    iceBall.posZ = iceBall.posZ - this.motionZ * 7.0;
+                                    iceBall.motionX *= 2.0;
+                                    iceBall.motionY *= 2.0;
+                                    iceBall.motionZ *= 2.0;
                                     this.worldObj.playSoundAtEntity(
                                         this,
                                         "fireworks.launch",
                                         0.75F,
                                         1.0F / (this.getRNG()
                                             .nextFloat() * 0.4F + 0.8F));
-                                    this.worldObj.spawnEntityInWorld(var2);
+                                    this.worldObj.spawnEntityInWorld(iceBall);
                                     this.fireballticker = 15;
                                 }
                             }
@@ -1400,9 +1401,9 @@ public class Dragon extends EntityTameable {
         }
     }
 
-    protected void playTameEffect(boolean par1) {
+    protected void playTameEffect(boolean success) {
         String s = "heart";
-        if (!par1) {
+        if (!success) {
             s = "smoke";
         }
 
@@ -1421,21 +1422,21 @@ public class Dragon extends EntityTameable {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
         if (!this.isTamed()) {
-            if (var2 != null && var2.getItem() == Items.beef && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+            if (currentItem != null && currentItem.getItem() == Items.beef
+                && player.getDistanceSqToEntity(this) < 25.0) {
                 if (!this.worldObj.isRemote) {
                     if (this.worldObj.rand.nextInt(5) == 1) {
                         this.setTamed(true);
                         this.func_152115_b(
-                            par1EntityPlayer.getUniqueID()
+                            player.getUniqueID()
                                 .toString());
                         this.playTameEffect(true);
                         this.worldObj.setEntityState(this, (byte) 7);
@@ -1446,24 +1447,23 @@ public class Dragon extends EntityTameable {
                     }
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
             }
         } else {
-            if (!this.func_152114_e(par1EntityPlayer)) {
+            if (!this.func_152114_e(player)) {
                 return false;
             }
 
-            if (var2 == null && par1EntityPlayer.getDistanceSqToEntity(this) < 16.0) {
+            if (currentItem == null && player.getDistanceSqToEntity(this) < 16.0) {
                 if (!this.worldObj.isRemote) {
-                    par1EntityPlayer.mountEntity(this);
+                    player.mountEntity(this);
                     this.setActivity(1);
                     this.setSitting(false);
                 }
@@ -1471,7 +1471,8 @@ public class Dragon extends EntityTameable {
                 return true;
             }
 
-            if (var2 != null && var2.getItem() == Items.beef && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+            if (currentItem != null && currentItem.getItem() == Items.beef
+                && player.getDistanceSqToEntity(this) < 25.0) {
                 if (this.worldObj.isRemote) {
                     this.playTameEffect(true);
                     this.worldObj.setEntityState(this, (byte) 7);
@@ -1481,19 +1482,18 @@ public class Dragon extends EntityTameable {
                     this.heal(this.mygetMaxHealth() - this.getHealth());
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
             }
 
-            if (var2 != null && var2.getItem() == Item.getItemFromBlock(Blocks.deadbush)
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+            if (currentItem != null && currentItem.getItem() == Item.getItemFromBlock(Blocks.deadbush)
+                && player.getDistanceSqToEntity(this) < 25.0) {
                 if (!this.worldObj.isRemote) {
                     this.setTamed(false);
                     this.func_152115_b("");
@@ -1501,83 +1501,79 @@ public class Dragon extends EntityTameable {
                     this.worldObj.setEntityState(this, (byte) 6);
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
             }
 
-            if (var2 != null && var2.getItem() == Item.getItemFromBlock(Blocks.ice)
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0
-                && this.func_152114_e(par1EntityPlayer)) {
+            if (currentItem != null && currentItem.getItem() == Item.getItemFromBlock(Blocks.ice)
+                && player.getDistanceSqToEntity(this) < 25.0
+                && this.func_152114_e(player)) {
                 if (!this.worldObj.isRemote) {
                     this.playTameEffect(true);
                     this.worldObj.setEntityState(this, (byte) 6);
                     this.setDragonFire(0);
-                    par1EntityPlayer.addChatComponentMessage(new ChatComponentText("Dragon fireballs extinguished."));
+                    player.addChatComponentMessage(new ChatComponentText("Dragon fireballs extinguished."));
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
             }
 
-            if (var2 != null && var2.getItem() == Items.flint_and_steel
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0
-                && this.func_152114_e(par1EntityPlayer)) {
+            if (currentItem != null && currentItem.getItem() == Items.flint_and_steel
+                && player.getDistanceSqToEntity(this) < 25.0
+                && this.func_152114_e(player)) {
                 if (!this.worldObj.isRemote) {
                     this.playTameEffect(true);
                     this.worldObj.setEntityState(this, (byte) 6);
                     this.setDragonFire(1);
-                    par1EntityPlayer.addChatComponentMessage(new ChatComponentText("Dragon fireballs lit!"));
+                    player.addChatComponentMessage(new ChatComponentText("Dragon fireballs lit!"));
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
             }
 
-            if (var2 != null && var2.getItem() == Items.gunpowder
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0
-                && this.func_152114_e(par1EntityPlayer)
+            if (currentItem != null && currentItem.getItem() == Items.gunpowder
+                && player.getDistanceSqToEntity(this) < 25.0
+                && this.func_152114_e(player)
                 && this.getDragonFire() > 0) {
                 if (!this.worldObj.isRemote) {
                     this.playTameEffect(true);
                     this.worldObj.setEntityState(this, (byte) 6);
                     this.setDragonFire(2);
-                    par1EntityPlayer.addChatComponentMessage(new ChatComponentText("Dragon fireballs supercharged!"));
+                    player.addChatComponentMessage(new ChatComponentText("Dragon fireballs supercharged!"));
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
             }
 
-            if (var2 != null && var2.getItem() == Items.snowball
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+            if (currentItem != null && currentItem.getItem() == Items.snowball
+                && player.getDistanceSqToEntity(this) < 25.0) {
                 if (this.worldObj.isRemote) {
                     this.playTameEffect(true);
                     this.worldObj.setEntityState(this, (byte) 7);
@@ -1585,18 +1581,18 @@ public class Dragon extends EntityTameable {
 
                 this.dragontype = 1;
                 this.setDragonType(this.dragontype);
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
             }
 
-            if (var2 != null && var2.getItem() == Items.coal && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+            if (currentItem != null && currentItem.getItem() == Items.coal
+                && player.getDistanceSqToEntity(this) < 25.0) {
                 if (this.worldObj.isRemote) {
                     this.playTameEffect(true);
                     this.worldObj.setEntityState(this, (byte) 7);
@@ -1604,20 +1600,19 @@ public class Dragon extends EntityTameable {
 
                 this.dragontype = 0;
                 this.setDragonType(this.dragontype);
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
             }
 
-            if (var2 != null && var2.getItem() == Items.diamond
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0
-                && this.func_152114_e(par1EntityPlayer)
+            if (currentItem != null && currentItem.getItem() == Items.diamond
+                && player.getDistanceSqToEntity(this) < 25.0
+                && this.func_152114_e(player)
                 && !this.worldObj.isRemote) {
                 Entity ent = null;
                 Spyro d = null;
@@ -1627,41 +1622,39 @@ public class Dragon extends EntityTameable {
                     if (this.isTamed()) {
                         d.setTamed(true);
                         d.func_152115_b(
-                            par1EntityPlayer.getUniqueID()
+                            player.getUniqueID()
                                 .toString());
                     }
 
                     this.setDead();
                 }
 
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
             }
 
-            if (this.isTamed() && var2 != null
-                && var2.getItem() == Items.name_tag
-                && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0
-                && this.func_152114_e(par1EntityPlayer)) {
-                this.setCustomNameTag(var2.getDisplayName());
-                if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                    var2.stackSize--;
-                    if (var2.stackSize <= 0) {
-                        par1EntityPlayer.inventory
-                            .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+            if (this.isTamed() && currentItem != null
+                && currentItem.getItem() == Items.name_tag
+                && player.getDistanceSqToEntity(this) < 25.0
+                && this.func_152114_e(player)) {
+                this.setCustomNameTag(currentItem.getDisplayName());
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                     }
                 }
 
                 return true;
             }
 
-            if (var2 != null && par1EntityPlayer.getDistanceSqToEntity(this) < 25.0) {
+            if (currentItem != null && player.getDistanceSqToEntity(this) < 25.0) {
                 if (!this.isSitting()) {
                     this.setSitting(true);
                     this.setActivity(0);
@@ -1677,17 +1670,17 @@ public class Dragon extends EntityTameable {
         return false;
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.beef;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.beef;
     }
 
     public int getAttacking() {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public void setAttacking(int par1) {
+    public void setAttacking(int attacking) {
         if (this.worldObj == null || !this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(20, (byte) par1);
+            this.dataWatcher.updateObject(20, (byte) attacking);
         }
     }
 
@@ -1695,9 +1688,9 @@ public class Dragon extends EntityTameable {
         return this.dataWatcher.getWatchableObjectByte(21);
     }
 
-    public void setActivity(int par1) {
+    public void setActivity(int activity) {
         if (this.worldObj == null || !this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(21, (byte) par1);
+            this.dataWatcher.updateObject(21, (byte) activity);
         }
     }
 
@@ -1705,26 +1698,26 @@ public class Dragon extends EntityTameable {
         return this.dataWatcher.getWatchableObjectInt(24);
     }
 
-    public void setDragonFire(int par1) {
+    public void setDragonFire(int n) {
         if (!this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(24, par1);
+            this.dataWatcher.updateObject(24, n);
         }
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
-    public void setDragonType(int par1) {
-        this.dataWatcher.updateObject(22, par1);
+    public void setDragonType(int n) {
+        this.dataWatcher.updateObject(22, n);
     }
 
     public int getDragonType() {
@@ -1743,20 +1736,20 @@ public class Dragon extends EntityTameable {
         }
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("DragonAttacking", this.getAttacking());
-        par1NBTTagCompound.setInteger("DragonActivity", this.getActivity());
-        par1NBTTagCompound.setInteger("DragonFire", this.getDragonFire());
-        par1NBTTagCompound.setInteger("DragonType", this.getDragonType());
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("DragonAttacking", this.getAttacking());
+        tag.setInteger("DragonActivity", this.getActivity());
+        tag.setInteger("DragonFire", this.getDragonFire());
+        tag.setInteger("DragonType", this.getDragonType());
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.setAttacking(par1NBTTagCompound.getInteger("DragonAttacking"));
-        this.setActivity(par1NBTTagCompound.getInteger("DragonActivity"));
-        this.setDragonFire(par1NBTTagCompound.getInteger("DragonFire"));
-        this.dragontype = par1NBTTagCompound.getInteger("DragonType");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.setAttacking(tag.getInteger("DragonAttacking"));
+        this.setActivity(tag.getInteger("DragonActivity"));
+        this.setDragonFire(tag.getInteger("DragonFire"));
+        this.dragontype = tag.getInteger("DragonType");
         this.setDragonType(this.dragontype);
     }
 }

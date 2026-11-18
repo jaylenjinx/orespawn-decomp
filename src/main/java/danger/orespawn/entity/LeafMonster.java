@@ -29,8 +29,8 @@ public class LeafMonster extends EntityMob {
     private GenericTargetSorter TargetSorter = null;
     private float moveSpeed = 0.25F;
 
-    public LeafMonster(World par1World) {
-        super(par1World);
+    public LeafMonster(World world) {
+        super(world);
         this.setSize(1.0F, 2.5F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -61,8 +61,8 @@ public class LeafMonster extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public int mygetMaxHealth() {
@@ -77,8 +77,8 @@ public class LeafMonster extends EntityMob {
         return true;
     }
 
-    protected void fall(float par1) {
-        float i = MathHelper.ceiling_float_int(par1 - 3.0F);
+    protected void fall(float distance) {
+        float i = MathHelper.ceiling_float_int(distance - 3.0F);
         if (i > 0.0F) {
             if (i > 2.0F) {
                 this.playSound("damage.fallbig", 1.0F, 1.0F);
@@ -179,25 +179,25 @@ public class LeafMonster extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityAnt) {
+            } else if (target instanceof EntityAnt) {
                 return true;
-            } else if (par1EntityLiving instanceof EntityButterfly) {
+            } else if (target instanceof EntityButterfly) {
                 return true;
-            } else if (par1EntityLiving instanceof EntityLunaMoth) {
+            } else if (target instanceof EntityLunaMoth) {
                 return true;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (!p.capabilities.isCreativeMode) {
                         return true;
                     }
@@ -211,18 +211,18 @@ public class LeafMonster extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(4.0, 6.0, 4.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -267,8 +267,9 @@ public class LeafMonster extends EntityMob {
     }
 
     private int findBuddies() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(LeafMonster.class, this.boundingBox.expand(20.0, 10.0, 20.0));
-        return var5.size();
+        List entities = this.worldObj
+            .getEntitiesWithinAABB(LeafMonster.class, this.boundingBox.expand(20.0, 10.0, 20.0));
+        return entities.size();
     }
 
     protected boolean canDespawn() {

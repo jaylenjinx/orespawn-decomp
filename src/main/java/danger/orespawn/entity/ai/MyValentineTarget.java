@@ -20,27 +20,26 @@ public class MyValentineTarget extends MyEntityAITarget {
     private final IEntitySelector targetEntitySelector;
     private MyValentineTargetSorter theNearestAttackableTargetSorter;
 
-    public MyValentineTarget(EntityLiving par1EntityLiving, Class par2Class, float par3, int par4, boolean par5) {
-        this(par1EntityLiving, par2Class, par3, par4, par5, false);
-        this.Me = par1EntityLiving;
+    public MyValentineTarget(EntityLiving living, Class clazz, float f, int n, boolean flag) {
+        this(living, clazz, f, n, flag, false);
+        this.Me = living;
     }
 
-    public MyValentineTarget(EntityLiving par1EntityLiving, Class par2Class, float par3, int par4, boolean par5,
-        boolean par6) {
-        this(par1EntityLiving, par2Class, par3, par4, par5, par6, (IEntitySelector) null);
-        this.Me = par1EntityLiving;
+    public MyValentineTarget(EntityLiving living, Class clazz, float f, int n, boolean flag, boolean flag2) {
+        this(living, clazz, f, n, flag, flag2, (IEntitySelector) null);
+        this.Me = living;
     }
 
-    public MyValentineTarget(EntityLiving par1, Class par2, float par3, int par4, boolean par5, boolean par6,
-        IEntitySelector par7IEntitySelector) {
-        super(par1, par3, par5, par6);
-        this.targetClass = par2;
-        this.targetDistance = par3;
-        this.targetChance = par4;
-        this.theNearestAttackableTargetSorter = new MyValentineTargetSorter(this, par1);
-        this.targetEntitySelector = par7IEntitySelector;
+    public MyValentineTarget(EntityLiving living, Class targetClass2, float targetDistance, int targetChance2,
+        boolean flag, boolean flag2, IEntitySelector iEntitySelector) {
+        super(living, targetDistance, flag, flag2);
+        this.targetClass = targetClass2;
+        this.targetDistance = targetDistance;
+        this.targetChance = targetChance2;
+        this.theNearestAttackableTargetSorter = new MyValentineTargetSorter(this, living);
+        this.targetEntitySelector = iEntitySelector;
         this.setMutexBits(1);
-        this.Me = par1;
+        this.Me = living;
     }
 
     public boolean shouldExecute() {
@@ -58,17 +57,17 @@ public class MyValentineTarget extends MyEntityAITarget {
                 .nextInt(100) > this.targetChance) {
                 return false;
             } else {
-                List var5 = this.taskOwner.worldObj.selectEntitiesWithinAABB(
+                List list = this.taskOwner.worldObj.selectEntitiesWithinAABB(
                     this.targetClass,
                     this.taskOwner.boundingBox.expand(this.targetDistance, 4.0, this.targetDistance),
                     this.targetEntitySelector);
-                Collections.sort(var5, this.theNearestAttackableTargetSorter);
+                Collections.sort(list, this.theNearestAttackableTargetSorter);
 
-                for (Entity var3 : (List<Entity>) var5) {
-                    if (var3 instanceof EntityLivingBase) {
-                        EntityLivingBase var4 = (EntityLivingBase) var3;
-                        if (this.isSuitableTarget(var4, false)) {
-                            this.targetEntity = var4;
+                for (Entity entity : (List<Entity>) list) {
+                    if (entity instanceof EntityLivingBase) {
+                        EntityLivingBase targetEntity2 = (EntityLivingBase) entity;
+                        if (this.isSuitableTarget(targetEntity2, false)) {
+                            this.targetEntity = targetEntity2;
                             return true;
                         }
                     }

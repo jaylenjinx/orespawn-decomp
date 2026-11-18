@@ -4,8 +4,8 @@ import net.minecraft.world.World;
 
 public class RubyBird extends Cockateil {
 
-    public RubyBird(World par1World) {
-        super(par1World);
+    public RubyBird(World world) {
+        super(world);
     }
 
     @Override

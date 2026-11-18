@@ -17,31 +17,30 @@ public class RenderBasilisk extends RenderLiving {
     private float scale = 1.0F;
     private static final ResourceLocation texture = new ResourceLocation("orespawn", "basilisk.png");
 
-    public RenderBasilisk(ModelBasilisk par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderBasilisk(ModelBasilisk modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelBasilisk) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderBasilisk(Basilisk par1EntityBasilisk, double par2, double par4, double par6, float par8,
-        float par9) {
-        super.doRender(par1EntityBasilisk, par2, par4, par6, par8, par9);
+    public void renderBasilisk(Basilisk entityBasilisk, double x, double y, double z, float yaw, float partialTicks) {
+        super.doRender(entityBasilisk, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderBasilisk((Basilisk) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderBasilisk((Basilisk) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderBasilisk((Basilisk) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderBasilisk((Basilisk) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(Basilisk par1Entity, float par2) {
+    protected void preRenderScale(Basilisk entity, float f) {
         GL11.glScalef(this.scale, this.scale, this.scale);
     }
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
-        this.preRenderScale((Basilisk) par1EntityLiving, par2);
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((Basilisk) entity, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

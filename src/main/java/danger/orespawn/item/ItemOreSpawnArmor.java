@@ -23,63 +23,63 @@ public class ItemOreSpawnArmor extends ItemArmor {
     private int armor_type = 0;
     private int original_d = 0;
 
-    public ItemOreSpawnArmor(int par1, ArmorMaterial par2EnumArmorMaterial, int par3, int par4) {
-        super(par2EnumArmorMaterial, par3, par4);
+    public ItemOreSpawnArmor(int n, ArmorMaterial enumArmorMaterial, int n2, int n3) {
+        super(enumArmorMaterial, n2, n3);
         this.setCreativeTab(CreativeTabs.tabCombat);
         this.armor_material = 0;
-        if (par2EnumArmorMaterial == OreSpawnMain.armorLAVAEEL) {
+        if (enumArmorMaterial == OreSpawnMain.armorLAVAEEL) {
             this.armor_material = 1;
         }
 
-        if (par2EnumArmorMaterial == OreSpawnMain.armorMOTHSCALE) {
+        if (enumArmorMaterial == OreSpawnMain.armorMOTHSCALE) {
             this.armor_material = 2;
         }
 
-        if (par2EnumArmorMaterial == OreSpawnMain.armorEMERALD) {
+        if (enumArmorMaterial == OreSpawnMain.armorEMERALD) {
             this.armor_material = 3;
         }
 
-        if (par2EnumArmorMaterial == OreSpawnMain.armorEXPERIENCE) {
+        if (enumArmorMaterial == OreSpawnMain.armorEXPERIENCE) {
             this.armor_material = 4;
         }
 
-        if (par2EnumArmorMaterial == OreSpawnMain.armorRUBY) {
+        if (enumArmorMaterial == OreSpawnMain.armorRUBY) {
             this.armor_material = 5;
         }
 
-        if (par2EnumArmorMaterial == OreSpawnMain.armorAMETHYST) {
+        if (enumArmorMaterial == OreSpawnMain.armorAMETHYST) {
             this.armor_material = 6;
         }
 
-        if (par2EnumArmorMaterial == OreSpawnMain.armorPINK) {
+        if (enumArmorMaterial == OreSpawnMain.armorPINK) {
             this.armor_material = 7;
         }
 
-        if (par2EnumArmorMaterial == OreSpawnMain.armorTIGERSEYE) {
+        if (enumArmorMaterial == OreSpawnMain.armorTIGERSEYE) {
             this.armor_material = 8;
         }
 
-        if (par2EnumArmorMaterial == OreSpawnMain.armorPEACOCK) {
+        if (enumArmorMaterial == OreSpawnMain.armorPEACOCK) {
             this.armor_material = 9;
         }
 
-        if (par2EnumArmorMaterial == OreSpawnMain.armorMOBZILLA) {
+        if (enumArmorMaterial == OreSpawnMain.armorMOBZILLA) {
             this.armor_material = 10;
         }
 
-        if (par2EnumArmorMaterial == OreSpawnMain.armorROYAL) {
+        if (enumArmorMaterial == OreSpawnMain.armorROYAL) {
             this.armor_material = 11;
         }
 
-        if (par2EnumArmorMaterial == OreSpawnMain.armorLAPIS) {
+        if (enumArmorMaterial == OreSpawnMain.armorLAPIS) {
             this.armor_material = 12;
         }
 
-        if (par2EnumArmorMaterial == OreSpawnMain.armorQUEEN) {
+        if (enumArmorMaterial == OreSpawnMain.armorQUEEN) {
             this.armor_material = 13;
         }
 
-        this.armor_type = par4;
+        this.armor_type = n3;
         this.original_d = this.damageReduceAmount;
     }
 
@@ -91,7 +91,7 @@ public class ItemOreSpawnArmor extends ItemArmor {
         return this.armor_type;
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
         ArmorStats a = null;
         if (this.armor_material == 0) {
             a = OreSpawnMain.Ultimate_armorstats;
@@ -151,42 +151,42 @@ public class ItemOreSpawnArmor extends ItemArmor {
 
         if (a != null) {
             if (a.e_protection != 0) {
-                par1ItemStack.addEnchantment(Enchantment.protection, a.e_protection);
+                stack.addEnchantment(Enchantment.protection, a.e_protection);
             }
 
             if (a.e_fireprotection != 0) {
-                par1ItemStack.addEnchantment(Enchantment.fireProtection, a.e_fireprotection);
+                stack.addEnchantment(Enchantment.fireProtection, a.e_fireprotection);
             }
 
             if (a.e_blastprotection != 0) {
-                par1ItemStack.addEnchantment(Enchantment.blastProtection, a.e_blastprotection);
+                stack.addEnchantment(Enchantment.blastProtection, a.e_blastprotection);
             }
 
             if (a.e_projectileprotection != 0) {
-                par1ItemStack.addEnchantment(Enchantment.projectileProtection, a.e_projectileprotection);
+                stack.addEnchantment(Enchantment.projectileProtection, a.e_projectileprotection);
             }
 
             if (a.e_unbreaking != 0) {
-                par1ItemStack.addEnchantment(Enchantment.unbreaking, a.e_unbreaking);
+                stack.addEnchantment(Enchantment.unbreaking, a.e_unbreaking);
             }
 
             if (this.armor_type == 3 && a.e_featherfalling != 0) {
-                par1ItemStack.addEnchantment(Enchantment.featherFalling, a.e_featherfalling);
+                stack.addEnchantment(Enchantment.featherFalling, a.e_featherfalling);
             }
 
             if (this.armor_type == 0) {
                 if (a.e_respiration != 0) {
-                    par1ItemStack.addEnchantment(Enchantment.respiration, a.e_respiration);
+                    stack.addEnchantment(Enchantment.respiration, a.e_respiration);
                 }
 
                 if (a.e_aquaaffinity != 0) {
-                    par1ItemStack.addEnchantment(Enchantment.aquaAffinity, a.e_aquaaffinity);
+                    stack.addEnchantment(Enchantment.aquaAffinity, a.e_aquaaffinity);
                 }
             }
         }
     }
 
-    public void onUpdate(ItemStack stack, World par2World, Entity par3Entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
         ArmorStats a = null;
         int lvl = 0;
         int enchanted = 0;

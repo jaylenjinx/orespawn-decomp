@@ -14,22 +14,22 @@ import danger.orespawn.entity.EntityAnt;
 
 public class OreSalt extends Block {
 
-    public OreSalt(int par1) {
+    public OreSalt(int n) {
         super(Material.rock);
         this.setHardness(5.0F);
         this.setResistance(2.0F);
         this.setCreativeTab(CreativeTabs.tabBlock);
     }
 
-    public void onEntityCollidedWithBlock(World par1World, int par2, int par3, int par4, Entity par5Entity) {
-        if (par5Entity instanceof EntityAnt) {
-            par5Entity.attackEntityFrom(DamageSource.cactus, 5.0F);
+    public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
+        if (entity instanceof EntityAnt) {
+            entity.attackEntityFrom(DamageSource.cactus, 5.0F);
         }
     }
 
-    public void onEntityWalking(World par1World, int par2, int par3, int par4, Entity par5Entity) {
-        if (par5Entity instanceof EntityAnt) {
-            par5Entity.attackEntityFrom(DamageSource.cactus, 5.0F);
+    public void onEntityWalking(World world, int x, int y, int z, Entity entity) {
+        if (entity instanceof EntityAnt) {
+            entity.attackEntityFrom(DamageSource.cactus, 5.0F);
         }
     }
 

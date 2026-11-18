@@ -11,21 +11,19 @@ import danger.orespawn.entity.QueenHead;
 
 public class RenderQueenHead extends RenderLiving {
 
-    public RenderQueenHead(ModelTheQueen par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderQueenHead(ModelTheQueen modelBase, float f, float f2) {
+        super(modelBase, f * f2);
     }
 
-    public void renderQueenHead(QueenHead par1EntityQueenHead, double par2, double par4, double par6, float par8,
-        float par9) {}
+    public void renderQueenHead(QueenHead entityQueenHead, double x, double y, double z, float f, float f2) {}
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8,
-        float par9) {}
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {}
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {}
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {}
 
-    protected void preRenderScale(QueenHead par1Entity, float par2) {}
+    protected void preRenderScale(QueenHead entity, float f) {}
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {}
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {}
 
     protected ResourceLocation getEntityTexture(Entity entity) {
         return null;

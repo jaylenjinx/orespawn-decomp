@@ -35,8 +35,8 @@ public class Cockateil extends EntityAnimal {
     private int lastZ = 0;
     private int flyup = 0;
 
-    public Cockateil(World par1World) {
-        super(par1World);
+    public Cockateil(World world) {
+        super(world);
         this.setSize(0.5F, 0.5F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -91,8 +91,8 @@ public class Cockateil extends EntityAnimal {
         return this.dataWatcher.getWatchableObjectInt(22);
     }
 
-    public void setBirdType(int par1) {
-        this.dataWatcher.updateObject(22, par1);
+    public void setBirdType(int n) {
+        this.dataWatcher.updateObject(22, n);
     }
 
     protected float getSoundVolume() {
@@ -127,13 +127,13 @@ public class Cockateil extends EntityAnimal {
         return true;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
-        Entity e = par1DamageSource.getEntity();
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        Entity e = source.getEntity();
         if (e != null && e instanceof EntityPlayer) {
             this.killedByPlayer = true;
         }
 
-        return super.attackEntityFrom(par1DamageSource, par2);
+        return super.attackEntityFrom(source, amount);
     }
 
     public void onUpdate() {
@@ -147,7 +147,7 @@ public class Cockateil extends EntityAnimal {
         }
     }
 
-    public int getAttackStrength(Entity par1Entity) {
+    public int getAttackStrength(Entity entity) {
         return 1;
     }
 
@@ -155,9 +155,9 @@ public class Cockateil extends EntityAnimal {
         this.flyup = 2;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean canSeeTarget(double pX, double pY, double pZ) {
         return this.worldObj.rayTraceBlocks(
@@ -222,16 +222,16 @@ public class Cockateil extends EntityAnimal {
                 }
             }
 
-            double var1 = this.currentFlightTarget.posX + 0.3 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.3 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.3 - this.motionX) * 0.25;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.699999 - this.motionY) * 0.200000001;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.3 - this.motionZ) * 0.25;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx = this.currentFlightTarget.posX + 0.3 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.3 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx) * 0.3 - this.motionX) * 0.25;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.699999 - this.motionY) * 0.200000001;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.3 - this.motionZ) * 0.25;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 0.8F;
-            this.rotationYaw += var8 / 3.0F;
+            this.rotationYaw += f2 / 3.0F;
         }
     }
 
@@ -259,18 +259,18 @@ public class Cockateil extends EntityAnimal {
 
     public void initCreature() {}
 
-    public EntityAgeable createChild(EntityAgeable var1) {
+    public EntityAgeable createChild(EntityAgeable partner) {
         return null;
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("BirdType", this.getBirdType());
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("BirdType", this.getBirdType());
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.birdtype = par1NBTTagCompound.getInteger("BirdType");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.birdtype = tag.getInteger("BirdType");
         this.setBirdType(this.birdtype);
     }
 }

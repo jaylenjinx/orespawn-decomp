@@ -23,20 +23,20 @@ import danger.orespawn.entity.projectile.BerthaHit;
 
 public class Bertha extends ItemSword {
 
-    public Bertha(int par1, ToolMaterial par2EnumToolMaterial) {
-        super(par2EnumToolMaterial);
+    public Bertha(int n, ToolMaterial enumToolMaterial) {
+        super(enumToolMaterial);
         this.maxStackSize = 1;
         this.setMaxDamage(9000);
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
         if (this == OreSpawnMain.MyRoyal) {
-            par1ItemStack.addEnchantment(Enchantment.unbreaking, 5);
+            stack.addEnchantment(Enchantment.unbreaking, 5);
         } else if (this != OreSpawnMain.MyHammy) {
-            par1ItemStack.addEnchantment(Enchantment.knockback, 5);
-            par1ItemStack.addEnchantment(Enchantment.baneOfArthropods, 1);
-            par1ItemStack.addEnchantment(Enchantment.fireAspect, 1);
+            stack.addEnchantment(Enchantment.knockback, 5);
+            stack.addEnchantment(Enchantment.baneOfArthropods, 1);
+            stack.addEnchantment(Enchantment.fireAspect, 1);
         }
     }
 
@@ -57,7 +57,7 @@ public class Bertha extends ItemSword {
         }
     }
 
-    public void onUpdate(ItemStack stack, World par2World, Entity par3Entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
         this.onUsingTick(stack, (EntityPlayer) null, 0);
     }
 
@@ -112,12 +112,12 @@ public class Bertha extends ItemSword {
         return "Uranium/Titanium";
     }
 
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLiving par2EntityLiving, EntityLiving par3EntityLiving) {
-        par1ItemStack.damageItem(1, par3EntityLiving);
+    public boolean hitEntity(ItemStack stack, EntityLiving target, EntityLiving attacker) {
+        stack.damageItem(1, attacker);
         return true;
     }
 
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 9000;
     }
 

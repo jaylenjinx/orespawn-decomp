@@ -18,8 +18,8 @@ public class GoldFish extends EntityAnimal {
 
     private ChunkCoordinates currentFlightTarget = null;
 
-    public GoldFish(World par1World) {
-        super(par1World);
+    public GoldFish(World world) {
+        super(world);
         this.setSize(0.75F, 0.5F);
         this.experienceValue = 5;
         this.isImmuneToFire = false;
@@ -66,7 +66,7 @@ public class GoldFish extends EntityAnimal {
         return true;
     }
 
-    protected void collideWithEntity(Entity par1Entity) {}
+    protected void collideWithEntity(Entity entity) {}
 
     public int mygetMaxHealth() {
         return 6;
@@ -138,16 +138,16 @@ public class GoldFish extends EntityAnimal {
                 }
             }
 
-            double var1 = this.currentFlightTarget.posX + 0.4 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.4 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.4 - this.motionX) * 0.3;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.7 - this.motionY) * 0.2;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.4 - this.motionZ) * 0.3;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx = this.currentFlightTarget.posX + 0.4 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.4 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx) * 0.4 - this.motionX) * 0.3;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.7 - this.motionY) * 0.2;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.4 - this.motionZ) * 0.3;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 0.75F;
-            this.rotationYaw += var8 / 6.0F;
+            this.rotationYaw += f2 / 6.0F;
         }
     }
 
@@ -155,9 +155,9 @@ public class GoldFish extends EntityAnimal {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean doesEntityNotTriggerPressurePlate() {
         return false;
@@ -178,7 +178,7 @@ public class GoldFish extends EntityAnimal {
         }
     }
 
-    public EntityAgeable createChild(EntityAgeable var1) {
+    public EntityAgeable createChild(EntityAgeable partner) {
         return null;
     }
 

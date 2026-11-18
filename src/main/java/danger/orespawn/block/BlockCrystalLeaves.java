@@ -20,64 +20,61 @@ import danger.orespawn.OreSpawnMain;
 
 public class BlockCrystalLeaves extends BlockLeaves {
 
-    public BlockCrystalLeaves(int par1) {
+    public BlockCrystalLeaves(int n) {
         this.setTickRandomly(true);
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
 
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        par3List.add(new ItemStack(Item.getItemFromBlock(this), 1, 0));
+    public void getSubBlocks(Item item, CreativeTabs tab, List list) {
+        list.add(new ItemStack(Item.getItemFromBlock(this), 1, 0));
     }
 
-    public void dropBlockAsItemWithChance(World par1World, int par2, int par3, int par4, int par5, float par6,
-        int par7) {
-        if (!par1World.isRemote) {
-            if (par1World.rand.nextInt(100) == 1) {
-                this.dropBlockAsItem(par1World, par2, par3, par4, new ItemStack(OreSpawnMain.MyCrystalApple));
+    public void dropBlockAsItemWithChance(World world, int x, int y, int z, int meta, float chance, int fortune) {
+        if (!world.isRemote) {
+            if (world.rand.nextInt(100) == 1) {
+                this.dropBlockAsItem(world, x, y, z, new ItemStack(OreSpawnMain.MyCrystalApple));
             }
 
-            if (par1World.rand.nextInt(50) == 1) {
+            if (world.rand.nextInt(50) == 1) {
                 if (this == OreSpawnMain.MyCrystalLeaves) {
-                    this.dropBlockAsItem(par1World, par2, par3, par4, new ItemStack(OreSpawnMain.MyCrystalPlant));
+                    this.dropBlockAsItem(world, x, y, z, new ItemStack(OreSpawnMain.MyCrystalPlant));
                 }
 
                 if (this == OreSpawnMain.MyCrystalLeaves2) {
-                    this.dropBlockAsItem(par1World, par2, par3, par4, new ItemStack(OreSpawnMain.MyCrystalPlant2));
+                    this.dropBlockAsItem(world, x, y, z, new ItemStack(OreSpawnMain.MyCrystalPlant2));
                 }
 
                 if (this == OreSpawnMain.MyCrystalLeaves3) {
-                    this.dropBlockAsItem(par1World, par2, par3, par4, new ItemStack(OreSpawnMain.MyCrystalPlant3));
+                    this.dropBlockAsItem(world, x, y, z, new ItemStack(OreSpawnMain.MyCrystalPlant3));
                 }
             }
         }
     }
 
-    public int quantityDropped(Random par1Random) {
+    public int quantityDropped(Random rand) {
         return 1;
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        int var7 = 2;
+    public void updateTick(World world, int x, int y, int z, Random rand) {
+        int n = 2;
         int totaldist = 0;
         int chance = 20;
-        if (par1World.provider.dimensionId == OreSpawnMain.DimensionID4) {
+        if (world.provider.dimensionId == OreSpawnMain.DimensionID4) {
             chance = 100;
-            var7 = 1;
+            n = 1;
         }
 
-        if (!par1World.isRemote && par1World
-            .checkChunksExist(par2 - var7, par3 - var7, par4 - var7, par2 + var7, par3 + var7, par4 + var7)) {
-            for (int var12 = -var7; var12 <= var7; var12++) {
-                for (int var13 = -var7; var13 <= 0; var13++) {
-                    for (int var14 = -var7; var14 <= var7; var14++) {
-                        totaldist = Math.abs(var12) + Math.abs(var13) + Math.abs(var14);
+        if (!world.isRemote && world.checkChunksExist(x - n, y - n, z - n, x + n, y + n, z + n)) {
+            for (int i = -n; i <= n; i++) {
+                for (int j = -n; j <= 0; j++) {
+                    for (int k = -n; k <= n; k++) {
+                        totaldist = Math.abs(i) + Math.abs(j) + Math.abs(k);
                         if (totaldist <= 3) {
-                            Block bid = par1World.getBlock(par2 + var12, par3 + var13, par4 + var14);
-                            if (bid != null
-                                && bid.canSustainLeaves(par1World, par2 + var12, par3 + var13, par4 + var14)) {
-                                bid = par1World.getBlock(par2, par3 - 1, par4);
-                                if (bid == Blocks.air && par1World.rand.nextInt(chance) == 3) {
-                                    this.dropBlockAsItemWithChance(par1World, par2, par3 - 1, par4, 0, 0.0F, 0);
+                            Block bid = world.getBlock(x + i, y + j, z + k);
+                            if (bid != null && bid.canSustainLeaves(world, x + i, y + j, z + k)) {
+                                bid = world.getBlock(x, y - 1, z);
+                                if (bid == Blocks.air && world.rand.nextInt(chance) == 3) {
+                                    this.dropBlockAsItemWithChance(world, x, y - 1, z, 0, 0.0F, 0);
                                 }
 
                                 return;
@@ -87,13 +84,13 @@ public class BlockCrystalLeaves extends BlockLeaves {
                 }
             }
 
-            this.removeLeaves(par1World, par2, par3, par4);
+            this.removeLeaves(world, x, y, z);
         }
     }
 
-    private void removeLeaves(World par1World, int par2, int par3, int par4) {
-        this.dropBlockAsItem(par1World, par2, par3, par4, 0, 0);
-        par1World.setBlock(par2, par3, par4, Blocks.air, 0, 2);
+    private void removeLeaves(World world, int x, int y, int z) {
+        this.dropBlockAsItem(world, x, y, z, 0, 0);
+        world.setBlock(x, y, z, Blocks.air, 0, 2);
     }
 
     public boolean isOpaqueCube() {
@@ -109,8 +106,8 @@ public class BlockCrystalLeaves extends BlockLeaves {
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
-        Block i1 = par1IBlockAccess.getBlock(par2, par3, par4);
+    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side) {
+        Block i1 = blockAccess.getBlock(x, y, z);
         return OreSpawnMain.FastGraphicsLeaves == 0 || i1 != this;
     }
 
@@ -120,17 +117,17 @@ public class BlockCrystalLeaves extends BlockLeaves {
     }
 
     @SideOnly(Side.CLIENT)
-    public int getRenderColor(int par1) {
+    public int getRenderColor(int meta) {
         return 14540253;
     }
 
     @SideOnly(Side.CLIENT)
-    public int colorMultiplier(IBlockAccess par1IBlockAccess, int par2, int par3, int par4) {
+    public int colorMultiplier(IBlockAccess blockAccess, int x, int y, int z) {
         return 14540253;
     }
 
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int par1, int par2) {
+    public IIcon getIcon(int side, int meta) {
         return this.blockIcon;
     }
 

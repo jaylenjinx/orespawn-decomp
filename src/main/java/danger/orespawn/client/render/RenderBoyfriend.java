@@ -12,21 +12,21 @@ public class RenderBoyfriend extends RenderBiped {
 
     protected ModelBiped model = (ModelBiped) this.mainModel;
 
-    public RenderBoyfriend(ModelBiped par1ModelBase, float par2) {
-        super(par1ModelBase, par2);
+    public RenderBoyfriend(ModelBiped modelBase, float f) {
+        super(modelBase, f);
     }
 
-    public void renderBoyfriend(Boyfriend par1EntityBoyfriend, double par2, double par4, double par6, float par8,
-        float par9) {
-        super.doRender(par1EntityBoyfriend, par2, par4, par6, par8, par9);
+    public void renderBoyfriend(Boyfriend entityBoyfriend, double x, double y, double z, float yaw,
+        float partialTicks) {
+        super.doRender(entityBoyfriend, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderBoyfriend((Boyfriend) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderBoyfriend((Boyfriend) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderBoyfriend((Boyfriend) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderBoyfriend((Boyfriend) entity, x, y, z, yaw, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

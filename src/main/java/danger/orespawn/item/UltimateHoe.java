@@ -18,15 +18,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class UltimateHoe extends ItemHoe {
 
-    public UltimateHoe(int par1, ToolMaterial par2) {
-        super(par2);
+    public UltimateHoe(int n, ToolMaterial toolMaterial) {
+        super(toolMaterial);
         this.maxStackSize = 1;
         this.setMaxDamage(3000);
         this.setCreativeTab(CreativeTabs.tabTools);
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        par1ItemStack.addEnchantment(Enchantment.efficiency, 2);
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+        stack.addEnchantment(Enchantment.efficiency, 2);
     }
 
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
@@ -36,42 +36,42 @@ public class UltimateHoe extends ItemHoe {
         }
     }
 
-    public void onUpdate(ItemStack stack, World par2World, Entity par3Entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
         this.onUsingTick(stack, (EntityPlayer) null, 0);
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4,
-        int par5, int par6, int par7, float par8, float par9, float par10) {
-        if (!par2EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack)) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+        float hitX, float hitY, float hitZ) {
+        if (!player.canPlayerEdit(x, y, z, side, stack)) {
             return false;
         } else {
-            Block i1 = par3World.getBlock(par4, par5, par6);
-            boolean air = par3World.isAirBlock(par4, par5 + 1, par6);
-            if (par7 != 0 && air && (i1 == Blocks.grass || i1 == Blocks.dirt)) {
+            Block i1 = world.getBlock(x, y, z);
+            boolean air = world.isAirBlock(x, y + 1, z);
+            if (side != 0 && air && (i1 == Blocks.grass || i1 == Blocks.dirt)) {
                 Block block = Blocks.farmland;
-                par3World.playSoundEffect(
-                    par4 + 0.5F,
-                    par5 + 0.5F,
-                    par6 + 0.5F,
+                world.playSoundEffect(
+                    x + 0.5F,
+                    y + 0.5F,
+                    z + 0.5F,
                     block.stepSound.getBreakSound(),
                     (block.stepSound.getVolume() + 1.0F) / 2.0F,
                     block.stepSound.getPitch() * 0.8F);
-                if (par3World.isRemote) {
+                if (world.isRemote) {
                     return true;
                 } else {
                     for (int i = -1; i <= 1; i++) {
                         for (int k = -1; k <= 1; k++) {
                             for (int j = -1; j <= 1; j++) {
-                                i1 = par3World.getBlock(par4 + i, par5 + j, par6 + k);
-                                air = par3World.isAirBlock(par4 + i, par5 + j + 1, par6 + k);
+                                i1 = world.getBlock(x + i, y + j, z + k);
+                                air = world.isAirBlock(x + i, y + j + 1, z + k);
                                 if (air && (i1 == Blocks.grass || i1 == Blocks.dirt)) {
-                                    par3World.setBlock(par4 + i, par5 + j, par6 + k, block, 7, 2);
+                                    world.setBlock(x + i, y + j, z + k, block, 7, 2);
                                 }
                             }
                         }
                     }
 
-                    par1ItemStack.damageItem(1, par2EntityPlayer);
+                    stack.damageItem(1, player);
                     return true;
                 }
             } else {

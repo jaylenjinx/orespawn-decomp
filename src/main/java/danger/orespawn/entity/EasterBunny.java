@@ -25,8 +25,8 @@ public class EasterBunny extends EntityAnimal {
 
     private float moveSpeed = 0.45F;
 
-    public EasterBunny(World par1World) {
-        super(par1World);
+    public EasterBunny(World world) {
+        super(world);
         this.setSize(0.5F, 0.75F);
         this.moveSpeed = 0.45F;
         this.fireResistance = 100;
@@ -110,12 +110,12 @@ public class EasterBunny extends EntityAnimal {
         return Items.chicken;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
-        int var3 = 0;
-        var3 = this.rand.nextInt(3);
-        var3 += 2;
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int roll = 0;
+        roll = this.rand.nextInt(3);
+        roll += 2;
 
-        for (int var4 = 0; var4 < var3; var4++) {
+        for (int i = 0; i < roll; i++) {
             this.dropItem(Items.chicken, 1);
         }
     }
@@ -131,8 +131,8 @@ public class EasterBunny extends EntityAnimal {
         }
     }
 
-    private ItemStack LayAnEgg(int par1) {
-        EntityItem var3 = null;
+    private ItemStack LayAnEgg(int n) {
+        EntityItem entityItem = null;
         int i = 0;
         Item index = null;
         int val = 0;
@@ -473,15 +473,15 @@ public class EasterBunny extends EntityAnimal {
         if (index == null) {
             return null;
         } else {
-            is = new ItemStack(index, par1, val);
-            var3 = new EntityItem(
+            is = new ItemStack(index, n, val);
+            entityItem = new EntityItem(
                 this.worldObj,
                 this.posX + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
                 this.posY + 1.0,
                 this.posZ + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
                 is);
-            if (var3 != null) {
-                this.worldObj.spawnEntityInWorld(var3);
+            if (entityItem != null) {
+                this.worldObj.spawnEntityInWorld(entityItem);
             }
 
             return is;
@@ -501,15 +501,15 @@ public class EasterBunny extends EntityAnimal {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public EasterBunny spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public EasterBunny spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new EasterBunny(this.worldObj);
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.apple;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.apple;
     }
 
-    public boolean isBreedingItem(ItemStack par1ItemStack) {
-        return par1ItemStack.getItem() == OreSpawnMain.MyCrystalApple;
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
     }
 }

@@ -41,8 +41,8 @@ public class Crab extends EntityMob {
     private int ty = 0;
     private int tz = 0;
 
-    public Crab(World par1World) {
-        super(par1World);
+    public Crab(World world) {
+        super(world);
         this.moveSpeed = 0.55F;
         this.setSize(1.25F, 2.5F);
         this.getNavigator()
@@ -104,23 +104,23 @@ public class Crab extends EntityMob {
         return f / 100.0F;
     }
 
-    public void setCrabScale(float par1) {
-        float f = par1 * 100.0F;
+    public void setCrabScale(float f2) {
+        float f = f2 * 100.0F;
         int i = (int) f;
         this.dataWatcher.updateObject(21, i);
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.setCrabScale(par1NBTTagCompound.getFloat("Fscale"));
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.setCrabScale(tag.getFloat("Fscale"));
         this.setSize(3.75F * this.getCrabScale(), 3.5F * this.getCrabScale());
         this.experienceValue = (int) (400.0F * this.getCrabScale());
         this.fireResistance = (int) (10.0F * this.getCrabScale());
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setFloat("Fscale", this.getCrabScale());
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setFloat("Fscale", this.getCrabScale());
     }
 
     protected boolean canDespawn() {
@@ -184,67 +184,67 @@ public class Crab extends EntityMob {
         return Items.fish;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             this.posY + 1.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         ItemStack is = null;
-        int var5 = 4 + this.worldObj.rand.nextInt(8);
-        var5 = (int) (var5 * this.getCrabScale());
-        if (var5 < 1) {
-            var5 = 1;
+        int n = 4 + this.worldObj.rand.nextInt(8);
+        n = (int) (n * this.getCrabScale());
+        if (n < 1) {
+            n = 1;
         }
 
-        for (int var4 = 0; var4 < var5; var4++) {
+        for (int i = 0; i < n; i++) {
             this.dropItemRand(OreSpawnMain.MyRawCrabMeat, 1);
         }
     }
 
     public void initCreature() {}
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        boolean var4 = par1Entity
+    public boolean attackEntityAsMob(Entity target) {
+        boolean flag = target
             .attackEntityFrom(DamageSource.causeMobDamage(this), OreSpawnMain.Crab_stats.attack * this.getCrabScale());
-        if (var4 && par1Entity != null && par1Entity instanceof EntityLivingBase) {
+        if (flag && target != null && target instanceof EntityLivingBase) {
             double ks = 1.15 * this.getCrabScale();
             double inair = 0.48 * this.getCrabScale();
-            float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-            if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+            float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+            if (target.isDead || target instanceof EntityPlayer) {
                 inair *= 2.0;
             }
 
-            par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+            target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
         }
 
-        return var4;
+        return flag;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        if (par1DamageSource.getDamageType()
+        if (source.getDamageType()
             .equals("cactus")) {
             return false;
         } else {
-            Entity e = par1DamageSource.getEntity();
+            Entity e = source.getEntity();
             if (this.hurt_timer <= 0) {
-                ret = super.attackEntityFrom(par1DamageSource, par2);
+                ret = super.attackEntityFrom(source, amount);
                 this.hurt_timer = 8;
             }
 
@@ -294,26 +294,26 @@ public class Crab extends EntityMob {
             }
         }
 
-        for (int var12 = -dx; var12 <= dx; var12++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dz; j <= dz; j++) {
-                Block bidx = this.worldObj.getBlock(x + var12, y + dy, z + j);
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y + dy;
                         this.tz = z + j;
                         found++;
                     }
                 }
 
-                bidx = this.worldObj.getBlock(x + var12, y - dy, z + j);
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y - dy;
                         this.tz = z + j;
                         found++;
@@ -322,26 +322,26 @@ public class Crab extends EntityMob {
             }
         }
 
-        for (int var13 = -dx; var13 <= dx; var13++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dy; j <= dy; j++) {
-                Block bidxx = this.worldObj.getBlock(x + var13, y + j, z + dz);
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z + dz;
                         found++;
                     }
                 }
 
-                bidxx = this.worldObj.getBlock(x + var13, y + j, z - dz);
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z - dz;
                         found++;
@@ -441,33 +441,33 @@ public class Crab extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (target instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) target;
                 return !p.capabilities.isCreativeMode;
-            } else if (par1EntityLiving instanceof Crab) {
+            } else if (target instanceof Crab) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityMob) {
+            } else if (target instanceof EntityMob) {
                 return true;
-            } else if (par1EntityLiving instanceof Lizard) {
+            } else if (target instanceof Lizard) {
                 return true;
-            } else if (par1EntityLiving instanceof RubberDucky) {
+            } else if (target instanceof RubberDucky) {
                 return true;
-            } else if (par1EntityLiving instanceof EntityVillager) {
+            } else if (target instanceof EntityVillager) {
                 return true;
-            } else if (par1EntityLiving instanceof Girlfriend) {
+            } else if (target instanceof Girlfriend) {
                 return true;
             } else {
-                return par1EntityLiving instanceof Boyfriend ? true : MyUtils.isAttackableNonMob(par1EntityLiving);
+                return target instanceof Boyfriend ? true : MyUtils.isAttackableNonMob(target);
             }
     }
 
@@ -475,23 +475,23 @@ public class Crab extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(16.0, 6.0, 16.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
             EntityLivingBase e = this.getAttackTarget();
             if (e != null && e.isEntityAlive()) {
                 return e;
             } else {
                 this.setAttackTarget(null);
 
-                while (var2.hasNext()) {
-                    var3 = (Entity) var2.next();
-                    var4 = (EntityLivingBase) var3;
-                    if (this.isSuitableTarget(var4, false)) {
-                        return var4;
+                while (iterator.hasNext()) {
+                    entity = (Entity) iterator.next();
+                    target = (EntityLivingBase) entity;
+                    if (this.isSuitableTarget(target, false)) {
+                        return target;
                     }
                 }
 
@@ -504,13 +504,13 @@ public class Crab extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     private int findBuddies() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(Crab.class, this.boundingBox.expand(24.0, 8.0, 24.0));
-        return var5.size();
+        List entities = this.worldObj.getEntitiesWithinAABB(Crab.class, this.boundingBox.expand(24.0, 8.0, 24.0));
+        return entities.size();
     }
 
     public boolean getCanSpawnHere() {

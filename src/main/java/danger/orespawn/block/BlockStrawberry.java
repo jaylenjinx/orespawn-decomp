@@ -15,22 +15,22 @@ public class BlockStrawberry extends BlockCrops {
 
     private IIcon[] iconArray;
 
-    public BlockStrawberry(int par1) {}
+    public BlockStrawberry(int n) {}
 
-    public IIcon getIcon(int par1, int par2) {
-        if (par2 < 7) {
-            if (par2 >= 6) {
-                par2 = 4;
+    public IIcon getIcon(int side, int meta) {
+        if (meta < 7) {
+            if (meta >= 6) {
+                meta = 4;
             }
 
-            return this.iconArray[par2 >> 1];
+            return this.iconArray[meta >> 1];
         } else {
             return this.iconArray[3];
         }
     }
 
-    public int quantityDropped(Random par1Random) {
-        return 1 + par1Random.nextInt(5);
+    public int quantityDropped(Random rand) {
+        return 1 + rand.nextInt(5);
     }
 
     protected Item func_149866_i() {
@@ -42,11 +42,11 @@ public class BlockStrawberry extends BlockCrops {
     }
 
     @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister par1IIconRegister) {
+    public void registerBlockIcons(IIconRegister iconRegister) {
         this.iconArray = new IIcon[4];
 
         for (int i = 0; i < this.iconArray.length; i++) {
-            this.iconArray[i] = par1IIconRegister.registerIcon("OreSpawn:strawberry_" + i);
+            this.iconArray[i] = iconRegister.registerIcon("OreSpawn:strawberry_" + i);
         }
     }
 }

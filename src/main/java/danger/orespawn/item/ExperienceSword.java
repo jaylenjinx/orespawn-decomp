@@ -25,18 +25,18 @@ public class ExperienceSword extends ItemSword {
     private World worldObj = null;
     private World worldObjr = null;
 
-    public ExperienceSword(int par1, ToolMaterial par2EnumToolMaterial) {
-        super(par2EnumToolMaterial);
-        this.toolMaterial = par2EnumToolMaterial;
+    public ExperienceSword(int n, ToolMaterial enumToolMaterial) {
+        super(enumToolMaterial);
+        this.toolMaterial = enumToolMaterial;
         this.weaponDamage = 15;
         this.maxStackSize = 1;
         this.setMaxDamage(1400);
         this.setCreativeTab(CreativeTabs.tabCombat);
     }
 
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        par1ItemStack.addEnchantment(Enchantment.sharpness, 2);
-        par1ItemStack.addEnchantment(Enchantment.unbreaking, 3);
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+        stack.addEnchantment(Enchantment.sharpness, 2);
+        stack.addEnchantment(Enchantment.unbreaking, 3);
     }
 
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
@@ -47,21 +47,21 @@ public class ExperienceSword extends ItemSword {
         }
     }
 
-    public void onUpdate(ItemStack stack, World par2World, Entity par3Entity, int par4, boolean par5) {
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
         EntityLivingBase e = null;
         ItemOreSpawnArmor ia = null;
         EntityPlayer p = null;
         this.onUsingTick(stack, (EntityPlayer) null, 0);
-        if (this.worldObj == null && !par2World.isRemote) {
-            this.worldObj = par2World;
+        if (this.worldObj == null && !world.isRemote) {
+            this.worldObj = world;
         }
 
-        if (this.worldObjr == null && par2World.isRemote) {
-            this.worldObjr = par2World;
+        if (this.worldObjr == null && world.isRemote) {
+            this.worldObjr = world;
         }
 
-        if (par2World.rand.nextInt(60) == 1 && par3Entity != null && par3Entity instanceof EntityLivingBase) {
-            e = (EntityLivingBase) par3Entity;
+        if (world.rand.nextInt(60) == 1 && entity != null && entity instanceof EntityLivingBase) {
+            e = (EntityLivingBase) entity;
             if (e instanceof EntityPlayer) {
                 p = (EntityPlayer) e;
             }
@@ -75,60 +75,60 @@ public class ExperienceSword extends ItemSword {
                         if (ia.get_armor_material() == 4) {
                             switch (ia.get_armor_type()) {
                                 case 0:
-                                    if (!par2World.isRemote && p != null && par2World.rand.nextInt(10) == 1) {
+                                    if (!world.isRemote && p != null && world.rand.nextInt(10) == 1) {
                                         p.addExperience(1);
                                     }
 
-                                    par2World.spawnParticle(
+                                    world.spawnParticle(
                                         "portal",
                                         e.posX,
                                         e.posY + 1.5,
                                         e.posZ,
-                                        par2World.rand.nextGaussian(),
-                                        par2World.rand.nextGaussian(),
-                                        par2World.rand.nextGaussian());
+                                        world.rand.nextGaussian(),
+                                        world.rand.nextGaussian(),
+                                        world.rand.nextGaussian());
                                     break;
                                 case 1:
-                                    if (!par2World.isRemote && p != null && par2World.rand.nextInt(20) == 1) {
+                                    if (!world.isRemote && p != null && world.rand.nextInt(20) == 1) {
                                         p.addExperience(1);
                                     }
 
-                                    par2World.spawnParticle(
+                                    world.spawnParticle(
                                         "portal",
                                         e.posX,
                                         e.posY + 1.25,
                                         e.posZ,
-                                        par2World.rand.nextGaussian(),
-                                        par2World.rand.nextGaussian(),
-                                        par2World.rand.nextGaussian());
+                                        world.rand.nextGaussian(),
+                                        world.rand.nextGaussian(),
+                                        world.rand.nextGaussian());
                                     break;
                                 case 2:
-                                    if (!par2World.isRemote && p != null && par2World.rand.nextInt(30) == 1) {
+                                    if (!world.isRemote && p != null && world.rand.nextInt(30) == 1) {
                                         p.addExperience(1);
                                     }
 
-                                    par2World.spawnParticle(
+                                    world.spawnParticle(
                                         "portal",
                                         e.posX,
                                         e.posY + 0.75,
                                         e.posZ,
-                                        par2World.rand.nextGaussian(),
-                                        par2World.rand.nextGaussian(),
-                                        par2World.rand.nextGaussian());
+                                        world.rand.nextGaussian(),
+                                        world.rand.nextGaussian(),
+                                        world.rand.nextGaussian());
                                     break;
                                 case 3:
-                                    if (!par2World.isRemote && p != null && par2World.rand.nextInt(40) == 1) {
+                                    if (!world.isRemote && p != null && world.rand.nextInt(40) == 1) {
                                         p.addExperience(1);
                                     }
 
-                                    par2World.spawnParticle(
+                                    world.spawnParticle(
                                         "portal",
                                         e.posX,
                                         e.posY + 0.25,
                                         e.posZ,
-                                        par2World.rand.nextGaussian(),
-                                        par2World.rand.nextGaussian(),
-                                        par2World.rand.nextGaussian());
+                                        world.rand.nextGaussian(),
+                                        world.rand.nextGaussian(),
+                                        world.rand.nextGaussian());
                             }
                         }
                     }
@@ -137,7 +137,7 @@ public class ExperienceSword extends ItemSword {
         }
     }
 
-    public int getDamageVsEntity(Entity par1Entity) {
+    public int getDamageVsEntity(Entity entity) {
         return this.weaponDamage;
     }
 
@@ -145,16 +145,15 @@ public class ExperienceSword extends ItemSword {
         return "Emerald";
     }
 
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLiving,
-        EntityLivingBase par3EntityLiving) {
+    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
         float i = 0.0F;
         EntityPlayer p = null;
         EntityLiving l = null;
-        if (par3EntityLiving instanceof EntityPlayer) {
-            p = (EntityPlayer) par3EntityLiving;
+        if (attacker instanceof EntityPlayer) {
+            p = (EntityPlayer) attacker;
         }
 
-        if (par2EntityLiving != null && par2EntityLiving instanceof EntityLiving) {
+        if (target != null && target instanceof EntityLiving) {
             i = 10.0F;
         }
 
@@ -164,29 +163,29 @@ public class ExperienceSword extends ItemSword {
 
         if (p != null) {
             i = p.experienceLevel / 2;
-            if (i > 0.0F && par2EntityLiving != null) {
-                par2EntityLiving.attackEntityFrom(DamageSource.causePlayerDamage(p), i);
+            if (i > 0.0F && target != null) {
+                target.attackEntityFrom(DamageSource.causePlayerDamage(p), i);
             }
         }
 
-        if (this.worldObjr != null && par2EntityLiving != null) {
+        if (this.worldObjr != null && target != null) {
             for (int j = 0; j <= i / 2.0F; j++) {
                 this.worldObjr.spawnParticle(
                     "portal",
-                    par2EntityLiving.posX,
-                    par2EntityLiving.posY + 1.0,
-                    par2EntityLiving.posZ,
+                    target.posX,
+                    target.posY + 1.0,
+                    target.posZ,
                     this.worldObjr.rand.nextGaussian(),
                     this.worldObjr.rand.nextGaussian(),
                     this.worldObjr.rand.nextGaussian());
             }
         }
 
-        par1ItemStack.damageItem(1, par3EntityLiving);
+        stack.damageItem(1, attacker);
         return true;
     }
 
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    public int getMaxItemUseDuration(ItemStack stack) {
         return 3000;
     }
 

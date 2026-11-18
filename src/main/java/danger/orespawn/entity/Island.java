@@ -33,10 +33,10 @@ public class Island extends EntityAnimal {
     private double myZ;
     private int dirchange;
 
-    public Island(World par1World) {
-        super(par1World);
+    public Island(World world) {
+        super(world);
         this.setSize(0.5F, 0.5F);
-        this.ticker = par1World.rand.nextInt(50);
+        this.ticker = world.rand.nextInt(50);
         this.dirchange = this.worldObj.rand.nextInt(2500);
     }
 
@@ -101,28 +101,28 @@ public class Island extends EntityAnimal {
 
     protected void updateAITasks() {}
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
     protected boolean canDespawn() {
         return false;
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.just_spawned = par1NBTTagCompound.getInteger("JustSpawned");
-        this.depth = par1NBTTagCompound.getInteger("Idepth");
-        this.radius = par1NBTTagCompound.getInteger("Iradius");
-        this.speed = par1NBTTagCompound.getFloat("Ispeed");
-        this.dir = par1NBTTagCompound.getFloat("Idir");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.just_spawned = tag.getInteger("JustSpawned");
+        this.depth = tag.getInteger("Idepth");
+        this.radius = tag.getInteger("Iradius");
+        this.speed = tag.getFloat("Ispeed");
+        this.dir = tag.getFloat("Idir");
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("JustSpawned", this.just_spawned);
-        par1NBTTagCompound.setInteger("Idepth", this.depth);
-        par1NBTTagCompound.setInteger("Iradius", this.radius);
-        par1NBTTagCompound.setFloat("Ispeed", this.speed);
-        par1NBTTagCompound.setFloat("Idir", this.dir);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("JustSpawned", this.just_spawned);
+        tag.setInteger("Idepth", this.depth);
+        tag.setInteger("Iradius", this.radius);
+        tag.setFloat("Ispeed", this.speed);
+        tag.setFloat("Idir", this.dir);
     }
 
     public EntityAgeable createChild(EntityAgeable entityageable) {
@@ -270,13 +270,13 @@ public class Island extends EntityAnimal {
                 this.posZ += 0.5;
             }
 
-            for (int var33 = 0; var33 < this.depth; var33++) {
+            for (int i = 0; i < this.depth; i++) {
                 izlast = 0;
                 ixlast = 0;
 
                 for (double curdir = -3.1415926; curdir < 3.1415926; curdir += deltadir) {
                     double tradius = this.radius;
-                    tradius /= var33 + 1;
+                    tradius /= i + 1;
                     double h = 0.75;
 
                     while (h < tradius) {
@@ -294,25 +294,21 @@ public class Island extends EntityAnimal {
                         if (ix != ixlast || iz != izlast) {
                             ixlast = ix;
                             izlast = iz;
-                            if (var33 == 0) {
+                            if (i == 0) {
                                 Block bid;
-                                if ((bid = this.worldObj.getBlock(ix, (int) this.posY - var33 + 1, iz)) == Blocks.air) {
+                                if ((bid = this.worldObj.getBlock(ix, (int) this.posY - i + 1, iz)) == Blocks.air) {
                                     if (this.worldObj.rand.nextInt(5000) == 1) {
-                                        this.worldObj.setBlock(ix, (int) this.posY - var33 + 1, iz, Blocks.lava);
+                                        this.worldObj.setBlock(ix, (int) this.posY - i + 1, iz, Blocks.lava);
                                     } else {
-                                        this.FastSetBlock(ix, (int) this.posY - var33 + 1, iz, Blocks.mycelium);
+                                        this.FastSetBlock(ix, (int) this.posY - i + 1, iz, Blocks.mycelium);
                                         if (this.worldObj.rand.nextInt(20) == 1
-                                            && this.worldObj.getBlock(ix, (int) this.posY - var33 + 2, iz)
-                                                == Blocks.air) {
+                                            && this.worldObj.getBlock(ix, (int) this.posY - i + 2, iz) == Blocks.air) {
                                             if (this.worldObj.rand.nextInt(2) == 1) {
-                                                this.worldObj.setBlock(
-                                                    ix,
-                                                    (int) this.posY - var33 + 2,
-                                                    iz,
-                                                    Blocks.brown_mushroom);
+                                                this.worldObj
+                                                    .setBlock(ix, (int) this.posY - i + 2, iz, Blocks.brown_mushroom);
                                             } else {
                                                 this.worldObj
-                                                    .setBlock(ix, (int) this.posY - var33 + 2, iz, Blocks.red_mushroom);
+                                                    .setBlock(ix, (int) this.posY - i + 2, iz, Blocks.red_mushroom);
                                             }
                                         }
                                     }
@@ -321,16 +317,15 @@ public class Island extends EntityAnimal {
                                     return;
                                 }
                             } else {
-                                Block bid = this.worldObj.getBlock(ix, (int) this.posY - var33 + 1, iz);
+                                Block bid = this.worldObj.getBlock(ix, (int) this.posY - i + 1, iz);
                                 if (bid == Blocks.stone) {
                                     if (!this.worldObj.isRemote) {
-                                        this.worldObj
-                                            .createExplosion(this, ix, this.posY - var33 + 1.0, iz, 5.0F, true);
+                                        this.worldObj.createExplosion(this, ix, this.posY - i + 1.0, iz, 5.0F, true);
                                     }
                                 } else if (this.worldObj.rand.nextInt(10) == 1) {
-                                    this.FastSetBlock(ix, (int) this.posY - var33 + 1, iz, Blocks.diamond_ore);
+                                    this.FastSetBlock(ix, (int) this.posY - i + 1, iz, Blocks.diamond_ore);
                                 } else {
-                                    this.FastSetBlock(ix, (int) this.posY - var33 + 1, iz, Blocks.end_stone);
+                                    this.FastSetBlock(ix, (int) this.posY - i + 1, iz, Blocks.end_stone);
                                 }
                             }
                         }
@@ -338,18 +333,18 @@ public class Island extends EntityAnimal {
                 }
             }
 
-            int var40 = 0;
+            int n = 0;
             if (this.posX < 0.0) {
-                var40 = -1;
+                n = -1;
             }
 
-            int var41 = 0;
+            int n2 = 0;
             if (this.posZ < 0.0) {
-                var41 = -1;
+                n2 = -1;
             }
 
-            this.worldObj.setBlock((int) this.posX + var40, (int) this.posY, (int) this.posZ + var41, Blocks.air);
-            this.FastSetBlock((int) this.posX + var40, (int) this.posY, (int) this.posZ + var41, Blocks.air);
+            this.worldObj.setBlock((int) this.posX + n, (int) this.posY, (int) this.posZ + n2, Blocks.air);
+            this.FastSetBlock((int) this.posX + n, (int) this.posY, (int) this.posZ + n2, Blocks.air);
         }
 
         if (this.worldObj.rand.nextInt(2 + 2000 / this.timer) == 1) {
@@ -360,9 +355,9 @@ public class Island extends EntityAnimal {
                 this.posX + 10.0,
                 this.posY + 5.0,
                 this.posZ + 10.0);
-            List var5 = this.worldObj.getEntitiesWithinAABB(Triffid.class, bb);
-            Iterator var2 = var5.iterator();
-            if (!var2.hasNext()) {
+            List entities = this.worldObj.getEntitiesWithinAABB(Triffid.class, bb);
+            Iterator iterator = entities.iterator();
+            if (!iterator.hasNext()) {
                 EntityCreature newent = (EntityCreature) spawnCreature(
                     this.worldObj,
                     "Triffid",
@@ -373,16 +368,16 @@ public class Island extends EntityAnimal {
         }
     }
 
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName(par1, par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
+    public static Entity spawnCreature(World world, String str, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName(str, world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
         }
 
-        return var8;
+        return entity;
     }
 
     protected Item getDropItem() {

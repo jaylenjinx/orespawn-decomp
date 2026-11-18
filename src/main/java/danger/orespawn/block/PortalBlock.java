@@ -10,13 +10,13 @@ public class PortalBlock extends BlockPortal {
 
     public PortalBlock(int i, int j) {}
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {}
+    public void updateTick(World world, int x, int y, int z, Random rand) {}
 
-    public boolean tryToCreatePortal(World par1World, int par2, int par3, int par4) {
+    public boolean tryToCreatePortal(World world, int x, int y, int z) {
         return false;
     }
 
-    public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5) {}
+    public void onNeighborBlockChange(World world, int x, int y, int z, int neighbor) {}
 
-    public void onEntityCollidedWithBlock(World par1World, int par2, int par3, int par4, Entity entity) {}
+    public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {}
 }

@@ -315,16 +315,16 @@ public class ModelCaterKiller extends ModelBase {
             this.seg1rleg.render(f5);
         }
 
-        for (int var27 = 0; var27 < 6; var27++) {
+        for (int i = 0; i < 6; i++) {
             zdist = MathHelper.cos(f2 * 1.7F * this.wingspeed + zpi) * 1.5F * f1;
-            this.seg2.rotationPointZ = 39.0F + (16.0F + zdist) * var27;
-            this.seg2lfoot.rotationPointZ = 39.0F + (16.0F + zdist) * var27;
-            this.seg2rfoot.rotationPointZ = 39.0F + (16.0F + zdist) * var27;
-            this.seg2ltopspike.rotationPointZ = 39.0F + (16.0F + zdist) * var27;
-            this.seg2rtopspike.rotationPointZ = 39.0F + (16.0F + zdist) * var27;
-            this.seg2lspike.rotationPointZ = 39.0F + (16.0F + zdist) * var27;
-            this.seg2rspike.rotationPointZ = 39.0F + (16.0F + zdist) * var27;
-            newangle = MathHelper.cos((float) (f2 * 0.4F * this.wingspeed - (Math.PI / 8) * var27)) * (float) Math.PI
+            this.seg2.rotationPointZ = 39.0F + (16.0F + zdist) * i;
+            this.seg2lfoot.rotationPointZ = 39.0F + (16.0F + zdist) * i;
+            this.seg2rfoot.rotationPointZ = 39.0F + (16.0F + zdist) * i;
+            this.seg2ltopspike.rotationPointZ = 39.0F + (16.0F + zdist) * i;
+            this.seg2rtopspike.rotationPointZ = 39.0F + (16.0F + zdist) * i;
+            this.seg2lspike.rotationPointZ = 39.0F + (16.0F + zdist) * i;
+            this.seg2rspike.rotationPointZ = 39.0F + (16.0F + zdist) * i;
+            newangle = MathHelper.cos((float) (f2 * 0.4F * this.wingspeed - (Math.PI / 8) * i)) * (float) Math.PI
                 * 0.07F;
             this.seg2lspike.rotateAngleZ = newangle;
             this.seg2rspike.rotateAngleZ = -newangle;
@@ -347,9 +347,8 @@ public class ModelCaterKiller extends ModelBase {
         this.seg3rtopspike.rotationPointZ = this.seg3.rotationPointZ;
         this.seg3lbackspike.rotationPointZ = this.seg3.rotationPointZ + 6.0F;
         this.seg3rbackspike.rotationPointZ = this.seg3.rotationPointZ + 6.0F;
-        int var28 = 6;
-        newangle = MathHelper.cos((float) (f2 * 0.4F * this.wingspeed - (Math.PI / 8) * var28)) * (float) Math.PI
-            * 0.07F;
+        int n = 6;
+        newangle = MathHelper.cos((float) (f2 * 0.4F * this.wingspeed - (Math.PI / 8) * n)) * (float) Math.PI * 0.07F;
         this.seg3lspike.rotateAngleZ = newangle;
         this.seg3rspike.rotateAngleZ = -newangle;
         newangle = MathHelper.cos(f2 * 0.81F * this.wingspeed) * (float) Math.PI * 0.04F;
@@ -377,8 +376,8 @@ public class ModelCaterKiller extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6,
-        Entity par7Entity) {
-        super.setRotationAngles(par1, par2, par3, par4, par5, par6, par7Entity);
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
+        float headPitch, float scale, Entity entity) {
+        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
     }
 }

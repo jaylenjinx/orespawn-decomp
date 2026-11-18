@@ -15,9 +15,9 @@ public class MyEntityAIWander extends EntityAIBase {
     private double zPosition;
     private float speed;
 
-    public MyEntityAIWander(EntityCreature par1EntityCreature, float par2) {
-        this.entity = par1EntityCreature;
-        this.speed = par2;
+    public MyEntityAIWander(EntityCreature creature, float speed2) {
+        this.entity = creature;
+        this.speed = speed2;
         this.setMutexBits(1);
     }
 
@@ -28,13 +28,13 @@ public class MyEntityAIWander extends EntityAIBase {
         } else if (this.entity instanceof EntityTameable && ((EntityTameable) this.entity).isSitting()) {
             return false;
         } else {
-            Vec3 var1 = RandomPositionGenerator.findRandomTarget(this.entity, 10, 7);
-            if (var1 == null) {
+            Vec3 randomTarget = RandomPositionGenerator.findRandomTarget(this.entity, 10, 7);
+            if (randomTarget == null) {
                 return false;
             } else {
-                this.xPosition = var1.xCoord;
-                this.yPosition = var1.yCoord;
-                this.zPosition = var1.zCoord;
+                this.xPosition = randomTarget.xCoord;
+                this.yPosition = randomTarget.yCoord;
+                this.zPosition = randomTarget.zCoord;
                 return true;
             }
         }
@@ -43,11 +43,11 @@ public class MyEntityAIWander extends EntityAIBase {
     public boolean continueExecuting() {
         if (this.entity != null && this.entity instanceof EntityTameable) {
             EntityTameable gf = (EntityTameable) this.entity;
-            EntityLivingBase var1 = gf.getOwner();
-            if (var1 != null && (int) gf.posZ == (int) var1.posZ
-                && (int) gf.posX == (int) var1.posX
-                && (int) gf.posY < (int) var1.posY + 2
-                && (int) gf.posY > (int) var1.posY - 2) {
+            EntityLivingBase owner = gf.getOwner();
+            if (owner != null && (int) gf.posZ == (int) owner.posZ
+                && (int) gf.posX == (int) owner.posX
+                && (int) gf.posY < (int) owner.posY + 2
+                && (int) gf.posY > (int) owner.posY - 2) {
                 return false;
             }
         }

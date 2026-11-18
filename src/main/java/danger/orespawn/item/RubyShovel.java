@@ -11,14 +11,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class RubyShovel extends ItemSpade {
 
-    public RubyShovel(int par1, ToolMaterial par2) {
-        super(par2);
+    public RubyShovel(int n, ToolMaterial toolMaterial) {
+        super(toolMaterial);
         this.maxStackSize = 1;
         this.setMaxDamage(1500);
         this.setCreativeTab(CreativeTabs.tabTools);
     }
 
-    public int getDamageVsEntity(Entity par1Entity) {
+    public int getDamageVsEntity(Entity entity) {
         return 5;
     }
 

@@ -24,65 +24,58 @@ public class BlockExperienceLeaves extends BlockLeaves {
 
     private IIcon generic_solid = null;
 
-    public BlockExperienceLeaves(int par1) {}
+    public BlockExperienceLeaves(int n) {}
 
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        par3List.add(new ItemStack(Item.getItemFromBlock(this), 1, 0));
+    public void getSubBlocks(Item item, CreativeTabs tab, List list) {
+        list.add(new ItemStack(Item.getItemFromBlock(this), 1, 0));
     }
 
-    public void dropBlockAsItemWithChance(World par1World, int par2, int par3, int par4, int par5, float par6,
-        int par7) {
-        if (!par1World.isRemote) {}
+    public void dropBlockAsItemWithChance(World world, int x, int y, int z, int meta, float chance, int fortune) {
+        if (!world.isRemote) {}
     }
 
-    public int quantityDropped(Random par1Random) {
+    public int quantityDropped(Random rand) {
         return 0;
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        int var7 = 2;
+    public void updateTick(World world, int x, int y, int z, Random rand) {
+        int n = 2;
         int totaldist = 0;
-        if (!par1World.isRemote && par1World
-            .checkChunksExist(par2 - var7, par3 - var7, par4 - var7, par2 + var7, par3 + var7, par4 + var7)) {
-            for (int var12 = -var7; var12 <= var7; var12++) {
-                for (int var13 = -var7; var13 <= 0; var13++) {
-                    for (int var14 = -var7; var14 <= var7; var14++) {
-                        totaldist = Math.abs(var12) + Math.abs(var13) + Math.abs(var14);
+        if (!world.isRemote && world.checkChunksExist(x - n, y - n, z - n, x + n, y + n, z + n)) {
+            for (int i = -n; i <= n; i++) {
+                for (int j = -n; j <= 0; j++) {
+                    for (int k = -n; k <= n; k++) {
+                        totaldist = Math.abs(i) + Math.abs(j) + Math.abs(k);
                         if (totaldist <= 3) {
-                            Block bid = par1World.getBlock(par2 + var12, par3 + var13, par4 + var14);
-                            if (bid != null
-                                && bid.canSustainLeaves(par1World, par2 + var12, par3 + var13, par4 + var14)) {
-                                long t = par1World.getWorldTime();
+                            Block bid = world.getBlock(x + i, y + j, z + k);
+                            if (bid != null && bid.canSustainLeaves(world, x + i, y + j, z + k)) {
+                                long t = world.getWorldTime();
                                 t %= 24000L;
                                 if (t >= 14000L && t <= 22000L) {
-                                    if (par1World.rand.nextInt(65) == 1) {
-                                        bid = par1World.getBlock(par2, par3 + 1, par4);
+                                    if (world.rand.nextInt(65) == 1) {
+                                        bid = world.getBlock(x, y + 1, z);
                                         if (bid == Blocks.air) {
                                             this.dropBlockAsItem(
-                                                par1World,
-                                                par2,
-                                                par3 + 2,
-                                                par4,
+                                                world,
+                                                x,
+                                                y + 2,
+                                                z,
                                                 new ItemStack(Items.experience_bottle));
                                         }
                                     }
 
-                                    if (par1World.rand.nextInt(75) == 1) {
-                                        bid = par1World.getBlock(par2, par3 - 1, par4);
+                                    if (world.rand.nextInt(75) == 1) {
+                                        bid = world.getBlock(x, y - 1, z);
                                         if (bid == Blocks.air) {
-                                            EntityExpBottle var2x = new EntityExpBottle(
-                                                par1World,
-                                                par2,
-                                                par3 - 1,
-                                                par4);
-                                            var2x.setLocationAndAngles(par2, par3 - 1, par4, 0.0F, 0.0F);
-                                            var2x.setThrowableHeading(
-                                                (par1World.rand.nextFloat() - par1World.rand.nextFloat()) / 2.0F,
+                                            EntityExpBottle entityExpBottle = new EntityExpBottle(world, x, y - 1, z);
+                                            entityExpBottle.setLocationAndAngles(x, y - 1, z, 0.0F, 0.0F);
+                                            entityExpBottle.setThrowableHeading(
+                                                (world.rand.nextFloat() - world.rand.nextFloat()) / 2.0F,
                                                 -0.1F,
-                                                (par1World.rand.nextFloat() - par1World.rand.nextFloat()) / 2.0F,
+                                                (world.rand.nextFloat() - world.rand.nextFloat()) / 2.0F,
                                                 0.4F,
                                                 5.0F);
-                                            par1World.spawnEntityInWorld(var2x);
+                                            world.spawnEntityInWorld(entityExpBottle);
                                         }
                                     }
 
@@ -96,12 +89,12 @@ public class BlockExperienceLeaves extends BlockLeaves {
                 }
             }
 
-            this.removeLeaves(par1World, par2, par3, par4);
+            this.removeLeaves(world, x, y, z);
         }
     }
 
-    public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        long t = par1World.getWorldTime();
+    public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
+        long t = world.getWorldTime();
         t %= 24000L;
         if (t >= 13000L && t <= 23000L) {
             int rate = 0;
@@ -113,43 +106,43 @@ public class BlockExperienceLeaves extends BlockLeaves {
                 rate = (int) (t - 22000L) / 2;
             }
 
-            if (par1World.rand.nextInt(200 + rate) == 1) {
-                Block bid = par1World.getBlock(par2, par3 + 1, par4);
+            if (world.rand.nextInt(200 + rate) == 1) {
+                Block bid = world.getBlock(x, y + 1, z);
                 if (bid == Blocks.air) {
                     for (int i = 0; i < 10; i++) {
-                        par1World.spawnParticle(
+                        world.spawnParticle(
                             "fireworksSpark",
-                            par2,
-                            par3 + 1.25,
-                            par4,
-                            par1World.rand.nextGaussian(),
-                            Math.abs(par1World.rand.nextGaussian()),
-                            par1World.rand.nextGaussian());
+                            x,
+                            y + 1.25,
+                            z,
+                            world.rand.nextGaussian(),
+                            Math.abs(world.rand.nextGaussian()),
+                            world.rand.nextGaussian());
                     }
                 }
             }
 
-            if (par1World.rand.nextInt(40 + rate) == 1) {
-                Block bid = par1World.getBlock(par2, par3 - 1, par4);
+            if (world.rand.nextInt(40 + rate) == 1) {
+                Block bid = world.getBlock(x, y - 1, z);
                 if (bid == Blocks.air) {
                     for (int i = 0; i < 4; i++) {
-                        par1World.spawnParticle(
+                        world.spawnParticle(
                             "fireworksSpark",
-                            par2,
-                            par3 - 1.25,
-                            par4,
-                            par1World.rand.nextFloat() - par1World.rand.nextFloat(),
-                            -Math.abs(par1World.rand.nextFloat()),
-                            par1World.rand.nextFloat() - par1World.rand.nextFloat());
+                            x,
+                            y - 1.25,
+                            z,
+                            world.rand.nextFloat() - world.rand.nextFloat(),
+                            -Math.abs(world.rand.nextFloat()),
+                            world.rand.nextFloat() - world.rand.nextFloat());
                     }
                 }
             }
         }
     }
 
-    private void removeLeaves(World par1World, int par2, int par3, int par4) {
-        this.dropBlockAsItem(par1World, par2, par3, par4, 0, 0);
-        par1World.setBlock(par2, par3, par4, Blocks.air, 0, 2);
+    private void removeLeaves(World world, int x, int y, int z) {
+        this.dropBlockAsItem(world, x, y, z, 0, 0);
+        world.setBlock(x, y, z, Blocks.air, 0, 2);
     }
 
     public boolean isOpaqueCube() {
@@ -157,8 +150,8 @@ public class BlockExperienceLeaves extends BlockLeaves {
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
-        Block i1 = par1IBlockAccess.getBlock(par2, par3, par4);
+    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side) {
+        Block i1 = blockAccess.getBlock(x, y, z);
         return OreSpawnMain.FastGraphicsLeaves == 0 || i1 != this;
     }
 
@@ -171,7 +164,7 @@ public class BlockExperienceLeaves extends BlockLeaves {
     }
 
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int par1, int par2) {
+    public IIcon getIcon(int side, int meta) {
         return OreSpawnMain.FastGraphicsLeaves != 0 ? this.generic_solid : this.blockIcon;
     }
 

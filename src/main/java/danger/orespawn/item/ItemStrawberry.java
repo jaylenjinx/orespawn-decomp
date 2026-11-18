@@ -8,8 +8,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemStrawberry extends ItemFood {
 
-    public ItemStrawberry(int par1, int par2, float par3, boolean par4) {
-        super(par2, par3, par4);
+    public ItemStrawberry(int n, int n2, float f, boolean flag) {
+        super(n2, f, flag);
     }
 
     @SideOnly(Side.CLIENT)

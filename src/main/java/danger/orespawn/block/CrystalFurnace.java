@@ -34,10 +34,10 @@ public class CrystalFurnace extends BlockContainer {
     @SideOnly(Side.CLIENT)
     private IIcon furnaceIconFront;
 
-    public CrystalFurnace(int par1, boolean par2, float f1, float f2) {
+    public CrystalFurnace(int n, boolean isActive2, float f1, float f2) {
         super(Material.rock);
-        this.isActive = par2;
-        if (!par2) {
+        this.isActive = isActive2;
+        if (!isActive2) {
             this.setCreativeTab(CreativeTabs.tabDecorations);
         } else {
             this.setLightLevel(0.6F);
@@ -55,63 +55,63 @@ public class CrystalFurnace extends BlockContainer {
         return false;
     }
 
-    public Item getItemDropped(int par1, Random par2Random, int par3) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         return Item.getItemFromBlock(OreSpawnMain.CrystalFurnaceBlock);
     }
 
     @SideOnly(Side.CLIENT)
-    public Item idPicked(World par1World, int par2, int par3, int par4) {
+    public Item idPicked(World world, int x, int y, int z) {
         return Item.getItemFromBlock(OreSpawnMain.CrystalFurnaceBlock);
     }
 
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int par1, int par2) {
-        return par1 == 1 ? this.furnaceIconTop
-            : (par1 == 0 ? this.furnaceIconTop : (par1 != par2 ? this.blockIcon : this.furnaceIconFront));
+    public IIcon getIcon(int side, int meta) {
+        return side == 1 ? this.furnaceIconTop
+            : (side == 0 ? this.furnaceIconTop : (side != meta ? this.blockIcon : this.furnaceIconFront));
     }
 
     @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister par1IIconRegister) {
-        this.blockIcon = par1IIconRegister.registerIcon(
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        this.blockIcon = iconRegister.registerIcon(
             "OreSpawn:" + this.getUnlocalizedName()
                 .substring(5) + "_side");
-        this.furnaceIconFront = par1IIconRegister.registerIcon(
+        this.furnaceIconFront = iconRegister.registerIcon(
             "OreSpawn:" + this.getUnlocalizedName()
                 .substring(5) + (this.isActive ? "_front_off" : "_front_off"));
-        this.furnaceIconTop = par1IIconRegister.registerIcon(
+        this.furnaceIconTop = iconRegister.registerIcon(
             "OreSpawn:" + this.getUnlocalizedName()
                 .substring(5) + "_top");
     }
 
-    public static void updateFurnaceBlockState(boolean par0, World par1World, int par2, int par3, int par4) {
-        int l = par1World.getBlockMetadata(par2, par3, par4);
-        TileEntity tileentity = par1World.getTileEntity(par2, par3, par4);
+    public static void updateFurnaceBlockState(boolean flag, World world, int x, int y, int z) {
+        int l = world.getBlockMetadata(x, y, z);
+        TileEntity tileentity = world.getTileEntity(x, y, z);
         keepFurnaceInventory = true;
-        if (par0) {
-            par1World.setBlock(par2, par3, par4, OreSpawnMain.CrystalFurnaceOnBlock);
+        if (flag) {
+            world.setBlock(x, y, z, OreSpawnMain.CrystalFurnaceOnBlock);
         } else {
-            par1World.setBlock(par2, par3, par4, OreSpawnMain.CrystalFurnaceBlock);
+            world.setBlock(x, y, z, OreSpawnMain.CrystalFurnaceBlock);
         }
 
         keepFurnaceInventory = false;
-        par1World.setBlockMetadataWithNotify(par2, par3, par4, l, 2);
+        world.setBlockMetadataWithNotify(x, y, z, l, 2);
         if (tileentity != null) {
             tileentity.validate();
-            par1World.setTileEntity(par2, par3, par4, tileentity);
+            world.setTileEntity(x, y, z, tileentity);
         }
     }
 
-    public void onBlockAdded(World par1World, int par2, int par3, int par4) {
-        super.onBlockAdded(par1World, par2, par3, par4);
-        this.setDefaultDirection(par1World, par2, par3, par4);
+    public void onBlockAdded(World world, int x, int y, int z) {
+        super.onBlockAdded(world, x, y, z);
+        this.setDefaultDirection(world, x, y, z);
     }
 
-    private void setDefaultDirection(World par1World, int par2, int par3, int par4) {
-        if (!par1World.isRemote) {
-            Block l = par1World.getBlock(par2, par3, par4 - 1);
-            Block i1 = par1World.getBlock(par2, par3, par4 + 1);
-            Block j1 = par1World.getBlock(par2 - 1, par3, par4);
-            Block k1 = par1World.getBlock(par2 + 1, par3, par4);
+    private void setDefaultDirection(World world, int x, int y, int z) {
+        if (!world.isRemote) {
+            Block l = world.getBlock(x, y, z - 1);
+            Block i1 = world.getBlock(x, y, z + 1);
+            Block j1 = world.getBlock(x - 1, y, z);
+            Block k1 = world.getBlock(x + 1, y, z);
             byte b0 = 3;
             if (l.func_149730_j() && !i1.func_149730_j()) {
                 b0 = 3;
@@ -129,19 +129,18 @@ public class CrystalFurnace extends BlockContainer {
                 b0 = 4;
             }
 
-            par1World.setBlockMetadataWithNotify(par2, par3, par4, b0, 2);
+            world.setBlockMetadataWithNotify(x, y, z, b0, 2);
         }
     }
 
-    public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer,
-        int par6, float par7, float par8, float par9) {
-        if (par1World.isRemote) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
+        float hitY, float hitZ) {
+        if (world.isRemote) {
             return true;
         } else {
-            TileEntityCrystalFurnace tileentitycrystalfurnace = (TileEntityCrystalFurnace) par1World
-                .getTileEntity(par2, par3, par4);
+            TileEntityCrystalFurnace tileentitycrystalfurnace = (TileEntityCrystalFurnace) world.getTileEntity(x, y, z);
             if (tileentitycrystalfurnace != null) {
-                par5EntityPlayer.openGui(OreSpawnMain.instance, 0, par1World, par2, par3, par4);
+                player.openGui(OreSpawnMain.instance, 0, world, x, y, z);
             }
 
             return true;
@@ -149,59 +148,56 @@ public class CrystalFurnace extends BlockContainer {
     }
 
     @SideOnly(Side.CLIENT)
-    public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random par5Random) {
+    public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
         if (this.isActive) {
-            int l = par1World.getBlockMetadata(par2, par3, par4);
-            float f = par2 + 0.5F;
-            float f1 = par3 + 0.0F + par5Random.nextFloat() * 6.0F / 16.0F;
-            float f2 = par4 + 0.5F;
-            float f3 = par5Random.nextFloat() * 0.6F - 0.3F;
-            float f4 = par5Random.nextFloat() * 0.6F - 0.3F;
+            int l = world.getBlockMetadata(x, y, z);
+            float f = x + 0.5F;
+            float f1 = y + 0.0F + rand.nextFloat() * 6.0F / 16.0F;
+            float f2 = z + 0.5F;
+            float f3 = rand.nextFloat() * 0.6F - 0.3F;
+            float f4 = rand.nextFloat() * 0.6F - 0.3F;
             if (l == 4) {
-                par1World.spawnParticle("smoke", f - f3, f1, f2 + f4, 0.0, 0.0, 0.0);
-                par1World.spawnParticle("flame", f - f3, f1, f2 + f4, 0.0, 0.0, 0.0);
+                world.spawnParticle("smoke", f - f3, f1, f2 + f4, 0.0, 0.0, 0.0);
+                world.spawnParticle("flame", f - f3, f1, f2 + f4, 0.0, 0.0, 0.0);
             } else if (l == 5) {
-                par1World.spawnParticle("smoke", f + f3, f1, f2 + f4, 0.0, 0.0, 0.0);
-                par1World.spawnParticle("flame", f + f3, f1, f2 + f4, 0.0, 0.0, 0.0);
+                world.spawnParticle("smoke", f + f3, f1, f2 + f4, 0.0, 0.0, 0.0);
+                world.spawnParticle("flame", f + f3, f1, f2 + f4, 0.0, 0.0, 0.0);
             } else if (l == 2) {
-                par1World.spawnParticle("smoke", f + f4, f1, f2 - f3, 0.0, 0.0, 0.0);
-                par1World.spawnParticle("flame", f + f4, f1, f2 - f3, 0.0, 0.0, 0.0);
+                world.spawnParticle("smoke", f + f4, f1, f2 - f3, 0.0, 0.0, 0.0);
+                world.spawnParticle("flame", f + f4, f1, f2 - f3, 0.0, 0.0, 0.0);
             } else if (l == 3) {
-                par1World.spawnParticle("smoke", f + f4, f1, f2 + f3, 0.0, 0.0, 0.0);
-                par1World.spawnParticle("flame", f + f4, f1, f2 + f3, 0.0, 0.0, 0.0);
+                world.spawnParticle("smoke", f + f4, f1, f2 + f3, 0.0, 0.0, 0.0);
+                world.spawnParticle("flame", f + f4, f1, f2 + f3, 0.0, 0.0, 0.0);
             }
         }
     }
 
-    public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLivingBase,
-        ItemStack par6ItemStack) {
-        int l = MathHelper.floor_double(par5EntityLivingBase.rotationYaw * 4.0F / 360.0F + 0.5) & 3;
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase placer, ItemStack stack) {
+        int l = MathHelper.floor_double(placer.rotationYaw * 4.0F / 360.0F + 0.5) & 3;
         if (l == 0) {
-            par1World.setBlockMetadataWithNotify(par2, par3, par4, 2, 2);
+            world.setBlockMetadataWithNotify(x, y, z, 2, 2);
         }
 
         if (l == 1) {
-            par1World.setBlockMetadataWithNotify(par2, par3, par4, 5, 2);
+            world.setBlockMetadataWithNotify(x, y, z, 5, 2);
         }
 
         if (l == 2) {
-            par1World.setBlockMetadataWithNotify(par2, par3, par4, 3, 2);
+            world.setBlockMetadataWithNotify(x, y, z, 3, 2);
         }
 
         if (l == 3) {
-            par1World.setBlockMetadataWithNotify(par2, par3, par4, 4, 2);
+            world.setBlockMetadataWithNotify(x, y, z, 4, 2);
         }
 
-        if (par6ItemStack.hasDisplayName()) {
-            ((TileEntityCrystalFurnace) par1World.getTileEntity(par2, par3, par4))
-                .func_145951_a(par6ItemStack.getDisplayName());
+        if (stack.hasDisplayName()) {
+            ((TileEntityCrystalFurnace) world.getTileEntity(x, y, z)).func_145951_a(stack.getDisplayName());
         }
     }
 
-    public void breakBlock(World par1World, int par2, int par3, int par4, Block par5, int par6) {
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
         if (!keepFurnaceInventory) {
-            TileEntityCrystalFurnace tileentitycrystalfurnace = (TileEntityCrystalFurnace) par1World
-                .getTileEntity(par2, par3, par4);
+            TileEntityCrystalFurnace tileentitycrystalfurnace = (TileEntityCrystalFurnace) world.getTileEntity(x, y, z);
             if (tileentitycrystalfurnace != null) {
                 for (int j1 = 0; j1 < tileentitycrystalfurnace.getSizeInventory(); j1++) {
                     ItemStack itemstack = tileentitycrystalfurnace.getStackInSlot(j1);
@@ -218,10 +214,10 @@ public class CrystalFurnace extends BlockContainer {
 
                             itemstack.stackSize -= k1;
                             EntityItem entityitem = new EntityItem(
-                                par1World,
-                                par2 + f,
-                                par3 + f1,
-                                par4 + f2,
+                                world,
+                                x + f,
+                                y + f1,
+                                z + f2,
                                 new ItemStack(itemstack.getItem(), k1, itemstack.getItemDamage()));
                             if (itemstack.hasTagCompound()) {
                                 entityitem.getEntityItem()
@@ -234,27 +230,27 @@ public class CrystalFurnace extends BlockContainer {
                             entityitem.motionX = (float) this.furnaceRand.nextGaussian() * f3;
                             entityitem.motionY = (float) this.furnaceRand.nextGaussian() * f3 + 0.2F;
                             entityitem.motionZ = (float) this.furnaceRand.nextGaussian() * f3;
-                            par1World.spawnEntityInWorld(entityitem);
+                            world.spawnEntityInWorld(entityitem);
                         }
                     }
                 }
 
-                par1World.func_147453_f(par2, par3, par4, par5);
+                world.func_147453_f(x, y, z, block);
             }
         }
 
-        super.breakBlock(par1World, par2, par3, par4, par5, par6);
+        super.breakBlock(world, x, y, z, block, meta);
     }
 
     public boolean hasComparatorInputOverride() {
         return true;
     }
 
-    public int getComparatorInputOverride(World par1World, int par2, int par3, int par4, int par5) {
-        return Container.calcRedstoneFromInventory((IInventory) par1World.getTileEntity(par2, par3, par4));
+    public int getComparatorInputOverride(World world, int x, int y, int z, int n) {
+        return Container.calcRedstoneFromInventory((IInventory) world.getTileEntity(x, y, z));
     }
 
-    public TileEntity createNewTileEntity(World var1, int var2) {
+    public TileEntity createNewTileEntity(World world, int meta) {
         return new TileEntityCrystalFurnace();
     }
 }

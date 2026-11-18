@@ -19,13 +19,12 @@ public class CrystalFurnaceGUI extends GuiContainer {
         "textures/gui/container/furnace.png");
     private TileEntityCrystalFurnace furnaceInventory;
 
-    public CrystalFurnaceGUI(InventoryPlayer par1InventoryPlayer,
-        TileEntityCrystalFurnace par2TileEntityCrystalFurnace) {
-        super(new ContainerCrystalFurnace(par1InventoryPlayer, par2TileEntityCrystalFurnace));
-        this.furnaceInventory = par2TileEntityCrystalFurnace;
+    public CrystalFurnaceGUI(InventoryPlayer playerInventory, TileEntityCrystalFurnace tileEntityCrystalFurnace) {
+        super(new ContainerCrystalFurnace(playerInventory, tileEntityCrystalFurnace));
+        this.furnaceInventory = tileEntityCrystalFurnace;
     }
 
-    protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String s = this.furnaceInventory.hasCustomInventoryName() ? this.furnaceInventory.getInventoryName()
             : I18n.format(this.furnaceInventory.getInventoryName(), new Object[0]);
         this.fontRendererObj.drawString(s, this.xSize / 2 - this.fontRendererObj.getStringWidth(s) / 2, 6, 4210752);
@@ -33,7 +32,7 @@ public class CrystalFurnaceGUI extends GuiContainer {
             .drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
     }
 
-    protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager()
             .bindTexture(furnaceGuiTextures);

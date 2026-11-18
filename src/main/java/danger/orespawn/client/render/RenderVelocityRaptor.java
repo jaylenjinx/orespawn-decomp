@@ -20,35 +20,35 @@ public class RenderVelocityRaptor extends RenderLiving {
     private static final ResourceLocation texture2 = new ResourceLocation("orespawn", "velocityraptor2.png");
     private static final ResourceLocation texture3 = new ResourceLocation("orespawn", "velocityraptor3.png");
 
-    public RenderVelocityRaptor(ModelVelocityRaptor par1ModelBase, float par2, float par3) {
-        super(par1ModelBase, par2 * par3);
+    public RenderVelocityRaptor(ModelVelocityRaptor modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
         this.model = (ModelVelocityRaptor) this.mainModel;
-        this.scale = par3;
+        this.scale = scale2;
     }
 
-    public void renderVelocityRaptor(VelocityRaptor par1EntityVelocityRaptor, double par2, double par4, double par6,
-        float par8, float par9) {
-        super.doRender(par1EntityVelocityRaptor, par2, par4, par6, par8, par9);
+    public void renderVelocityRaptor(VelocityRaptor entityVelocityRaptor, double x, double y, double z, float yaw,
+        float partialTicks) {
+        super.doRender(entityVelocityRaptor, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(EntityLiving par1EntityLiving, double par2, double par4, double par6, float par8, float par9) {
-        this.renderVelocityRaptor((VelocityRaptor) par1EntityLiving, par2, par4, par6, par8, par9);
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderVelocityRaptor((VelocityRaptor) entity, x, y, z, yaw, partialTicks);
     }
 
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        this.renderVelocityRaptor((VelocityRaptor) par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderVelocityRaptor((VelocityRaptor) entity, x, y, z, yaw, partialTicks);
     }
 
-    protected void preRenderScale(VelocityRaptor par1Entity, float par2) {
-        if (par1Entity != null && par1Entity.isChild()) {
+    protected void preRenderScale(VelocityRaptor entity, float f) {
+        if (entity != null && entity.isChild()) {
             GL11.glScalef(this.scale / 2.0F, this.scale / 2.0F, this.scale / 2.0F);
         } else {
             GL11.glScalef(this.scale, this.scale, this.scale);
         }
     }
 
-    protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
-        this.preRenderScale((VelocityRaptor) par1EntityLiving, par2);
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((VelocityRaptor) entity, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(Entity entity) {

@@ -30,8 +30,8 @@ public class Flounder extends EntityAnimal {
     private int ty = 0;
     private int tz = 0;
 
-    public Flounder(World par1World) {
-        super(par1World);
+    public Flounder(World world) {
+        super(world);
         this.setSize(0.55F, 0.25F);
         this.moveSpeed = 0.25F;
         this.fireResistance = 15;
@@ -101,12 +101,12 @@ public class Flounder extends EntityAnimal {
         return Items.fish;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
-        int var3 = 0;
-        var3 = this.rand.nextInt(2);
-        var3++;
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int roll = 0;
+        roll = this.rand.nextInt(2);
+        roll++;
 
-        for (int var4 = 0; var4 < var3; var4++) {
+        for (int i = 0; i < roll; i++) {
             this.dropItem(Items.fish, 1);
         }
     }
@@ -142,26 +142,26 @@ public class Flounder extends EntityAnimal {
             }
         }
 
-        for (int var12 = -dx; var12 <= dx; var12++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dz; j <= dz; j++) {
-                Block bidx = this.worldObj.getBlock(x + var12, y + dy, z + j);
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y + dy;
                         this.tz = z + j;
                         found++;
                     }
                 }
 
-                bidx = this.worldObj.getBlock(x + var12, y - dy, z + j);
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
                 if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
-                    int d = dy * dy + j * j + var12 * var12;
+                    int d = dy * dy + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var12;
+                        this.tx = x + i;
                         this.ty = y - dy;
                         this.tz = z + j;
                         found++;
@@ -170,26 +170,26 @@ public class Flounder extends EntityAnimal {
             }
         }
 
-        for (int var13 = -dx; var13 <= dx; var13++) {
+        for (int i = -dx; i <= dx; i++) {
             for (int j = -dy; j <= dy; j++) {
-                Block bidxx = this.worldObj.getBlock(x + var13, y + j, z + dz);
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z + dz;
                         found++;
                     }
                 }
 
-                bidxx = this.worldObj.getBlock(x + var13, y + j, z - dz);
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
                 if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
-                    int d = dz * dz + j * j + var13 * var13;
+                    int d = dz * dz + j * j + i * i;
                     if (d < this.closest) {
                         this.closest = d;
-                        this.tx = x + var13;
+                        this.tx = x + i;
                         this.ty = y + j;
                         this.tz = z - dz;
                         found++;
@@ -250,8 +250,8 @@ public class Flounder extends EntityAnimal {
     }
 
     private int findBuddies() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(Flounder.class, this.boundingBox.expand(16.0, 8.0, 16.0));
-        return var5.size();
+        List entities = this.worldObj.getEntitiesWithinAABB(Flounder.class, this.boundingBox.expand(16.0, 8.0, 16.0));
+        return entities.size();
     }
 
     public boolean getCanSpawnHere() {
@@ -277,15 +277,15 @@ public class Flounder extends EntityAnimal {
         return this.spawnBabyAnimal(entityageable);
     }
 
-    public Flounder spawnBabyAnimal(EntityAgeable par1EntityAgeable) {
+    public Flounder spawnBabyAnimal(EntityAgeable entityAgeable) {
         return new Flounder(this.worldObj);
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.fish;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.fish;
     }
 
-    public boolean isBreedingItem(ItemStack par1ItemStack) {
-        return par1ItemStack.getItem() == OreSpawnMain.MyCrystalApple;
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
     }
 }

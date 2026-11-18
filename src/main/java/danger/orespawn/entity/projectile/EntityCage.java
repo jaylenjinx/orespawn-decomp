@@ -127,21 +127,21 @@ public class EntityCage extends EntityThrowable {
     private World throwerWorld = null;
     private EntityPlayer thrower = null;
 
-    public EntityCage(World par1World) {
-        super(par1World);
-        this.throwerWorld = par1World;
+    public EntityCage(World world) {
+        super(world);
+        this.throwerWorld = world;
     }
 
-    public EntityCage(World par1World, int i) {
-        super(par1World);
-        this.throwerWorld = par1World;
+    public EntityCage(World world, int i) {
+        super(world);
+        this.throwerWorld = world;
         this.my_index = i;
     }
 
-    public EntityCage(World par1World, EntityPlayer par2EntityLiving, int i) {
-        super(par1World, par2EntityLiving);
-        this.throwerWorld = par1World;
-        this.thrower = par2EntityLiving;
+    public EntityCage(World world, EntityPlayer living, int i) {
+        super(world, living);
+        this.throwerWorld = world;
+        this.thrower = living;
         this.my_index = i;
         if (this.thrower.worldObj != null) {
             this.throwerWorld = this.thrower.worldObj;
@@ -152,31 +152,31 @@ public class EntityCage extends EntityThrowable {
         return this.my_index;
     }
 
-    protected void onImpact(MovingObjectPosition par1MovingObjectPosition) {
-        if (par1MovingObjectPosition.entityHit != null && this.rand.nextInt(10) >= 2) {
+    protected void onImpact(MovingObjectPosition hit) {
+        if (hit.entityHit != null && this.rand.nextInt(10) >= 2) {
             if (this.throwerWorld != null) {
-                for (int var3 = 0; var3 < 4; var3++) {
+                for (int i = 0; i < 4; i++) {
                     this.throwerWorld.spawnParticle(
                         "smoke",
-                        par1MovingObjectPosition.entityHit.posX,
-                        par1MovingObjectPosition.entityHit.posY + 0.25,
-                        par1MovingObjectPosition.entityHit.posZ,
+                        hit.entityHit.posX,
+                        hit.entityHit.posY + 0.25,
+                        hit.entityHit.posZ,
                         0.0,
                         0.0,
                         0.0);
                     this.throwerWorld.spawnParticle(
                         "explode",
-                        par1MovingObjectPosition.entityHit.posX,
-                        par1MovingObjectPosition.entityHit.posY + 0.25,
-                        par1MovingObjectPosition.entityHit.posZ,
+                        hit.entityHit.posX,
+                        hit.entityHit.posY + 0.25,
+                        hit.entityHit.posZ,
                         0.0,
                         0.0,
                         0.0);
                     this.throwerWorld.spawnParticle(
                         "reddust",
-                        par1MovingObjectPosition.entityHit.posX,
-                        par1MovingObjectPosition.entityHit.posY + 0.25,
-                        par1MovingObjectPosition.entityHit.posZ,
+                        hit.entityHit.posX,
+                        hit.entityHit.posY + 0.25,
+                        hit.entityHit.posZ,
                         0.0,
                         0.0,
                         0.0);
@@ -187,7 +187,7 @@ public class EntityCage extends EntityThrowable {
                 }
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityPlayer) {
+            if (hit.entityHit instanceof EntityPlayer) {
                 if (!this.worldObj.isRemote) {
                     this.dropItem(OreSpawnMain.CageEmpty, 1);
                     this.setDead();
@@ -196,86 +196,86 @@ public class EntityCage extends EntityThrowable {
                 return;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof SpiderDriver) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof SpiderDriver) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedSpiderDriver, 1);
-            } else if (par1MovingObjectPosition.entityHit instanceof EntitySpider) {
-                if (par1MovingObjectPosition.entityHit instanceof EntityCaveSpider) {
-                    par1MovingObjectPosition.entityHit.setDead();
+            } else if (hit.entityHit instanceof EntitySpider) {
+                if (hit.entityHit instanceof EntityCaveSpider) {
+                    hit.entityHit.setDead();
                     this.dropItem(OreSpawnMain.CagedCaveSpider, 1);
                 } else {
-                    par1MovingObjectPosition.entityHit.setDead();
+                    hit.entityHit.setDead();
                     this.dropItem(OreSpawnMain.CagedSpider, 1);
                 }
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Crab) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Crab) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCrab, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityBat) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntityBat) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedBat, 2);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityPig) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntityPig) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedPig, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntitySquid) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntitySquid) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedSquid, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityChicken) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntityChicken) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedChicken, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityCreeper) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntityCreeper) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCreeper, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityHorse) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntityHorse) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedHorse, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntitySkeleton) {
-                EntitySkeleton sk = (EntitySkeleton) par1MovingObjectPosition.entityHit;
+            if (hit.entityHit instanceof EntitySkeleton) {
+                EntitySkeleton sk = (EntitySkeleton) hit.entityHit;
                 if (sk.getSkeletonType() != 0) {
                     this.dropItem(OreSpawnMain.CagedWitherSkeleton, 1);
                 } else {
                     this.dropItem(OreSpawnMain.CagedSkeleton, 1);
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityZombie) {
-                if (par1MovingObjectPosition.entityHit instanceof EntityPigZombie) {
-                    par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntityZombie) {
+                if (hit.entityHit instanceof EntityPigZombie) {
+                    hit.entityHit.setDead();
                     this.dropItem(OreSpawnMain.CagedZombiePigman, 1);
                 } else {
-                    par1MovingObjectPosition.entityHit.setDead();
+                    hit.entityHit.setDead();
                     this.dropItem(OreSpawnMain.CagedZombie, 1);
                 }
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntitySlime) {
-                if (par1MovingObjectPosition.entityHit instanceof EntityMagmaCube) {
-                    par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntitySlime) {
+                if (hit.entityHit instanceof EntityMagmaCube) {
+                    hit.entityHit.setDead();
                     this.dropItem(OreSpawnMain.CagedMagmaCube, 1);
                 } else {
-                    par1MovingObjectPosition.entityHit.setDead();
+                    hit.entityHit.setDead();
                     this.dropItem(OreSpawnMain.CagedSlime, 1);
                 }
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityGhast) {
+            if (hit.entityHit instanceof EntityGhast) {
                 if (this.rand.nextInt(10) < 2) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -285,11 +285,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedGhast, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityEnderman) {
+            if (hit.entityHit instanceof EntityEnderman) {
                 if (this.rand.nextInt(10) < 2) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -299,57 +299,57 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedEnderman, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntitySilverfish) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntitySilverfish) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedSilverfish, 2);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityWitch) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntityWitch) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedWitch, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntitySheep) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntitySheep) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedSheep, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityWolf) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntityWolf) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedWolf, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityOcelot) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntityOcelot) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedOcelot, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityBlaze) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntityBlaze) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedBlaze, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Girlfriend) {
-                Girlfriend gf = (Girlfriend) par1MovingObjectPosition.entityHit;
+            if (hit.entityHit instanceof Girlfriend) {
+                Girlfriend gf = (Girlfriend) hit.entityHit;
                 if (!gf.isTamed()) {
-                    par1MovingObjectPosition.entityHit.setDead();
+                    hit.entityHit.setDead();
                     this.dropItem(OreSpawnMain.CagedGirlfriend, 1);
                 }
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Boyfriend) {
-                Boyfriend gf = (Boyfriend) par1MovingObjectPosition.entityHit;
+            if (hit.entityHit instanceof Boyfriend) {
+                Boyfriend gf = (Boyfriend) hit.entityHit;
                 if (!gf.isTamed()) {
-                    par1MovingObjectPosition.entityHit.setDead();
+                    hit.entityHit.setDead();
                     this.dropItem(OreSpawnMain.CagedBoyfriend, 1);
                 }
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityDragon) {
+            if (hit.entityHit instanceof EntityDragon) {
                 if (this.rand.nextInt(10) < 5) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -359,12 +359,12 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                EntityDragon dr = (EntityDragon) par1MovingObjectPosition.entityHit;
+                EntityDragon dr = (EntityDragon) hit.entityHit;
                 dr.setDead();
                 this.dropItem(OreSpawnMain.CagedEnderDragon, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityDragonPart) {
+            if (hit.entityHit instanceof EntityDragonPart) {
                 if (this.rand.nextInt(10) < 5) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -374,23 +374,23 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                EntityDragonPart dp = (EntityDragonPart) par1MovingObjectPosition.entityHit;
+                EntityDragonPart dp = (EntityDragonPart) hit.entityHit;
                 EntityDragon dr = (EntityDragon) dp.entityDragonObj;
                 dr.setDead();
                 this.dropItem(OreSpawnMain.CagedEnderDragon, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntitySnowman) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntitySnowman) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedSnowGolem, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityIronGolem) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntityIronGolem) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedIronGolem, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityWither) {
+            if (hit.entityHit instanceof EntityWither) {
                 if (this.rand.nextInt(10) < 2) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -400,12 +400,12 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedWitherBoss, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof CrystalCow) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof CrystalCow) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCrystalCow, 1);
                 if (!this.worldObj.isRemote) {
                     this.setDead();
@@ -414,8 +414,8 @@ public class EntityCage extends EntityThrowable {
                 return;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EnchantedCow) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EnchantedCow) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedEnchantedCow, 1);
                 if (!this.worldObj.isRemote) {
                     this.setDead();
@@ -424,8 +424,8 @@ public class EntityCage extends EntityThrowable {
                 return;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof GoldCow) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof GoldCow) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedGoldCow, 1);
                 if (!this.worldObj.isRemote) {
                     this.setDead();
@@ -434,8 +434,8 @@ public class EntityCage extends EntityThrowable {
                 return;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof RedCow) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof RedCow) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedRedCow, 1);
                 if (!this.worldObj.isRemote) {
                     this.setDead();
@@ -444,12 +444,12 @@ public class EntityCage extends EntityThrowable {
                 return;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityCow) {
-                if (par1MovingObjectPosition.entityHit instanceof EntityMooshroom) {
-                    par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntityCow) {
+                if (hit.entityHit instanceof EntityMooshroom) {
+                    hit.entityHit.setDead();
                     this.dropItem(OreSpawnMain.CagedMooshroom, 1);
                 } else {
-                    par1MovingObjectPosition.entityHit.setDead();
+                    hit.entityHit.setDead();
                     this.dropItem(OreSpawnMain.CagedCow, 1);
                 }
 
@@ -460,8 +460,8 @@ public class EntityCage extends EntityThrowable {
                 return;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityVillager) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EntityVillager) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedVillager, 1);
                 if (!this.worldObj.isRemote) {
                     this.setDead();
@@ -470,7 +470,7 @@ public class EntityCage extends EntityThrowable {
                 return;
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Mothra) {
+            if (hit.entityHit instanceof Mothra) {
                 if (this.rand.nextInt(10) < 4) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -480,11 +480,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedMOTHRA, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Alosaurus) {
+            if (hit.entityHit instanceof Alosaurus) {
                 if (this.rand.nextInt(10) < 4) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -494,31 +494,31 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedAlo, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Cryolophosaurus) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Cryolophosaurus) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCryo, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Camarasaurus) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Camarasaurus) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCama, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof VelocityRaptor) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof VelocityRaptor) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedVelo, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Hydrolisc) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Hydrolisc) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedHydro, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Basilisk) {
+            if (hit.entityHit instanceof Basilisk) {
                 if (this.rand.nextInt(10) < 6) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -528,16 +528,16 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedBasil, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Dragonfly) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Dragonfly) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedDragonfly, 2);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EmperorScorpion) {
+            if (hit.entityHit instanceof EmperorScorpion) {
                 if (this.rand.nextInt(10) < 7) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -547,11 +547,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedEmperorScorpion, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Cephadrome) {
+            if (hit.entityHit instanceof Cephadrome) {
                 if (this.rand.nextInt(10) < 7) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -561,11 +561,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCephadrome, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Dragon) {
+            if (hit.entityHit instanceof Dragon) {
                 if (this.rand.nextInt(10) < 7) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -575,46 +575,46 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedDragon, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Scorpion) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Scorpion) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedScorpion, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof CaveFisher) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof CaveFisher) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCaveFisher, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Spyro) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Spyro) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedSpyro, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Baryonyx) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Baryonyx) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedBaryonyx, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof GammaMetroid) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof GammaMetroid) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedGammaMetroid, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Cockateil) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Cockateil) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCockateil, 4);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof AttackSquid) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof AttackSquid) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedAttackSquid, 6);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Kyuubi) {
+            if (hit.entityHit instanceof Kyuubi) {
                 if (this.rand.nextInt(10) < 3) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -624,11 +624,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedKyuubi, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof WaterDragon) {
+            if (hit.entityHit instanceof WaterDragon) {
                 if (this.rand.nextInt(10) < 6) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -638,11 +638,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedWaterDragon, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Kraken) {
+            if (hit.entityHit instanceof Kraken) {
                 if (this.rand.nextInt(100) < 95) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -652,11 +652,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedKraken, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Lizard) {
+            if (hit.entityHit instanceof Lizard) {
                 if (this.rand.nextInt(10) < 2) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -666,11 +666,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedLizard, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Alien) {
+            if (hit.entityHit instanceof Alien) {
                 if (this.rand.nextInt(10) < 5) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -680,11 +680,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedAlien, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Bee) {
+            if (hit.entityHit instanceof Bee) {
                 if (this.rand.nextInt(10) < 3) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -694,31 +694,31 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedBee, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Firefly) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Firefly) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedFirefly, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Chipmunk) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Chipmunk) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedChipmunk, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Gazelle) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Gazelle) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedGazelle, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Ostrich) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Ostrich) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedOstrich, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof TrooperBug) {
+            if (hit.entityHit instanceof TrooperBug) {
                 if (this.rand.nextInt(10) < 6) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -728,11 +728,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedTrooper, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof SpitBug) {
+            if (hit.entityHit instanceof SpitBug) {
                 if (this.rand.nextInt(10) < 3) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -742,31 +742,31 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedSpit, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof StinkBug) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof StinkBug) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedStink, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof CreepingHorror) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof CreepingHorror) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCreepingHorror, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof TerribleTerror) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof TerribleTerror) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedTerribleTerror, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof CliffRacer) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof CliffRacer) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCliffRacer, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Triffid) {
+            if (hit.entityHit instanceof Triffid) {
                 if (this.rand.nextInt(10) < 6) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -776,11 +776,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedTriffid, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof PitchBlack) {
+            if (hit.entityHit instanceof PitchBlack) {
                 if (this.rand.nextInt(10) < 7) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -790,46 +790,46 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedPitchBlack, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof LurkingTerror) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof LurkingTerror) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedLurkingTerror, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof WormSmall) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof WormSmall) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedSmallWorm, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof WormMedium) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof WormMedium) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedMediumWorm, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Cassowary) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Cassowary) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCassowary, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof CloudShark) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof CloudShark) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCloudShark, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof GoldFish) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof GoldFish) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedGoldFish, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof LeafMonster) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof LeafMonster) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedLeafMonster, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof WormLarge) {
+            if (hit.entityHit instanceof WormLarge) {
                 if (this.rand.nextInt(10) < 5) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -839,11 +839,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedLargeWorm, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EnderKnight) {
+            if (hit.entityHit instanceof EnderKnight) {
                 if (this.rand.nextInt(10) < 3) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -853,11 +853,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedEnderKnight, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EnderReaper) {
+            if (hit.entityHit instanceof EnderReaper) {
                 if (this.rand.nextInt(10) < 2) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -867,51 +867,51 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedEnderReaper, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Beaver) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Beaver) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedBeaver, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Urchin) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Urchin) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedUrchin, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Flounder) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Flounder) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedFlounder, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Skate) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Skate) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedSkate, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Rotator) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Rotator) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedRotator, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Peacock) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Peacock) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedPeacock, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Fairy) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Fairy) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedFairy, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof DungeonBeast) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof DungeonBeast) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedDungeonBeast, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Vortex) {
+            if (hit.entityHit instanceof Vortex) {
                 if (this.rand.nextInt(10) < 3) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -921,16 +921,16 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedVortex, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Rat) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Rat) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedRat, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Whale) {
+            if (hit.entityHit instanceof Whale) {
                 if (this.rand.nextInt(10) < 2) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -940,21 +940,21 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedWhale, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Irukandji) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Irukandji) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedIrukandji, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Stinky) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Stinky) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedStinky, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Mantis) {
+            if (hit.entityHit instanceof Mantis) {
                 if (this.rand.nextInt(10) < 3) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -964,11 +964,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedMantis, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof TRex) {
+            if (hit.entityHit instanceof TRex) {
                 if (this.rand.nextInt(10) < 4) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -978,11 +978,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedTRex, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof HerculesBeetle) {
+            if (hit.entityHit instanceof HerculesBeetle) {
                 if (this.rand.nextInt(10) < 5) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -992,16 +992,16 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedHercules, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EasterBunny) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof EasterBunny) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedEasterBunny, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof CaterKiller) {
+            if (hit.entityHit instanceof CaterKiller) {
                 if (this.rand.nextInt(10) < 7) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -1011,11 +1011,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCaterKiller, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Molenoid) {
+            if (hit.entityHit instanceof Molenoid) {
                 if (this.rand.nextInt(10) < 5) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -1025,11 +1025,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedMolenoid, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof SeaMonster) {
+            if (hit.entityHit instanceof SeaMonster) {
                 if (this.rand.nextInt(10) < 3) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -1039,11 +1039,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedSeaMonster, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof SeaViper) {
+            if (hit.entityHit instanceof SeaViper) {
                 if (this.rand.nextInt(10) < 4) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -1053,16 +1053,16 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedSeaViper, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof RubberDucky) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof RubberDucky) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedRubberDucky, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Leon) {
+            if (hit.entityHit instanceof Leon) {
                 if (this.rand.nextInt(10) < 7) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -1072,11 +1072,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedLeon, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Hammerhead) {
+            if (hit.entityHit instanceof Hammerhead) {
                 if (this.rand.nextInt(10) < 7) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -1086,26 +1086,26 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedHammerhead, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof BandP) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof BandP) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCriminal, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Cricket) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Cricket) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedCricket, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Frog) {
-                par1MovingObjectPosition.entityHit.setDead();
+            if (hit.entityHit instanceof Frog) {
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedFrog, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Brutalfly) {
+            if (hit.entityHit instanceof Brutalfly) {
                 if (this.rand.nextInt(10) < 5) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -1115,11 +1115,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedBrutalfly, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Nastysaurus) {
+            if (hit.entityHit instanceof Nastysaurus) {
                 if (this.rand.nextInt(10) < 7) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -1129,11 +1129,11 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedNastysaurus, 1);
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Pointysaurus) {
+            if (hit.entityHit instanceof Pointysaurus) {
                 if (this.rand.nextInt(10) < 2) {
                     if (!this.worldObj.isRemote) {
                         this.dropItem(OreSpawnMain.CageEmpty, 1);
@@ -1143,7 +1143,7 @@ public class EntityCage extends EntityThrowable {
                     return;
                 }
 
-                par1MovingObjectPosition.entityHit.setDead();
+                hit.entityHit.setDead();
                 this.dropItem(OreSpawnMain.CagedPointysaurus, 1);
             }
         } else if (!this.worldObj.isRemote) {

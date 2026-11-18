@@ -23,40 +23,40 @@ public class ExperienceCatcher extends Item {
         this.setCreativeTab(CreativeTabs.tabTools);
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World world, int x, int y, int z,
-        int par7, float par8, float par9, float par10) {
-        par2EntityPlayer.swingItem();
-        System.out.printf("x, y,z, 7,8,9,10 == %d, %d, %d - %d, %f, %f, %f\n", x, y, z, par7, par8, par9, par10);
-        if (!par2EntityPlayer.worldObj.isRemote) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+        float hitX, float hitY, float hitZ) {
+        player.swingItem();
+        System.out.printf("x, y,z, 7,8,9,10 == %d, %d, %d - %d, %f, %f, %f\n", x, y, z, side, hitX, hitY, hitZ);
+        if (!player.worldObj.isRemote) {
             AxisAlignedBB bb = AxisAlignedBB
-                .getBoundingBox(x - 0.5 + par8, y, z - 0.5 + par10, x + 0.5 + par8, y + 2.0, z + 0.5 + par10);
+                .getBoundingBox(x - 0.5 + hitX, y, z - 0.5 + hitZ, x + 0.5 + hitX, y + 2.0, z + 0.5 + hitZ);
 
-            for (Entity var3x : world.getEntitiesWithinAABB(EntityXPOrb.class, bb)) {
-                if (var3x instanceof EntityXPOrb) {
-                    EntityXPOrb ex = (EntityXPOrb) var3x;
+            for (Entity entity : world.getEntitiesWithinAABB(EntityXPOrb.class, bb)) {
+                if (entity instanceof EntityXPOrb) {
+                    EntityXPOrb ex = (EntityXPOrb) entity;
                     if (ex.getXpValue() >= 3 && world.rand.nextInt(5) != 1) {
-                        var3x.setDead();
-                        EntityItem var4x = null;
+                        entity.setDead();
+                        EntityItem entityItem = null;
                         ItemStack is = new ItemStack(Items.experience_bottle, 1, 0);
-                        var4x = new EntityItem(par2EntityPlayer.worldObj, par8 + x, y + 1.0, par10 + z, is);
-                        if (var4x != null) {
-                            par2EntityPlayer.worldObj.spawnEntityInWorld(var4x);
+                        entityItem = new EntityItem(player.worldObj, hitX + x, y + 1.0, hitZ + z, is);
+                        if (entityItem != null) {
+                            player.worldObj.spawnEntityInWorld(entityItem);
                         }
 
                         is = new ItemStack(Items.string, 1, 0);
-                        var4x = new EntityItem(par2EntityPlayer.worldObj, par8 + x, y + 1.0, par10 + z, is);
-                        if (var4x != null) {
-                            par2EntityPlayer.worldObj.spawnEntityInWorld(var4x);
+                        entityItem = new EntityItem(player.worldObj, hitX + x, y + 1.0, hitZ + z, is);
+                        if (entityItem != null) {
+                            player.worldObj.spawnEntityInWorld(entityItem);
                         }
 
                         is = new ItemStack(Items.stick, 1, 0);
-                        var4x = new EntityItem(par2EntityPlayer.worldObj, par8 + x, y + 1.0, par10 + z, is);
-                        if (var4x != null) {
-                            par2EntityPlayer.worldObj.spawnEntityInWorld(var4x);
+                        entityItem = new EntityItem(player.worldObj, hitX + x, y + 1.0, hitZ + z, is);
+                        if (entityItem != null) {
+                            player.worldObj.spawnEntityInWorld(entityItem);
                         }
 
-                        if (!par2EntityPlayer.capabilities.isCreativeMode) {
-                            par1ItemStack.stackSize--;
+                        if (!player.capabilities.isCreativeMode) {
+                            stack.stackSize--;
                         }
 
                         return true;
@@ -64,22 +64,22 @@ public class ExperienceCatcher extends Item {
                 }
             }
 
-            EntityItem var4x = null;
+            EntityItem entityItem = null;
             ItemStack isx = new ItemStack(OreSpawnMain.MyExperienceCatcher, 1, 0);
-            var4x = new EntityItem(par2EntityPlayer.worldObj, par8 + x, y + 1.0, par10 + z, isx);
-            if (var4x != null) {
-                par2EntityPlayer.worldObj.spawnEntityInWorld(var4x);
+            entityItem = new EntityItem(player.worldObj, hitX + x, y + 1.0, hitZ + z, isx);
+            if (entityItem != null) {
+                player.worldObj.spawnEntityInWorld(entityItem);
             }
 
-            par1ItemStack.stackSize--;
+            stack.stackSize--;
         }
 
         return true;
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        par3EntityPlayer.swingItem();
-        return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        player.swingItem();
+        return stack;
     }
 
     @SideOnly(Side.CLIENT)

@@ -18,7 +18,7 @@ import danger.orespawn.OreSpawnMain;
 
 public class BlockDuplicatorLog extends Block {
 
-    public BlockDuplicatorLog(int par1) {
+    public BlockDuplicatorLog(int n) {
         super(Material.wood);
         this.setCreativeTab(CreativeTabs.tabBlock);
         this.setTickRandomly(true);
@@ -28,19 +28,19 @@ public class BlockDuplicatorLog extends Block {
         return 1;
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        if (!par1World.isRemote) {
+    public void updateTick(World world, int x, int y, int z, Random rand) {
+        if (!world.isRemote) {
             if (OreSpawnMain.enableduplicatortree != 0) {
-                OreSpawnMain.OreSpawnTrees.DuplicatorTree(par1World, par2, par3, par4);
+                OreSpawnMain.OreSpawnTrees.DuplicatorTree(world, x, y, z);
             }
         }
     }
 
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        par3List.add(new ItemStack(Item.getItemFromBlock(this), 1, 0));
+    public void getSubBlocks(Item item, CreativeTabs tab, List list) {
+        list.add(new ItemStack(Item.getItemFromBlock(this), 1, 0));
     }
 
-    protected ItemStack createStackedBlock(int par1) {
+    protected ItemStack createStackedBlock(int n) {
         return new ItemStack(this, 1, 0);
     }
 
@@ -52,7 +52,7 @@ public class BlockDuplicatorLog extends Block {
         return true;
     }
 
-    public int quantityDropped(Random par1Random) {
+    public int quantityDropped(Random rand) {
         return 1;
     }
 

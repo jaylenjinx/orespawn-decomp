@@ -19,29 +19,29 @@ import danger.orespawn.entity.TheKing;
 
 public class KingSpawnerBlock extends BlockReed {
 
-    public KingSpawnerBlock(int par1) {
-        float var3 = 0.375F;
-        this.setBlockBounds(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, 1.0F, 0.5F + var3);
+    public KingSpawnerBlock(int n) {
+        float f = 0.375F;
+        this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, 1.0F, 0.5F + f);
         this.setTickRandomly(true);
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
 
-    public boolean canPlaceBlockAt(World par1World, int par2, int par3, int par4) {
-        return par1World.getBlock(par2, par3 - 1, par4)
+    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+        return world.getBlock(x, y - 1, z)
             .getMaterial()
             .isSolid();
     }
 
-    public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        if (!par1World.isRemote) {
-            this.updateTick(par1World, par2, par3, par4, par5Random);
-        } else if (par1World.rand.nextInt(20) == 1) {
+    public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
+        if (!world.isRemote) {
+            this.updateTick(world, x, y, z, rand);
+        } else if (world.rand.nextInt(20) == 1) {
             for (int j1 = 0; j1 < 20; j1++) {
-                par1World.spawnParticle(
+                world.spawnParticle(
                     "fireworksSpark",
-                    par2 + par1World.rand.nextFloat(),
-                    (double) par3 + par1World.rand.nextFloat(),
-                    par4 + par1World.rand.nextFloat(),
+                    x + world.rand.nextFloat(),
+                    (double) y + world.rand.nextFloat(),
+                    z + world.rand.nextFloat(),
                     0.0,
                     0.0,
                     0.0);
@@ -55,44 +55,44 @@ public class KingSpawnerBlock extends BlockReed {
         }
     }
 
-    public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {
-        this.updateTick(par1World, par2, par3, par4, null);
+    public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta) {
+        this.updateTick(world, x, y, z, null);
     }
 
-    public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) {
-        if (!par1World.isRemote) {
+    public void updateTick(World world, int x, int y, int z, Random rand) {
+        if (!world.isRemote) {
             if (OreSpawnMain.TheKingEnable != 0) {
-                spawnTheKing(par1World, par2, par3 + 8, par4);
+                spawnTheKing(world, x, y + 8, z);
             }
 
-            par1World.setBlock(par2, par3, par4, Blocks.air, 0, 2);
-            par1World.setBlock(par2, par3 + 1, par4, Blocks.air, 0, 2);
+            world.setBlock(x, y, z, Blocks.air, 0, 2);
+            world.setBlock(x, y + 1, z, Blocks.air, 0, 2);
         }
     }
 
-    public Item getItemDropped(int par1, Random par2Random, int par3) {
+    public Item getItemDropped(int meta, Random rand, int fortune) {
         return Item.getItemFromBlock(OreSpawnMain.MyKingSpawnerBlock);
     }
 
-    public int quantityDropped(Random par1Random) {
+    public int quantityDropped(Random rand) {
         return 1;
     }
 
-    public static Entity spawnTheKing(World par0World, double par2, double par4, double par6) {
-        Entity var8 = null;
-        var8 = EntityList.createEntityByName("The King", par0World);
-        if (var8 != null) {
-            var8.setLocationAndAngles(par2, par4, par6, par0World.rand.nextFloat() * 360.0F, 0.0F);
-            par0World.spawnEntityInWorld(var8);
-            ((EntityLiving) var8).playLivingSound();
-            ((TheKing) var8).setGuardMode(1);
+    public static Entity spawnTheKing(World world, double x, double y, double z) {
+        Entity entity = null;
+        entity = EntityList.createEntityByName("The King", world);
+        if (entity != null) {
+            entity.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(entity);
+            ((EntityLiving) entity).playLivingSound();
+            ((TheKing) entity).setGuardMode(1);
         }
 
-        return var8;
+        return entity;
     }
 
-    public boolean canBlockStay(World par1World, int par2, int par3, int par4) {
-        this.updateTick(par1World, par2, par3, par4, null);
+    public boolean canBlockStay(World world, int x, int y, int z) {
+        this.updateTick(world, x, y, z, null);
         return true;
     }
 

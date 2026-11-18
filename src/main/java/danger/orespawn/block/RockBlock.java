@@ -10,7 +10,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class RockBlock extends Block {
 
-    public RockBlock(int par1) {
+    public RockBlock(int n) {
         super(Material.rock);
         this.setHardness(2.0F);
         this.setResistance(1.0F);

@@ -14,22 +14,21 @@ import danger.orespawn.entity.Elevator;
 
 public class ItemElevator extends Item {
 
-    public ItemElevator(int par1) {
+    public ItemElevator(int n) {
         this.maxStackSize = 1;
         this.setCreativeTab(CreativeTabs.tabTransport);
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4,
-        int par5, int par6, int par7, float par8, float par9, float par10) {
-        if (par3World.isRemote) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+        float hitX, float hitY, float hitZ) {
+        if (world.isRemote) {
             return true;
         } else {
-            Elevator elevator = (Elevator) EntityList.createEntityByName("Hoverboard", par3World);
-            elevator
-                .setLocationAndAngles(par4 + 0.5F, par5 + 1.2F, par6 + 0.5F, par3World.rand.nextFloat() * 360.0F, 0.0F);
-            par3World.spawnEntityInWorld(elevator);
-            if (!par2EntityPlayer.capabilities.isCreativeMode) {
-                par1ItemStack.stackSize--;
+            Elevator elevator = (Elevator) EntityList.createEntityByName("Hoverboard", world);
+            elevator.setLocationAndAngles(x + 0.5F, y + 1.2F, z + 0.5F, world.rand.nextFloat() * 360.0F, 0.0F);
+            world.spawnEntityInWorld(elevator);
+            if (!player.capabilities.isCreativeMode) {
+                stack.stackSize--;
             }
 
             return true;

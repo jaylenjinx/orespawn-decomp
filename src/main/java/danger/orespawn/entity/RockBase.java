@@ -19,8 +19,8 @@ public class RockBase extends EntityLiving {
     private double dx;
     private double dz;
 
-    public RockBase(World par1World) {
-        super(par1World);
+    public RockBase(World world) {
+        super(world);
         this.setSize(0.25F, 0.15F);
         this.fireResistance = 100000;
         this.isImmuneToFire = true;
@@ -36,9 +36,9 @@ public class RockBase extends EntityLiving {
         super.applyEntityAttributes();
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
-        Entity e = par1DamageSource.getEntity();
-        if (par1DamageSource.getDamageType()
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        Entity e = source.getEntity();
+        if (source.getDamageType()
             .equals("inWall")) {
             return false;
         } else {
@@ -46,7 +46,7 @@ public class RockBase extends EntityLiving {
                 this.playSound("random.pop", 0.75F, 2.25F);
             }
 
-            return super.attackEntityFrom(par1DamageSource, par2);
+            return super.attackEntityFrom(source, amount);
         }
     }
 
@@ -54,17 +54,17 @@ public class RockBase extends EntityLiving {
         return this.dataWatcher.getWatchableObjectInt(20);
     }
 
-    public void setRockType(int par1) {
+    public void setRockType(int n) {
         if (this.worldObj != null) {
             if (!this.worldObj.isRemote) {
-                this.dataWatcher.updateObject(20, par1);
+                this.dataWatcher.updateObject(20, n);
             }
         }
     }
 
-    public void placeRock(int par1) {
-        this.rock_type = par1;
-        this.setRockType(par1);
+    public void placeRock(int n) {
+        this.rock_type = n;
+        this.setRockType(n);
         this.getEntityAttribute(SharedMonsterAttributes.maxHealth)
             .setBaseValue(1 + this.rock_type / 4);
         this.setHealth(1 + this.rock_type / 4);
@@ -74,7 +74,7 @@ public class RockBase extends EntityLiving {
         return 0;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
     public void onUpdate() {
         if (this.dx == 0.0 && this.dz == 0.0) {
@@ -255,7 +255,7 @@ public class RockBase extends EntityLiving {
         this.setDead();
     }
 
-    public void onDeath(DamageSource par1DamageSource) {
+    public void onDeath(DamageSource source) {
         this.setDead();
         if (this.rock_type == 1) {
             this.dropItemRand(OreSpawnMain.MySmallRock, 1);
@@ -306,29 +306,29 @@ public class RockBase extends EntityLiving {
         }
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + (OreSpawnMain.OreSpawnRand.nextFloat() - OreSpawnMain.OreSpawnRand.nextFloat()) / 3.0F,
             this.posY + 0.25,
             this.posZ + (OreSpawnMain.OreSpawnRand.nextFloat() - OreSpawnMain.OreSpawnRand.nextFloat()) / 3.0F,
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("ButterflyType", this.rock_type);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("ButterflyType", this.rock_type);
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.rock_type = par1NBTTagCompound.getInteger("ButterflyType");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.rock_type = tag.getInteger("ButterflyType");
     }
 }

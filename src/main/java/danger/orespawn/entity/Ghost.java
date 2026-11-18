@@ -16,8 +16,8 @@ public class Ghost extends EntityAmbientCreature {
 
     private ChunkCoordinates currentFlightTarget = null;
 
-    public Ghost(World par1World) {
-        super(par1World);
+    public Ghost(World world) {
+        super(world);
         this.setSize(0.5F, 1.5F);
         this.getNavigator()
             .setAvoidsWater(false);
@@ -69,7 +69,7 @@ public class Ghost extends EntityAmbientCreature {
         return false;
     }
 
-    protected void collideWithEntity(Entity par1Entity) {}
+    protected void collideWithEntity(Entity entity) {}
 
     protected void collideWithNearbyEntities() {}
 
@@ -132,16 +132,16 @@ public class Ghost extends EntityAmbientCreature {
                 }
             }
 
-            double var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-            double var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-            double var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
-            this.motionX = this.motionX + (Math.signum(var1) * 0.1 - this.motionX) * 0.05;
-            this.motionY = this.motionY + (Math.signum(var3) * 0.7 - this.motionY) * 0.1;
-            this.motionZ = this.motionZ + (Math.signum(var5) * 0.1 - this.motionZ) * 0.05;
-            float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-            float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+            double dx = this.currentFlightTarget.posX + 0.5 - this.posX;
+            double dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+            double dz = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+            this.motionX = this.motionX + (Math.signum(dx) * 0.1 - this.motionX) * 0.05;
+            this.motionY = this.motionY + (Math.signum(dy) * 0.7 - this.motionY) * 0.1;
+            this.motionZ = this.motionZ + (Math.signum(dz) * 0.1 - this.motionZ) * 0.05;
+            float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+            float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
             this.moveForward = 0.05F;
-            this.rotationYaw += var8 / 6.0F;
+            this.rotationYaw += f2 / 6.0F;
         }
     }
 
@@ -149,9 +149,9 @@ public class Ghost extends EntityAmbientCreature {
         return false;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     public boolean doesEntityNotTriggerPressurePlate() {
         return true;
@@ -181,9 +181,9 @@ public class Ghost extends EntityAmbientCreature {
 
     public void initCreature() {}
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        return par1DamageSource.getDamageType()
-            .equals("inWall") ? ret : super.attackEntityFrom(par1DamageSource, par2);
+        return source.getDamageType()
+            .equals("inWall") ? ret : super.attackEntityFrom(source, amount);
     }
 }

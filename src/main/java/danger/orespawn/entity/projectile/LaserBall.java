@@ -27,24 +27,24 @@ public class LaserBall extends EntityThrowable {
     private int is_irukandji = 0;
     private int ticksalive = 0;
 
-    public LaserBall(World par1World) {
-        super(par1World);
+    public LaserBall(World world) {
+        super(world);
     }
 
-    public LaserBall(World par1World, int par2) {
-        super(par1World);
+    public LaserBall(World world, int n) {
+        super(world);
     }
 
-    public LaserBall(World par1World, EntityLivingBase par2EntityLiving) {
-        super(par1World, par2EntityLiving);
+    public LaserBall(World world, EntityLivingBase living) {
+        super(world, living);
     }
 
-    public LaserBall(World par1World, EntityLivingBase par2EntityLiving, int par3) {
-        super(par1World, par2EntityLiving);
+    public LaserBall(World world, EntityLivingBase living, int n) {
+        super(world, living);
     }
 
-    public LaserBall(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public LaserBall(World world, double x, double y, double z) {
+        super(world, x, y, z);
     }
 
     public int getLaserBallIndex() {
@@ -68,57 +68,56 @@ public class LaserBall extends EntityThrowable {
         this.is_acid = 1;
     }
 
-    protected void onImpact(MovingObjectPosition par1MovingObjectPosition) {
-        if (par1MovingObjectPosition.entityHit != null) {
-            float var2 = 16.0F;
+    protected void onImpact(MovingObjectPosition hit) {
+        if (hit.entityHit != null) {
+            float amount = 16.0F;
             if (this.is_irukandji != 0) {
-                par1MovingObjectPosition.entityHit
-                    .attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 100.0F);
+                hit.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 100.0F);
                 this.setDead();
                 return;
             }
 
             if (this.is_acid != 0) {
-                if (par1MovingObjectPosition.entityHit instanceof TrooperBug) {
+                if (hit.entityHit instanceof TrooperBug) {
                     this.setDead();
                     return;
                 }
 
-                if (par1MovingObjectPosition.entityHit instanceof SpitBug) {
+                if (hit.entityHit instanceof SpitBug) {
                     this.setDead();
                     return;
                 }
             }
 
             if (this.is_iceball == 0 && this.is_acid == 0) {
-                if (par1MovingObjectPosition.entityHit instanceof Robot2) {
+                if (hit.entityHit instanceof Robot2) {
                     this.setDead();
                     return;
                 }
 
-                if (par1MovingObjectPosition.entityHit instanceof Robot3) {
+                if (hit.entityHit instanceof Robot3) {
                     this.setDead();
                     return;
                 }
 
-                if (par1MovingObjectPosition.entityHit instanceof Robot4) {
+                if (hit.entityHit instanceof Robot4) {
                     this.setDead();
                     return;
                 }
 
-                if (par1MovingObjectPosition.entityHit instanceof Robot5) {
+                if (hit.entityHit instanceof Robot5) {
                     this.setDead();
                     return;
                 }
 
-                if (par1MovingObjectPosition.entityHit instanceof GiantRobot) {
+                if (hit.entityHit instanceof GiantRobot) {
                     this.setDead();
                     return;
                 }
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof Dragon && this.is_acid == 0) {
-                Dragon d = (Dragon) par1MovingObjectPosition.entityHit;
+            if (hit.entityHit instanceof Dragon && this.is_acid == 0) {
+                Dragon d = (Dragon) hit.entityHit;
                 if (d.riddenByEntity != null) {
                     this.setDead();
                     return;
@@ -130,18 +129,17 @@ public class LaserBall extends EntityThrowable {
                 }
             }
 
-            if (par1MovingObjectPosition.entityHit instanceof EntityPlayer && this.is_acid == 0) {
-                EntityPlayer dx = (EntityPlayer) par1MovingObjectPosition.entityHit;
+            if (hit.entityHit instanceof EntityPlayer && this.is_acid == 0) {
+                EntityPlayer dx = (EntityPlayer) hit.entityHit;
                 if (dx.ridingEntity != null) {
                     this.setDead();
                     return;
                 }
             }
 
-            par1MovingObjectPosition.entityHit
-                .attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), var2);
+            hit.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), amount);
             if (this.is_iceball == 0) {
-                par1MovingObjectPosition.entityHit.setFire(1);
+                hit.entityHit.setFire(1);
             }
         } else if (this.is_irukandji != 0 && !this.worldObj.isRemote) {
             this.dropItem(OreSpawnMain.MyIrukandji, 1);
@@ -153,7 +151,7 @@ public class LaserBall extends EntityThrowable {
                 mx = 20;
             }
 
-            for (int var3 = 0; var3 < mx; var3++) {
+            for (int i = 0; i < mx; i++) {
                 this.worldObj.spawnParticle(
                     "smoke",
                     this.posX + this.rand.nextFloat() - this.rand.nextFloat(),

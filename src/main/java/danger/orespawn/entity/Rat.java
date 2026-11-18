@@ -36,8 +36,8 @@ public class Rat extends EntityMob {
     private float moveSpeed = 0.25F;
     private String myowner = null;
 
-    public Rat(World par1World) {
-        super(par1World);
+    public Rat(World world) {
+        super(world);
         this.setSize(0.25F, 0.5F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -76,8 +76,8 @@ public class Rat extends EntityMob {
         return this.dataWatcher.getWatchableObjectByte(20);
     }
 
-    public final void setAttacking(int par1) {
-        this.dataWatcher.updateObject(20, (byte) par1);
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
     }
 
     public int mygetMaxHealth() {
@@ -134,7 +134,7 @@ public class Rat extends EntityMob {
 
     public void initCreature() {}
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
+    public boolean interact(EntityPlayer player) {
         return false;
     }
 
@@ -182,37 +182,37 @@ public class Rat extends EntityMob {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
-        if (par1EntityLiving == null) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof Irukandji) {
+            } else if (target instanceof Irukandji) {
                 return false;
-            } else if (par1EntityLiving instanceof Skate) {
+            } else if (target instanceof Skate) {
                 return false;
-            } else if (par1EntityLiving instanceof Whale) {
+            } else if (target instanceof Whale) {
                 return false;
-            } else if (par1EntityLiving instanceof Flounder) {
+            } else if (target instanceof Flounder) {
                 return false;
-            } else if (par1EntityLiving instanceof Rat) {
+            } else if (target instanceof Rat) {
                 return false;
-            } else if (par1EntityLiving instanceof Ghost) {
+            } else if (target instanceof Ghost) {
                 return false;
-            } else if (par1EntityLiving instanceof GhostSkelly) {
+            } else if (target instanceof GhostSkelly) {
                 return false;
-            } else if (par1EntityLiving instanceof DungeonBeast) {
+            } else if (target instanceof DungeonBeast) {
                 return false;
             } else {
-                if (par1EntityLiving instanceof EntityPlayer) {
-                    EntityPlayer p = (EntityPlayer) par1EntityLiving;
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
                     if (p.capabilities.isCreativeMode) {
                         return false;
                     }
@@ -230,8 +230,8 @@ public class Rat extends EntityMob {
                     }
                 }
 
-                if (this.myowner != null && par1EntityLiving instanceof EntityTameable) {
-                    EntityTameable e = (EntityTameable) par1EntityLiving;
+                if (this.myowner != null && target instanceof EntityTameable) {
+                    EntityTameable e = (EntityTameable) target;
                     if (OreSpawnMain.RatPetFriendly != 0 && e.isTamed()) {
                         return false;
                     }
@@ -249,18 +249,18 @@ public class Rat extends EntityMob {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(9.0, 2.0, 9.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -280,27 +280,27 @@ public class Rat extends EntityMob {
         }
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
         if (this.myowner == null) {
             this.myowner = "null";
         }
 
-        par1NBTTagCompound.setString("MyOwner", this.myowner);
+        tag.setString("MyOwner", this.myowner);
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.myowner = par1NBTTagCompound.getString("MyOwner");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.myowner = tag.getString("MyOwner");
         if (this.myowner != null && this.myowner.equals("null")) {
             this.myowner = null;
         }
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
-        return par1DamageSource.getDamageType()
-            .equals("inWall") ? ret : super.attackEntityFrom(par1DamageSource, par2);
+        return source.getDamageType()
+            .equals("inWall") ? ret : super.attackEntityFrom(source, amount);
     }
 
     public boolean getCanSpawnHere() {
@@ -332,10 +332,10 @@ public class Rat extends EntityMob {
                     return false;
                 }
 
-                for (int var10 = -1; var10 <= 1; var10++) {
+                for (int i = -1; i <= 1; i++) {
                     for (int j = -1; j <= 1; j++) {
                         Block bid = this.worldObj
-                            .getBlock((int) this.posX + j, (int) this.posY + 1, (int) this.posZ + var10);
+                            .getBlock((int) this.posX + j, (int) this.posY + 1, (int) this.posZ + i);
                         if (bid == Blocks.air) {
                             sc++;
                         }
@@ -352,7 +352,7 @@ public class Rat extends EntityMob {
     }
 
     private int findBuddies() {
-        List var5 = this.worldObj.getEntitiesWithinAABB(Rat.class, this.boundingBox.expand(20.0, 10.0, 20.0));
-        return var5.size();
+        List entities = this.worldObj.getEntitiesWithinAABB(Rat.class, this.boundingBox.expand(20.0, 10.0, 20.0));
+        return entities.size();
     }
 }

@@ -21,8 +21,8 @@ public class InstantShelter extends Item {
         this.setCreativeTab(CreativeTabs.tabRedstone);
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer Player, World world, int cposx, int cposy, int cposz,
-        int par7, float par8, float par9, float par10) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer Player, World world, int cposx, int cposy, int cposz,
+        int side, float hitX, float hitY, float hitZ) {
         int deltax = 0;
         int deltaz = 0;
         int bid = 0;
@@ -98,40 +98,32 @@ public class InstantShelter extends Item {
                         }
                     }
 
-                    int var30 = 2;
+                    int n = 2;
                     int kx = 1;
                     int j = length - 1;
-                    world.setBlock(
-                        x + var30 * deltax + j * deltaz,
-                        y + kx,
-                        z + var30 * deltaz + j * deltax,
-                        Blocks.furnace);
+                    world.setBlock(x + n * deltax + j * deltaz, y + kx, z + n * deltaz + j * deltax, Blocks.furnace);
                     world.setBlockMetadataWithNotify(
-                        x + var30 * deltax + j * deltaz,
+                        x + n * deltax + j * deltaz,
                         y + kx,
-                        z + var30 * deltaz + j * deltax,
+                        z + n * deltaz + j * deltax,
                         stuffdir,
                         3);
-                    var30 = 1;
+                    n = 1;
                     world.setBlock(
-                        x + var30 * deltax + j * deltaz,
+                        x + n * deltax + j * deltaz,
                         y + kx,
-                        z + var30 * deltaz + j * deltax,
+                        z + n * deltaz + j * deltax,
                         Blocks.crafting_table);
-                    var30 = 0;
-                    world.setBlock(
-                        x + var30 * deltax + j * deltaz,
-                        y + kx,
-                        z + var30 * deltaz + j * deltax,
-                        Blocks.chest);
+                    n = 0;
+                    world.setBlock(x + n * deltax + j * deltaz, y + kx, z + n * deltaz + j * deltax, Blocks.chest);
                     world.setBlockMetadataWithNotify(
-                        x + var30 * deltax + j * deltaz,
+                        x + n * deltax + j * deltaz,
                         y + kx,
-                        z + var30 * deltaz + j * deltax,
+                        z + n * deltaz + j * deltax,
                         stuffdir,
                         3);
                     TileEntityChest chest = (TileEntityChest) world
-                        .getTileEntity(x + var30 * deltax + j * deltaz, y + kx, z + var30 * deltaz + j * deltax);
+                        .getTileEntity(x + n * deltax + j * deltaz, y + kx, z + n * deltaz + j * deltax);
                     if (chest != null) {
                         chest.setInventorySlotContents(0, new ItemStack(Items.compass));
                         chest.setInventorySlotContents(1, new ItemStack(Items.map));
@@ -150,7 +142,7 @@ public class InstantShelter extends Item {
                     }
 
                     if (!Player.capabilities.isCreativeMode) {
-                        par1ItemStack.stackSize--;
+                        stack.stackSize--;
                     }
 
                     return true;

@@ -20,8 +20,8 @@ public class ItemMinersDream extends Item {
         this.setCreativeTab(CreativeTabs.tabRedstone);
     }
 
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer Player, World world, int cposx, int cposy, int cposz,
-        int par7, float par8, float par9, float par10) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer Player, World world, int cposx, int cposy, int cposz,
+        int side, float hitX, float hitY, float hitZ) {
         int deltax = 0;
         int deltaz = 0;
         int dirx = 0;
@@ -133,11 +133,11 @@ public class ItemMinersDream extends Item {
                             }
 
                             if (i == height - 1 && solid_count == 0) {
-                                for (int var30 = -width; var30 <= width; var30++) {
+                                for (int k2 = -width; k2 <= width; k2++) {
                                     world.setBlock(
-                                        x + k * deltax + var30 * deltaz,
+                                        x + k * deltax + k2 * deltaz,
                                         y + i + 1,
-                                        z + k * deltaz + var30 * deltax,
+                                        z + k * deltaz + k2 * deltax,
                                         Blocks.air,
                                         0,
                                         2);
@@ -162,7 +162,7 @@ public class ItemMinersDream extends Item {
                     }
 
                     if (!Player.capabilities.isCreativeMode) {
-                        par1ItemStack.stackSize--;
+                        stack.stackSize--;
                     }
 
                     return true;

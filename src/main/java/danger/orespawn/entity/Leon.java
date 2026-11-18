@@ -71,8 +71,8 @@ public class Leon extends EntityTameable {
     private float moveSpeed = 0.25F;
     private float deltasmooth = 0.0F;
 
-    public Leon(World par1World) {
-        super(par1World);
+    public Leon(World world) {
+        super(world);
         this.setSize(3.5F, 8.25F);
         this.getNavigator()
             .setAvoidsWater(true);
@@ -98,15 +98,15 @@ public class Leon extends EntityTameable {
         this.renderdata = new RenderInfo();
     }
 
-    public Leon(World par1World, double par2, double par4, double par6) {
-        this(par1World);
-        this.setPosition(par2, par4 + this.yOffset, par6);
+    public Leon(World world, double x, double y, double z) {
+        this(world);
+        this.setPosition(x, y + this.yOffset, z);
         this.motionX = 0.0;
         this.motionY = 0.0;
         this.motionZ = 0.0;
-        this.prevPosX = par2;
-        this.prevPosY = par4;
-        this.prevPosZ = par6;
+        this.prevPosX = x;
+        this.prevPosY = y;
+        this.prevPosZ = z;
     }
 
     protected void applyEntityAttributes() {
@@ -137,9 +137,9 @@ public class Leon extends EntityTameable {
         return true;
     }
 
-    protected void fall(float par1) {}
+    protected void fall(float distance) {}
 
-    protected void updateFallState(double par1, boolean par3) {}
+    protected void updateFallState(double distanceFallen, boolean onGround) {}
 
     protected boolean canTriggerWalking() {
         return true;
@@ -244,38 +244,38 @@ public class Leon extends EntityTameable {
         return Items.beef;
     }
 
-    private ItemStack dropItemRand(Item index, int par1) {
-        EntityItem var3 = null;
-        ItemStack is = new ItemStack(index, par1, 0);
-        var3 = new EntityItem(
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
             this.worldObj,
             this.posX + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
             this.posY + 2.0,
             this.posZ + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
             is);
-        if (var3 != null) {
-            this.worldObj.spawnEntityInWorld(var3);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
         }
 
         return is;
     }
 
-    protected void dropFewItems(boolean par1, int par2) {
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
         int i = 4 + this.worldObj.rand.nextInt(6);
 
-        for (int var4 = 0; var4 < i; var4++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(Items.chicken, 1);
         }
 
         i = 16 + this.worldObj.rand.nextInt(6);
 
-        for (int var6 = 0; var6 < i; var6++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(Items.feather, 1);
         }
 
         i = 2 + this.worldObj.rand.nextInt(6);
 
-        for (int var7 = 0; var7 < i; var7++) {
+        for (int i2 = 0; i2 < i; i2++) {
             this.dropItemRand(Item.getItemFromBlock(OreSpawnMain.KrakenRepellent), 1);
         }
 
@@ -284,43 +284,43 @@ public class Leon extends EntityTameable {
         }
     }
 
-    public boolean attackEntityAsMob(Entity par1Entity) {
+    public boolean attackEntityAsMob(Entity target) {
         double ks = 1.25;
         double inair = 0.15;
         float iskraken = 1.0F;
-        if (par1Entity != null && par1Entity instanceof EntityDragon) {
-            EntityDragon dr = (EntityDragon) par1Entity;
-            DamageSource var21 = null;
-            var21 = DamageSource.setExplosionSource(null);
-            var21.setExplosion();
+        if (target != null && target instanceof EntityDragon) {
+            EntityDragon dr = (EntityDragon) target;
+            DamageSource source = null;
+            source = DamageSource.setExplosionSource(null);
+            source.setExplosion();
             if (this.worldObj.rand.nextInt(6) == 1) {
-                dr.attackEntityFromPart(dr.dragonPartHead, var21, 55.0F);
+                dr.attackEntityFromPart(dr.dragonPartHead, source, 55.0F);
             } else {
-                dr.attackEntityFromPart(dr.dragonPartBody, var21, 55.0F);
+                dr.attackEntityFromPart(dr.dragonPartBody, source, 55.0F);
             }
-        } else if (par1Entity != null && par1Entity instanceof EntityLivingBase) {
-            if (par1Entity instanceof Kraken) {
+        } else if (target != null && target instanceof EntityLivingBase) {
+            if (target instanceof Kraken) {
                 iskraken = 4.0F;
             }
 
-            par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), iskraken * 55.0F);
-            float f3 = (float) Math.atan2(par1Entity.posZ - this.posZ, par1Entity.posX - this.posX);
-            if (par1Entity.isDead || par1Entity instanceof EntityPlayer) {
+            target.attackEntityFrom(DamageSource.causeMobDamage(this), iskraken * 55.0F);
+            float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+            if (target.isDead || target instanceof EntityPlayer) {
                 inair *= 2.0;
             }
 
-            par1Entity.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+            target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
         }
 
         return true;
     }
 
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+    public boolean attackEntityFrom(DamageSource source, float amount) {
         boolean ret = false;
         Entity e = null;
         if (this.hurt_timer > 0) {
             return false;
-        } else if (par1DamageSource.getDamageType()
+        } else if (source.getDamageType()
             .equals("inWall")) {
                 return ret;
             } else {
@@ -332,11 +332,11 @@ public class Leon extends EntityTameable {
                     this.setActivity(1);
                 }
 
-                e = par1DamageSource.getEntity();
+                e = source.getEntity();
                 if (e != null && e instanceof Leon) {
                     return false;
                 } else {
-                    ret = super.attackEntityFrom(par1DamageSource, par2);
+                    ret = super.attackEntityFrom(source, amount);
                     this.hurt_timer = 15;
                     if (e != null && e instanceof EntityLivingBase && !this.worldObj.isRemote) {
                         if (this.isTamed() && e instanceof EntityPlayer) {
@@ -406,31 +406,31 @@ public class Leon extends EntityTameable {
         }
     }
 
-    private boolean isSuitableTarget(EntityLivingBase par1EntityLiving, boolean par2) {
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
         if (this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
             return false;
         } else if (OreSpawnMain.PlayNicely != 0) {
             return false;
-        } else if (par1EntityLiving == null) {
+        } else if (target == null) {
             return false;
-        } else if (par1EntityLiving == this) {
+        } else if (target == this) {
             return false;
-        } else if (!par1EntityLiving.isEntityAlive()) {
+        } else if (!target.isEntityAlive()) {
             return false;
-        } else if (MyUtils.isIgnoreable(par1EntityLiving)) {
+        } else if (MyUtils.isIgnoreable(target)) {
             return false;
         } else if (!this.getEntitySenses()
-            .canSee(par1EntityLiving)) {
+            .canSee(target)) {
                 return false;
-            } else if (par1EntityLiving instanceof Leon) {
+            } else if (target instanceof Leon) {
                 return false;
-            } else if (par1EntityLiving instanceof EntityMob) {
+            } else if (target instanceof EntityMob) {
                 return true;
-            } else if (par1EntityLiving instanceof EntityPlayer) {
-                EntityPlayer p = (EntityPlayer) par1EntityLiving;
+            } else if (target instanceof EntityPlayer) {
+                EntityPlayer p = (EntityPlayer) target;
                 return p.capabilities.isCreativeMode ? false : !this.isTamed();
             } else {
-                return !this.isTamed() && MyUtils.isAttackableNonMob(par1EntityLiving);
+                return !this.isTamed() && MyUtils.isAttackableNonMob(target);
             }
     }
 
@@ -438,18 +438,18 @@ public class Leon extends EntityTameable {
         if (OreSpawnMain.PlayNicely != 0) {
             return null;
         } else {
-            List var5 = this.worldObj
+            List entities = this.worldObj
                 .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(20.0, 20.0, 20.0));
-            Collections.sort(var5, this.TargetSorter);
-            Iterator var2 = var5.iterator();
-            Entity var3 = null;
-            EntityLivingBase var4 = null;
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
 
-            while (var2.hasNext()) {
-                var3 = (Entity) var2.next();
-                var4 = (EntityLivingBase) var3;
-                if (this.isSuitableTarget(var4, false)) {
-                    return var4;
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
                 }
             }
 
@@ -502,20 +502,21 @@ public class Leon extends EntityTameable {
     }
 
     @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
-        super.setPositionAndRotation2(par1, par3, par5, par7, par8, par9);
-        this.boatPosRotationIncrements = par9;
-        this.boatX = par1;
-        this.boatY = par3;
-        this.boatZ = par5;
-        this.boatYaw = par7;
-        this.boatPitch = par8;
-        this.boatYawHead = par7;
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch,
+        int posRotationIncrements) {
+        super.setPositionAndRotation2(x, y, z, yaw, pitch, posRotationIncrements);
+        this.boatPosRotationIncrements = posRotationIncrements;
+        this.boatX = x;
+        this.boatY = y;
+        this.boatZ = z;
+        this.boatYaw = yaw;
+        this.boatPitch = pitch;
+        this.boatYawHead = yaw;
     }
 
     @SideOnly(Side.CLIENT)
-    public void setVelocity(double par1, double par3, double par5) {
-        super.setVelocity(par1, par3, par5);
+    public void setVelocity(double vx, double vy, double vz) {
+        super.setVelocity(vx, vy, vz);
     }
 
     public void onUpdate() {
@@ -563,9 +564,9 @@ public class Leon extends EntityTameable {
         int has_owner = 0;
         EntityLivingBase e = null;
         double speed_factor = 0.5;
-        double var1 = 0.0;
-        double var3 = 0.0;
-        double var5 = 0.0;
+        double dx2 = 0.0;
+        double dy = 0.0;
+        double dz2 = 0.0;
         double gh = 1.25;
         double obstruction_factor = 0.0;
         double velocity = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
@@ -731,9 +732,9 @@ public class Leon extends EntityTameable {
                     this.motionY += obstruction_factor * 0.05;
                     this.posY += obstruction_factor * 0.05;
                     speed_factor = 0.5;
-                    var1 = this.currentFlightTarget.posX + 0.5 - this.posX;
-                    var3 = this.currentFlightTarget.posY + 0.1 - this.posY;
-                    var5 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
+                    dx2 = this.currentFlightTarget.posX + 0.5 - this.posX;
+                    dy = this.currentFlightTarget.posY + 0.1 - this.posY;
+                    dz2 = this.currentFlightTarget.posZ + 0.5 - this.posZ;
                     if (this.owner_flying != 0) {
                         speed_factor = 1.75;
                         if (this.isTamed() && this.getOwner() != null) {
@@ -744,13 +745,13 @@ public class Leon extends EntityTameable {
                         }
                     }
 
-                    this.motionX = this.motionX + (Math.signum(var1) - this.motionX) * 0.15 * speed_factor;
-                    this.motionY = this.motionY + (Math.signum(var3) - this.motionY) * 0.21 * speed_factor;
-                    this.motionZ = this.motionZ + (Math.signum(var5) - this.motionZ) * 0.15 * speed_factor;
-                    float var7 = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
-                    float var8 = MathHelper.wrapAngleTo180_float(var7 - this.rotationYaw);
+                    this.motionX = this.motionX + (Math.signum(dx2) - this.motionX) * 0.15 * speed_factor;
+                    this.motionY = this.motionY + (Math.signum(dy) - this.motionY) * 0.21 * speed_factor;
+                    this.motionZ = this.motionZ + (Math.signum(dz2) - this.motionZ) * 0.15 * speed_factor;
+                    float f = (float) (Math.atan2(this.motionZ, this.motionX) * 180.0 / Math.PI) - 90.0F;
+                    float f2 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
                     this.moveForward = (float) (0.75 * speed_factor);
-                    this.rotationYaw += var8 / 5.0F;
+                    this.rotationYaw += f2 / 5.0F;
                     this.moveEntity(this.motionX, this.motionY, this.motionZ);
                 }
             }
@@ -836,11 +837,11 @@ public class Leon extends EntityTameable {
                         }
 
                         obstruction_factor = 0.0;
-                        int var82 = 3;
-                        var82 += (int) (velocity * 7.0);
+                        int n = 3;
+                        n += (int) (velocity * 7.0);
 
-                        for (int k = 1; k < var82; k++) {
-                            for (int i = 1; i < var82 * 2; i++) {
+                        for (int k = 1; k < n; k++) {
+                            for (int i = 1; i < n * 2; i++) {
                                 double dx = i * Math.cos(Math.toRadians(this.rotationYaw + 90.0F));
                                 double dz = i * Math.sin(Math.toRadians(this.rotationYaw + 90.0F));
                                 bid = this.worldObj
@@ -1075,9 +1076,9 @@ public class Leon extends EntityTameable {
         }
     }
 
-    protected void playTameEffect(boolean par1) {
+    protected void playTameEffect(boolean success) {
         String s = "heart";
-        if (!par1) {
+        if (!success) {
             s = "smoke";
         }
 
@@ -1096,44 +1097,42 @@ public class Leon extends EntityTameable {
         }
     }
 
-    public boolean interact(EntityPlayer par1EntityPlayer) {
-        ItemStack var2 = par1EntityPlayer.inventory.getCurrentItem();
-        if (var2 != null && var2.stackSize <= 0) {
-            par1EntityPlayer.inventory
-                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
-            var2 = null;
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
         }
 
-        if (var2 != null && var2.getItem() == Item.getItemFromBlock(Blocks.diamond_block)
-            && par1EntityPlayer.getDistanceSqToEntity(this) < 49.0) {
+        if (currentItem != null && currentItem.getItem() == Item.getItemFromBlock(Blocks.diamond_block)
+            && player.getDistanceSqToEntity(this) < 49.0) {
             if (!this.worldObj.isRemote) {
                 this.setTamed(true);
                 this.func_152115_b(
-                    par1EntityPlayer.getUniqueID()
+                    player.getUniqueID()
                         .toString());
                 this.playTameEffect(true);
                 this.worldObj.setEntityState(this, (byte) 7);
                 this.heal(this.mygetMaxHealth() - this.getHealth());
             }
 
-            if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                var2.stackSize--;
-                if (var2.stackSize <= 0) {
-                    par1EntityPlayer.inventory
-                        .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+            if (!player.capabilities.isCreativeMode) {
+                currentItem.stackSize--;
+                if (currentItem.stackSize <= 0) {
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                 }
             }
 
             return true;
         } else {
             if (!this.isTamed()) {
-                if (var2 != null && var2.getItem() == Items.beef
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 49.0) {
+                if (currentItem != null && currentItem.getItem() == Items.beef
+                    && player.getDistanceSqToEntity(this) < 49.0) {
                     if (!this.worldObj.isRemote) {
                         if (this.worldObj.rand.nextInt(3) == 1) {
                             this.setTamed(true);
                             this.func_152115_b(
-                                par1EntityPlayer.getUniqueID()
+                                player.getUniqueID()
                                     .toString());
                             this.playTameEffect(true);
                             this.worldObj.setEntityState(this, (byte) 7);
@@ -1144,24 +1143,23 @@ public class Leon extends EntityTameable {
                         }
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
                 }
             } else {
-                if (!this.func_152114_e(par1EntityPlayer)) {
+                if (!this.func_152114_e(player)) {
                     return false;
                 }
 
-                if (var2 == null && par1EntityPlayer.getDistanceSqToEntity(this) < 49.0) {
+                if (currentItem == null && player.getDistanceSqToEntity(this) < 49.0) {
                     if (!this.worldObj.isRemote) {
-                        par1EntityPlayer.mountEntity(this);
+                        player.mountEntity(this);
                         this.setActivity(1);
                         this.setSitting(false);
                     }
@@ -1169,8 +1167,8 @@ public class Leon extends EntityTameable {
                     return true;
                 }
 
-                if (var2 != null && var2.getItem() == Items.beef
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 49.0) {
+                if (currentItem != null && currentItem.getItem() == Items.beef
+                    && player.getDistanceSqToEntity(this) < 49.0) {
                     if (this.worldObj.isRemote) {
                         this.playTameEffect(true);
                         this.worldObj.setEntityState(this, (byte) 7);
@@ -1180,19 +1178,18 @@ public class Leon extends EntityTameable {
                         this.heal(this.mygetMaxHealth() - this.getHealth());
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
                 }
 
-                if (var2 != null && var2.getItem() == Item.getItemFromBlock(Blocks.deadbush)
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 49.0) {
+                if (currentItem != null && currentItem.getItem() == Item.getItemFromBlock(Blocks.deadbush)
+                    && player.getDistanceSqToEntity(this) < 49.0) {
                     if (!this.worldObj.isRemote) {
                         this.setTamed(false);
                         this.func_152115_b("");
@@ -1200,35 +1197,32 @@ public class Leon extends EntityTameable {
                         this.worldObj.setEntityState(this, (byte) 6);
                     }
 
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
                 }
 
-                if (this.isTamed() && var2 != null
-                    && var2.getItem() == Items.name_tag
-                    && par1EntityPlayer.getDistanceSqToEntity(this) < 49.0
-                    && this.func_152114_e(par1EntityPlayer)) {
-                    this.setCustomNameTag(var2.getDisplayName());
-                    if (!par1EntityPlayer.capabilities.isCreativeMode) {
-                        var2.stackSize--;
-                        if (var2.stackSize <= 0) {
-                            par1EntityPlayer.inventory
-                                .setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack) null);
+                if (this.isTamed() && currentItem != null
+                    && currentItem.getItem() == Items.name_tag
+                    && player.getDistanceSqToEntity(this) < 49.0
+                    && this.func_152114_e(player)) {
+                    this.setCustomNameTag(currentItem.getDisplayName());
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
 
                     return true;
                 }
 
-                if (var2 != null && par1EntityPlayer.getDistanceSqToEntity(this) < 49.0
-                    && this.riddenByEntity == null) {
+                if (currentItem != null && player.getDistanceSqToEntity(this) < 49.0 && this.riddenByEntity == null) {
                     if (!this.isSitting()) {
                         this.setSitting(true);
                         this.setActivity(0);
@@ -1245,17 +1239,17 @@ public class Leon extends EntityTameable {
         }
     }
 
-    public boolean isWheat(ItemStack par1ItemStack) {
-        return par1ItemStack != null && par1ItemStack.getItem() == Items.beef;
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.beef;
     }
 
     public int getAttacking() {
         return this.dataWatcher.getWatchableObjectInt(20);
     }
 
-    public void setAttacking(int par1) {
+    public void setAttacking(int attacking) {
         if (this.worldObj == null || !this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(20, par1);
+            this.dataWatcher.updateObject(20, attacking);
         }
     }
 
@@ -1263,9 +1257,9 @@ public class Leon extends EntityTameable {
         return this.dataWatcher.getWatchableObjectInt(21);
     }
 
-    public void setActivity(int par1) {
+    public void setActivity(int activity) {
         if (this.worldObj == null || !this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(21, par1);
+            this.dataWatcher.updateObject(21, activity);
         }
     }
 
@@ -1273,9 +1267,9 @@ public class Leon extends EntityTameable {
         return this.dataWatcher.getWatchableObjectInt(22);
     }
 
-    public void setBeingRidden(int par1) {
+    public void setBeingRidden(int n) {
         if (this.worldObj == null || !this.worldObj.isRemote) {
-            this.dataWatcher.updateObject(22, par1);
+            this.dataWatcher.updateObject(22, n);
         }
     }
 
@@ -1291,15 +1285,15 @@ public class Leon extends EntityTameable {
         }
     }
 
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("LeonAttacking", this.getAttacking());
-        par1NBTTagCompound.setInteger("LeonActivity", this.getActivity());
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setInteger("LeonAttacking", this.getAttacking());
+        tag.setInteger("LeonActivity", this.getActivity());
     }
 
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.setAttacking(par1NBTTagCompound.getInteger("LeonAttacking"));
-        this.setActivity(par1NBTTagCompound.getInteger("LeonActivity"));
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        this.setAttacking(tag.getInteger("LeonAttacking"));
+        this.setActivity(tag.getInteger("LeonActivity"));
     }
 }

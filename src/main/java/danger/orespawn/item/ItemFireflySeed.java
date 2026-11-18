@@ -10,8 +10,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemFireflySeed extends ItemSeeds {
 
-    public ItemFireflySeed(int par1, Block par2, Block par3) {
-        super(par2, par3);
+    public ItemFireflySeed(int n, Block block, Block block2) {
+        super(block, block2);
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
 

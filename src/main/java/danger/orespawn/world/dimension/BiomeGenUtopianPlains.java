@@ -85,8 +85,8 @@ import danger.orespawn.entity.Whale;
 
 public class BiomeGenUtopianPlains extends BiomeGenBase {
 
-    protected BiomeGenUtopianPlains(int par1) {
-        super(par1);
+    protected BiomeGenUtopianPlains(int n) {
+        super(n);
         if (OreSpawnMain.GazelleEnable != 0) {
             this.spawnableCreatureList.add(new SpawnListEntry(Gazelle.class, 10, 2, 4));
         }
