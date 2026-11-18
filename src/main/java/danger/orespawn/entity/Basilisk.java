@@ -1,0 +1,523 @@
+package danger.orespawn.entity;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMoveThroughVillage;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.util.DamageSource;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.World;
+
+import danger.orespawn.MyUtils;
+import danger.orespawn.OreSpawnMain;
+import danger.orespawn.entity.ai.GenericTargetSorter;
+import danger.orespawn.entity.ai.MyEntityAIWanderALot;
+
+public class Basilisk extends EntityMob {
+
+    private GenericTargetSorter TargetSorter = null;
+    private int hurt_timer = 0;
+    private float moveSpeed = 0.4F;
+
+    public Basilisk(World world) {
+        super(world);
+        this.setSize(1.6F, 3.5F);
+        this.experienceValue = 150;
+        this.fireResistance = 2000;
+        this.isImmuneToFire = true;
+        this.TargetSorter = new GenericTargetSorter(this);
+        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(1, new EntityAIMoveThroughVillage(this, 1.0, false));
+        this.tasks.addTask(2, new MyEntityAIWanderALot(this, 20, 1.0));
+        this.tasks.addTask(3, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(4, new EntityAILookIdle(this));
+        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
+    }
+
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+        this.getEntityAttribute(SharedMonsterAttributes.maxHealth)
+            .setBaseValue(this.mygetMaxHealth());
+        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed)
+            .setBaseValue(this.moveSpeed);
+        this.getEntityAttribute(SharedMonsterAttributes.attackDamage)
+            .setBaseValue(OreSpawnMain.Basilisk_stats.attack);
+    }
+
+    protected void entityInit() {
+        super.entityInit();
+        this.dataWatcher.addObject(20, (byte) 0);
+    }
+
+    protected boolean canDespawn() {
+        return !this.isNoDespawnRequired();
+    }
+
+    public void onUpdate() {
+        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed)
+            .setBaseValue(this.moveSpeed);
+        super.onUpdate();
+    }
+
+    public int mygetMaxHealth() {
+        return OreSpawnMain.Basilisk_stats.health;
+    }
+
+    public int getTotalArmorValue() {
+        return OreSpawnMain.Basilisk_stats.defense;
+    }
+
+    protected boolean isAIEnabled() {
+        return true;
+    }
+
+    protected void jump() {
+        this.motionY += 0.25;
+        super.jump();
+    }
+
+    public void onLivingUpdate() {
+        super.onLivingUpdate();
+        if (!this.isDead) {
+            if (this.rand.nextInt(200) == 0) {
+                this.heal(1.0F);
+            }
+        }
+    }
+
+    public int getBasiliskHealth() {
+        return (int) this.getHealth();
+    }
+
+    protected String getLivingSound() {
+        return this.rand.nextInt(2) == 0 ? "orespawn:basilisk_living" : null;
+    }
+
+    protected String getHurtSound() {
+        return "orespawn:alo_hurt";
+    }
+
+    protected String getDeathSound() {
+        return "orespawn:emperorscorpion_death";
+    }
+
+    protected float getSoundVolume() {
+        return 1.0F;
+    }
+
+    protected float getSoundPitch() {
+        return 1.0F;
+    }
+
+    protected Item getDropItem() {
+        return Items.beef;
+    }
+
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
+            this.worldObj,
+            this.posX + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
+            this.posY + 1.0,
+            this.posZ + OreSpawnMain.OreSpawnRand.nextInt(4) - OreSpawnMain.OreSpawnRand.nextInt(4),
+            is);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
+        }
+
+        return is;
+    }
+
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        ItemStack is = null;
+        this.dropItemRand(OreSpawnMain.MyBasiliskScale, 1);
+        this.dropItemRand(Items.item_frame, 1);
+        int i = 12 + this.worldObj.rand.nextInt(6);
+
+        for (int i2 = 0; i2 < i; i2++) {
+            this.dropItemRand(Items.emerald, 1);
+        }
+
+        i = 8 + this.worldObj.rand.nextInt(5);
+
+        for (int i2 = 0; i2 < i; i2++) {
+            this.dropItemRand(Items.chicken, 1);
+        }
+
+        i = 3 + this.worldObj.rand.nextInt(5);
+
+        for (int i2 = 0; i2 < i; i2++) {
+            int roll = this.worldObj.rand.nextInt(15);
+            switch (roll) {
+                case 1:
+                    is = this.dropItemRand(Items.emerald, 1);
+                    break;
+                case 2:
+                    is = this.dropItemRand(Item.getItemFromBlock(Blocks.emerald_block), 1);
+                    break;
+                case 3:
+                    is = this.dropItemRand(OreSpawnMain.MyEmeraldSword, 1);
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.sharpness, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.baneOfArthropods, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.knockback, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.looting, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(2) == 1) {
+                        is.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.fireAspect, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.sharpness, 1 + this.worldObj.rand.nextInt(5));
+                    }
+                    break;
+                case 4:
+                    is = this.dropItemRand(OreSpawnMain.MyEmeraldShovel, 1);
+                    if (this.worldObj.rand.nextInt(2) == 1) {
+                        is.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
+                    }
+                    break;
+                case 5:
+                    is = this.dropItemRand(OreSpawnMain.MyEmeraldPickaxe, 1);
+                    if (this.worldObj.rand.nextInt(2) == 1) {
+                        is.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.fortune, 1 + this.worldObj.rand.nextInt(5));
+                    }
+                    break;
+                case 6:
+                    is = this.dropItemRand(OreSpawnMain.MyEmeraldAxe, 1);
+                    if (this.worldObj.rand.nextInt(2) == 1) {
+                        is.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
+                    }
+                    break;
+                case 7:
+                    is = this.dropItemRand(OreSpawnMain.MyEmeraldHoe, 1);
+                    if (this.worldObj.rand.nextInt(2) == 1) {
+                        is.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.efficiency, 1 + this.worldObj.rand.nextInt(5));
+                    }
+                    break;
+                case 8:
+                    is = this.dropItemRand(OreSpawnMain.EmeraldHelmet, 1);
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(2) == 1) {
+                        is.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.respiration, 1 + this.worldObj.rand.nextInt(2));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.aquaAffinity, 1 + this.worldObj.rand.nextInt(5));
+                    }
+                    break;
+                case 9:
+                    is = this.dropItemRand(OreSpawnMain.EmeraldBody, 1);
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(2) == 1) {
+                        is.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                    }
+                    break;
+                case 10:
+                    is = this.dropItemRand(OreSpawnMain.EmeraldLegs, 1);
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.protection, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.blastProtection, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.fireProtection, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.projectileProtection, 1 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(2) == 1) {
+                        is.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                    }
+                    break;
+                case 11:
+                    is = this.dropItemRand(OreSpawnMain.EmeraldBoots, 1);
+                    if (this.worldObj.rand.nextInt(6) == 1) {
+                        is.addEnchantment(Enchantment.featherFalling, 5 + this.worldObj.rand.nextInt(5));
+                    }
+
+                    if (this.worldObj.rand.nextInt(2) == 1) {
+                        is.addEnchantment(Enchantment.unbreaking, 2 + this.worldObj.rand.nextInt(4));
+                    }
+            }
+        }
+    }
+
+    public boolean interact(EntityPlayer player) {
+        return false;
+    }
+
+    public boolean attackEntityAsMob(Entity target) {
+        if (!super.attackEntityAsMob(target)) {
+            return false;
+        } else {
+            if (target != null && target instanceof EntityLivingBase) {
+                int n = 8;
+                if (this.worldObj.difficultySetting == EnumDifficulty.EASY) {
+                    n = 10;
+                }
+
+                if (this.worldObj.difficultySetting == EnumDifficulty.NORMAL) {
+                    n = 12;
+                } else if (this.worldObj.difficultySetting == EnumDifficulty.HARD) {
+                    n = 14;
+                }
+
+                if (this.worldObj.rand.nextInt(3) == 0) {
+                    ((EntityLivingBase) target).addPotionEffect(new PotionEffect(Potion.poison.id, n * 20, 0));
+                }
+
+                double ks = 1.5;
+                double inair = 0.15;
+                float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+                if (target.isDead || target instanceof EntityPlayer) {
+                    inair *= 2.0;
+                }
+
+                target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+            }
+
+            return true;
+        }
+    }
+
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        if (this.hurt_timer > 0) {
+            return false;
+        } else {
+            this.hurt_timer = 30;
+            return super.attackEntityFrom(source, amount);
+        }
+    }
+
+    protected void updateAITasks() {
+        if (!this.isDead) {
+            super.updateAITasks();
+            if (this.hurt_timer > 0) {
+                this.hurt_timer--;
+            }
+
+            if (this.worldObj.rand.nextInt(5) == 0) {
+                EntityLivingBase e = this.findSomethingToAttack();
+                if (e != null) {
+                    this.faceEntity(e, 10.0F, 10.0F);
+                    if (this.getDistanceSqToEntity(e) < (6.0F + e.width / 2.0F) * (6.0F + e.width / 2.0F)) {
+                        this.setAttacking(1);
+                        if (this.worldObj.rand.nextInt(3) == 0 || this.worldObj.rand.nextInt(4) == 1) {
+                            this.attackEntityAsMob(e);
+                        }
+                    } else {
+                        this.getNavigator()
+                            .tryMoveToEntityLiving(e, 1.25);
+                    }
+
+                    if (e instanceof EntityLivingBase) {
+                        e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 100, 5));
+                    }
+                } else {
+                    this.setAttacking(0);
+                }
+            }
+
+            if (this.worldObj.rand.nextInt(75) == 1 && this.getHealth() < this.mygetMaxHealth()) {
+                this.heal(1.0F);
+            }
+        }
+    }
+
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
+            return false;
+        } else if (target == this) {
+            return false;
+        } else if (!target.isEntityAlive()) {
+            return false;
+        } else if (MyUtils.isIgnoreable(target)) {
+            return false;
+        } else if (!this.getEntitySenses()
+            .canSee(target)) {
+                return false;
+            } else if (target instanceof Basilisk) {
+                return false;
+            } else if (target instanceof LeafMonster) {
+                return false;
+            } else {
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
+                    if (p.capabilities.isCreativeMode) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+    }
+
+    private EntityLivingBase findSomethingToAttack() {
+        if (OreSpawnMain.PlayNicely != 0) {
+            return null;
+        } else {
+            List entities = this.worldObj
+                .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(24.0, 7.0, 24.0));
+            Collections.sort(entities, this.TargetSorter);
+            Iterator iterator = entities.iterator();
+            Entity entity = null;
+            EntityLivingBase target = null;
+
+            while (iterator.hasNext()) {
+                entity = (Entity) iterator.next();
+                target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
+                }
+            }
+
+            return null;
+        }
+    }
+
+    public final int getAttacking() {
+        return this.dataWatcher.getWatchableObjectByte(20);
+    }
+
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
+    }
+
+    public boolean getCanSpawnHere() {
+        for (int k = -3; k < 3; k++) {
+            for (int j = -3; j < 3; j++) {
+                for (int i = 0; i < 5; i++) {
+                    Block bid = this.worldObj.getBlock((int) this.posX + j, (int) this.posY + i, (int) this.posZ + k);
+                    if (bid == Blocks.mob_spawner) {
+                        TileEntityMobSpawner tileentitymobspawner = null;
+                        tileentitymobspawner = (TileEntityMobSpawner) this.worldObj
+                            .getTileEntity((int) this.posX + j, (int) this.posY + i, (int) this.posZ + k);
+                        String s = tileentitymobspawner.func_145881_a()
+                            .getEntityNameToSpawn();
+                        if (s != null && s.equals("Basilisk")) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!this.isValidLightLevel()) {
+            return false;
+        } else if (this.worldObj.isDaytime()) {
+            return false;
+        } else {
+            for (int i = -1; i < 2; i++) {
+                for (int j = -1; j < 2; j++) {
+                    for (int ix = 1; ix < 5; ix++) {
+                        Block bid = this.worldObj
+                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
+                        if (bid != Blocks.air) {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            Basilisk target = null;
+            target = (Basilisk) this.worldObj
+                .findNearestEntityWithinAABB(Basilisk.class, this.boundingBox.expand(20.0, 6.0, 20.0), this);
+            return target == null;
+        }
+    }
+}

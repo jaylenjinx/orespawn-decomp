@@ -1,0 +1,498 @@
+package danger.orespawn.entity;
+
+import java.util.Collections;
+import java.util.List;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMoveThroughVillage;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.World;
+
+import danger.orespawn.MyUtils;
+import danger.orespawn.OreSpawnMain;
+import danger.orespawn.client.render.RenderInfo;
+import danger.orespawn.entity.ai.GenericTargetSorter;
+import danger.orespawn.entity.ai.MyEntityAIWanderALot;
+import danger.orespawn.entity.projectile.LaserBall;
+
+public class Robot4 extends EntityMob {
+
+    private GenericTargetSorter TargetSorter = null;
+    private RenderInfo renderdata = new RenderInfo();
+    private int reload_ticker = 0;
+    private int was_attacked_ticker = 0;
+    private float moveSpeed = 0.34F;
+
+    public Robot4(World world) {
+        super(world);
+        this.setSize(2.5F, 4.0F);
+        this.getNavigator()
+            .setAvoidsWater(true);
+        this.experienceValue = 120;
+        this.fireResistance = 120;
+        this.isImmuneToFire = true;
+        this.TargetSorter = new GenericTargetSorter(this);
+        this.renderdata = new RenderInfo();
+        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(1, new MyEntityAIWanderALot(this, 14, 1.0));
+        this.tasks.addTask(2, new EntityAIMoveThroughVillage(this, 0.9F, false));
+        this.tasks.addTask(3, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(4, new EntityAILookIdle(this));
+        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
+    }
+
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+        this.getEntityAttribute(SharedMonsterAttributes.maxHealth)
+            .setBaseValue(this.mygetMaxHealth());
+        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed)
+            .setBaseValue(this.moveSpeed);
+        this.getEntityAttribute(SharedMonsterAttributes.attackDamage)
+            .setBaseValue(OreSpawnMain.Robot4_stats.attack);
+    }
+
+    protected void entityInit() {
+        super.entityInit();
+        this.dataWatcher.addObject(20, (byte) 0);
+        this.dataWatcher.addObject(21, (byte) 0);
+        if (this.renderdata == null) {
+            this.renderdata = new RenderInfo();
+        }
+
+        this.renderdata.rf1 = 0.0F;
+        this.renderdata.rf2 = 0.0F;
+        this.renderdata.rf3 = 0.0F;
+        this.renderdata.rf4 = 0.0F;
+        this.renderdata.ri1 = 0;
+        this.renderdata.ri2 = 0;
+        this.renderdata.ri3 = 0;
+        this.renderdata.ri4 = 0;
+    }
+
+    protected boolean canDespawn() {
+        return !this.isNoDespawnRequired();
+    }
+
+    public void onUpdate() {
+        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed)
+            .setBaseValue(this.moveSpeed);
+        super.onUpdate();
+    }
+
+    public int mygetMaxHealth() {
+        return OreSpawnMain.Robot4_stats.health;
+    }
+
+    public int getRobot4Health() {
+        return (int) this.getHealth();
+    }
+
+    public RenderInfo getRenderInfo() {
+        return this.renderdata;
+    }
+
+    public void setRenderInfo(RenderInfo r) {
+        this.renderdata.rf1 = r.rf1;
+        this.renderdata.rf2 = r.rf2;
+        this.renderdata.rf3 = r.rf3;
+        this.renderdata.rf4 = r.rf4;
+        this.renderdata.ri1 = r.ri1;
+        this.renderdata.ri2 = r.ri2;
+        this.renderdata.ri3 = r.ri3;
+        this.renderdata.ri4 = r.ri4;
+    }
+
+    public int getTotalArmorValue() {
+        return OreSpawnMain.Robot4_stats.defense;
+    }
+
+    protected boolean isAIEnabled() {
+        return true;
+    }
+
+    protected void jump() {
+        this.motionY += 0.25;
+        super.jump();
+    }
+
+    public void onLivingUpdate() {
+        super.onLivingUpdate();
+        if (this.worldObj.isRemote) {
+            if (this.rand.nextInt(3) == 1) {
+                this.worldObj.spawnParticle(
+                    "smoke",
+                    this.posX - 1.25 * Math.sin(Math.toRadians(this.rotationYaw + 180.0F)),
+                    this.posY + 3.0 + this.worldObj.rand.nextFloat(),
+                    this.posZ + 1.25 * Math.cos(Math.toRadians(this.rotationYaw + 180.0F)),
+                    0.0,
+                    this.worldObj.rand.nextFloat() / 2.0,
+                    0.0);
+            }
+
+            if (this.getAttacking() != 0) {
+                this.worldObj.spawnParticle(
+                    "reddust",
+                    this.posX - 1.55 * Math.sin(Math.toRadians(this.rotationYaw + 35.0F)),
+                    this.posY + 2.25 + this.worldObj.rand.nextFloat(),
+                    this.posZ + 1.55 * Math.cos(Math.toRadians(this.rotationYaw + 35.0F)),
+                    0.0,
+                    this.worldObj.rand.nextFloat(),
+                    0.0);
+            }
+        }
+    }
+
+    public int getAttackStrength(Entity entity) {
+        int n = 0;
+        if (this.worldObj.difficultySetting == EnumDifficulty.EASY) {
+            n = 15;
+            if (this.worldObj.difficultySetting == EnumDifficulty.NORMAL) {
+                n = 20;
+            } else if (this.worldObj.difficultySetting == EnumDifficulty.HARD) {
+                n = 25;
+            }
+        }
+
+        return n;
+    }
+
+    protected String getLivingSound() {
+        return this.rand.nextInt(4) == 0 ? "orespawn:robot_living" : null;
+    }
+
+    protected String getHurtSound() {
+        return "orespawn:robot_hurt";
+    }
+
+    protected String getDeathSound() {
+        return "orespawn:robot_death";
+    }
+
+    protected float getSoundVolume() {
+        return 1.0F;
+    }
+
+    protected float getSoundPitch() {
+        return 1.0F;
+    }
+
+    protected Item getDropItem() {
+        return Items.quartz;
+    }
+
+    private ItemStack dropItemRand(Item index, int n) {
+        EntityItem entityItem = null;
+        ItemStack is = new ItemStack(index, n, 0);
+        entityItem = new EntityItem(
+            this.worldObj,
+            this.posX + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
+            this.posY + 1.0,
+            this.posZ + OreSpawnMain.OreSpawnRand.nextInt(2) - OreSpawnMain.OreSpawnRand.nextInt(2),
+            is);
+        if (entityItem != null) {
+            this.worldObj.spawnEntityInWorld(entityItem);
+        }
+
+        return is;
+    }
+
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        ItemStack is = null;
+        int n = 5 + this.worldObj.rand.nextInt(10);
+
+        for (int i = 0; i < n; i++) {
+            this.dropItemRand(OreSpawnMain.MyLaserBall, 4);
+        }
+
+        this.dropItemRand(OreSpawnMain.MyRayGun, 1);
+        this.dropItemRand(Items.item_frame, 1);
+        int i = 10 + this.worldObj.rand.nextInt(15);
+
+        for (int i2 = 0; i2 < i; i2++) {
+            int roll = this.worldObj.rand.nextInt(15);
+            switch (roll) {
+                case 0:
+                    is = this.dropItemRand(Items.redstone, 1);
+                    break;
+                case 1:
+                    is = this.dropItemRand(Items.repeater, 1);
+                    break;
+                case 2:
+                    is = this.dropItemRand(Items.comparator, 1);
+                    break;
+                case 3:
+                    is = this.dropItemRand(Item.getItemFromBlock(Blocks.redstone_block), 1);
+                    break;
+                case 4:
+                    is = this.dropItemRand(Item.getItemFromBlock(Blocks.dispenser), 1);
+                    break;
+                case 5:
+                    is = this.dropItemRand(Item.getItemFromBlock(Blocks.sticky_piston), 1);
+                    break;
+                case 6:
+                    is = this.dropItemRand(Item.getItemFromBlock(Blocks.piston), 1);
+                    break;
+                case 7:
+                    is = this.dropItemRand(Item.getItemFromBlock(Blocks.lever), 1);
+                    break;
+                case 8:
+                    is = this.dropItemRand(Item.getItemFromBlock(Blocks.redstone_block), 1);
+                    break;
+                case 9:
+                    is = this.dropItemRand(Item.getItemFromBlock(Blocks.light_weighted_pressure_plate), 1);
+            }
+        }
+    }
+
+    public boolean interact(EntityPlayer player) {
+        return false;
+    }
+
+    public boolean attackEntityAsMob(Entity target) {
+        if (target != null && target instanceof EntityLivingBase) {
+            double ks = 2.0;
+            double inair = 0.12;
+            float f3 = (float) Math.atan2(target.posZ - this.posZ, target.posX - this.posX);
+            if (target.isDead || target instanceof EntityPlayer) {
+                inair *= 2.0;
+            }
+
+            target.addVelocity(Math.cos(f3) * ks, inair, Math.sin(f3) * ks);
+        }
+
+        return super.attackEntityAsMob(target);
+    }
+
+    protected void updateAITasks() {
+        if (!this.isDead) {
+            super.updateAITasks();
+            if (this.reload_ticker > 0) {
+                this.reload_ticker--;
+            }
+
+            if (this.was_attacked_ticker > 0) {
+                this.was_attacked_ticker--;
+            }
+
+            if (this.reload_ticker == 0 && this.worldObj.rand.nextInt(8) == 1) {
+                EntityLivingBase e = null;
+                if (this.worldObj.rand.nextInt(50) == 1) {
+                    this.setAttackTarget(null);
+                }
+
+                e = this.getAttackTarget();
+                if (e != null && !e.isEntityAlive()) {
+                    this.setAttackTarget(null);
+                    e = null;
+                }
+
+                if (e == null) {
+                    e = this.findSomethingToAttack();
+                }
+
+                if (e != null) {
+                    this.faceEntity(e, 10.0F, 10.0F);
+                    if (this.getDistanceSqToEntity(e) < 256.0) {
+                        if (this.getDistanceSqToEntity(e) < (3.0F + e.width / 2.0F) * (3.0F + e.width / 2.0F)) {
+                            this.attackEntityAsMob(e);
+                        } else {
+                            double rr = Math.atan2(e.posZ - this.posZ, e.posX - this.posX);
+                            double rhdir = Math.toRadians((this.rotationYawHead + 90.0F) % 360.0F);
+                            double pi = 3.1415926545;
+                            double rdd = Math.abs(rr - rhdir) % (pi * 2.0);
+                            if (rdd > pi) {
+                                rdd -= pi * 2.0;
+                            }
+
+                            rdd = Math.abs(rdd);
+                            if (rdd < 0.5) {
+                                double yoff = 2.0;
+                                double xzoff = 1.75;
+                                LaserBall laserBall = new LaserBall(
+                                    this.worldObj,
+                                    e.posX - this.posX,
+                                    e.posY - (this.posY + yoff),
+                                    e.posZ - this.posZ);
+                                laserBall.setLocationAndAngles(
+                                    this.posX - xzoff * Math.sin(Math.toRadians(this.rotationYaw + 45.0F)),
+                                    this.posY + yoff,
+                                    this.posZ + xzoff * Math.cos(Math.toRadians(this.rotationYaw + 45.0F)),
+                                    this.rotationYaw,
+                                    this.rotationPitch);
+                                double dx = e.posX - laserBall.posX;
+                                double dy = e.posY - laserBall.posY;
+                                double dz = e.posZ - laserBall.posZ;
+                                float f = MathHelper.sqrt_double(dx * dx + dz * dz) * 0.2F;
+                                laserBall.setThrowableHeading(dx, dy + f, dz, 2.0F, 4.0F);
+                                if (this.getDistanceSqToEntity(e) > 65.0) {
+                                    laserBall.setSpecial();
+                                    this.reload_ticker = 30;
+                                    this.worldObj.playSoundAtEntity(this, "fireworks.launch", 3.5F, 0.5F);
+                                } else {
+                                    this.reload_ticker = 10;
+                                    this.worldObj.playSoundAtEntity(this, "fireworks.launch", 2.5F, 1.0F);
+                                }
+
+                                this.worldObj.spawnEntityInWorld(laserBall);
+                            }
+
+                            this.setAttacking(1);
+                        }
+
+                        this.getNavigator()
+                            .tryMoveToEntityLiving(e, 0.75);
+                    }
+                }
+            }
+
+            if (this.reload_ticker <= 0 && this.was_attacked_ticker <= 0) {
+                this.setAttacking(0);
+            }
+        }
+    }
+
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        boolean ret = false;
+        if (!source.getDamageType()
+            .equals("cactus")) {
+            if (this.getShielding() == 0 && this.was_attacked_ticker == 0) {
+                this.was_attacked_ticker = 65;
+                this.setAttacking(1);
+                ret = super.attackEntityFrom(source, amount);
+                Entity e = source.getEntity();
+                if (e != null && e instanceof EntityLiving) {
+                    this.setAttackTarget((EntityLiving) e);
+                    this.setTarget(e);
+                    this.getNavigator()
+                        .tryMoveToEntityLiving((EntityLiving) e, 1.2);
+                    ret = true;
+                }
+
+                return ret;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isSuitableTarget(EntityLivingBase target, boolean checkSight) {
+        if (target == null) {
+            return false;
+        } else if (target == this) {
+            return false;
+        } else if (!target.isEntityAlive()) {
+            return false;
+        } else if (MyUtils.isIgnoreable(target)) {
+            return false;
+        } else if (!this.getEntitySenses()
+            .canSee(target)) {
+                return false;
+            } else if (target instanceof EntityMob) {
+                return false;
+            } else {
+                if (target instanceof EntityPlayer) {
+                    EntityPlayer p = (EntityPlayer) target;
+                    if (p.capabilities.isCreativeMode) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+    }
+
+    private EntityLivingBase findSomethingToAttack() {
+        if (OreSpawnMain.PlayNicely != 0) {
+            return null;
+        } else {
+            List entities = this.worldObj
+                .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(16.0, 4.0, 16.0));
+            Collections.sort(entities, this.TargetSorter);
+
+            for (Entity entity : (List<Entity>) entities) {
+                EntityLivingBase target = (EntityLivingBase) entity;
+                if (this.isSuitableTarget(target, false)) {
+                    return target;
+                }
+            }
+
+            return null;
+        }
+    }
+
+    public final int getAttacking() {
+        return this.dataWatcher.getWatchableObjectByte(20);
+    }
+
+    public final void setAttacking(int attacking) {
+        this.dataWatcher.updateObject(20, (byte) attacking);
+    }
+
+    public final int getShielding() {
+        return this.dataWatcher.getWatchableObjectByte(21);
+    }
+
+    public final void setShielding(int n) {
+        this.dataWatcher.updateObject(21, (byte) n);
+    }
+
+    public boolean getCanSpawnHere() {
+        for (int k = -3; k < 3; k++) {
+            for (int j = -3; j < 3; j++) {
+                for (int i = 0; i < 5; i++) {
+                    Block bid = this.worldObj.getBlock((int) this.posX + j, (int) this.posY + i, (int) this.posZ + k);
+                    if (bid == Blocks.mob_spawner) {
+                        TileEntityMobSpawner tileentitymobspawner = null;
+                        tileentitymobspawner = (TileEntityMobSpawner) this.worldObj
+                            .getTileEntity((int) this.posX + j, (int) this.posY + i, (int) this.posZ + k);
+                        String s = tileentitymobspawner.func_145881_a()
+                            .getEntityNameToSpawn();
+                        if (s != null && s.equals("Robo-Warrior")) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (this.posY < 50.0) {
+            return false;
+        } else if (this.worldObj.isDaytime()) {
+            return false;
+        } else {
+            for (int i = -1; i < 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    for (int ix = 1; ix < 6; ix++) {
+                        Block bid = this.worldObj
+                            .getBlock((int) this.posX + j, (int) this.posY + ix, (int) this.posZ + i);
+                        if (bid != Blocks.air && bid != Blocks.tallgrass) {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return this.isValidLightLevel();
+        }
+    }
+}

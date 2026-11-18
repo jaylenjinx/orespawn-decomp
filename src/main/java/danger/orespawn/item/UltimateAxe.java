@@ -1,0 +1,82 @@
+package danger.orespawn.item;
+
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntityTameable;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.ItemAxe;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import danger.orespawn.OreSpawnMain;
+import danger.orespawn.entity.Boyfriend;
+import danger.orespawn.entity.Girlfriend;
+
+public class UltimateAxe extends ItemAxe {
+
+    private int weaponDamage = 15;
+
+    public UltimateAxe(int n, ToolMaterial toolMaterial) {
+        super(toolMaterial);
+        this.maxStackSize = 1;
+        this.setMaxDamage(3000);
+        this.setCreativeTab(CreativeTabs.tabTools);
+    }
+
+    public void onCreated(ItemStack stack, World world, EntityPlayer player) {
+        stack.addEnchantment(Enchantment.efficiency, 5);
+    }
+
+    public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
+        int lvl = EnchantmentHelper.getEnchantmentLevel(Enchantment.efficiency.effectId, stack);
+        if (lvl <= 0) {
+            stack.addEnchantment(Enchantment.efficiency, 5);
+        }
+    }
+
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
+        this.onUsingTick(stack, (EntityPlayer) null, 0);
+    }
+
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+        if (entity != null && OreSpawnMain.ultimate_sword_pvp == 0) {
+            if (entity instanceof EntityPlayer || entity instanceof Girlfriend || entity instanceof Boyfriend) {
+                return true;
+            }
+
+            if (entity instanceof EntityTameable) {
+                EntityTameable t = (EntityTameable) entity;
+                if (t.isTamed()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public int getDamageVsEntity(Entity entity) {
+        if (entity instanceof Girlfriend) {
+            return 1;
+        } else {
+            return entity instanceof EntityPlayer ? 1 : this.weaponDamage;
+        }
+    }
+
+    public String getMaterialName() {
+        return "Uranium/Titanium";
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister iconRegister) {
+        this.itemIcon = iconRegister.registerIcon(
+            "OreSpawn:" + this.getUnlocalizedName()
+                .substring(5));
+    }
+}

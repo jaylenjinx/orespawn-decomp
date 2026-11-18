@@ -1,0 +1,105 @@
+package danger.orespawn.client.render;
+
+import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
+
+import danger.orespawn.client.model.ModelStinky;
+import danger.orespawn.entity.Stinky;
+
+public class RenderStinky extends RenderLiving {
+
+    protected ModelStinky model;
+    private float scale = 1.0F;
+    private static final ResourceLocation texture1 = new ResourceLocation("orespawn", "Stinkytexture1.png");
+    private static final ResourceLocation texture2 = new ResourceLocation("orespawn", "Stinkytexture2.png");
+    private static final ResourceLocation texture3 = new ResourceLocation("orespawn", "Stinkytexture3.png");
+    private static final ResourceLocation texture4 = new ResourceLocation("orespawn", "Stinkytexture4.png");
+    private static final ResourceLocation texture5 = new ResourceLocation("orespawn", "Stinkytexture5.png");
+    private static final ResourceLocation texture6 = new ResourceLocation("orespawn", "Stinkytexture6.png");
+    private static final ResourceLocation texture7 = new ResourceLocation("orespawn", "Stinkytexture7.png");
+    private static final ResourceLocation texture8 = new ResourceLocation("orespawn", "Stinkytexture8.png");
+    private static final ResourceLocation texture9 = new ResourceLocation("orespawn", "Stinkytexture9.png");
+    private static final ResourceLocation texture10 = new ResourceLocation("orespawn", "Stinkytexture10.png");
+    private static final ResourceLocation texture11 = new ResourceLocation("orespawn", "Stinkytexture11.png");
+    private static final ResourceLocation texture12 = new ResourceLocation("orespawn", "Stinkytexture12.png");
+    private static final ResourceLocation texture13 = new ResourceLocation("orespawn", "Stinkytexture13.png");
+    private static final ResourceLocation texture14 = new ResourceLocation("orespawn", "Stinkytexture14.png");
+    private static final ResourceLocation texture15 = new ResourceLocation("orespawn", "Stinkytexture15.png");
+    private static final ResourceLocation texture16 = new ResourceLocation("orespawn", "Stinkytexture16.png");
+    private static final ResourceLocation texture17 = new ResourceLocation("orespawn", "Stinkytexture17.png");
+    private static final ResourceLocation texture18 = new ResourceLocation("orespawn", "Stinkytexture18.png");
+    private static final ResourceLocation texture19 = new ResourceLocation("orespawn", "Stinkytexture19.png");
+
+    public RenderStinky(ModelStinky modelBase, float f, float scale2) {
+        super(modelBase, f * scale2);
+        this.model = (ModelStinky) this.mainModel;
+        this.scale = scale2;
+    }
+
+    public void renderStinky(Stinky entityStinky, double x, double y, double z, float yaw, float partialTicks) {
+        super.doRender(entityStinky, x, y, z, yaw, partialTicks);
+    }
+
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderStinky((Stinky) entity, x, y, z, yaw, partialTicks);
+    }
+
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        this.renderStinky((Stinky) entity, x, y, z, yaw, partialTicks);
+    }
+
+    protected void preRenderScale(Stinky entity, float f) {
+        GL11.glScalef(this.scale, this.scale, this.scale);
+    }
+
+    protected void preRenderCallback(EntityLivingBase entity, float partialTicks) {
+        this.preRenderScale((Stinky) entity, partialTicks);
+    }
+
+    protected ResourceLocation getEntityTexture(Entity entity) {
+        Stinky s = (Stinky) entity;
+        int i = s.getSkin();
+        if (i == 1) {
+            return texture2;
+        } else if (i == 2) {
+            return texture3;
+        } else if (i == 3) {
+            return texture4;
+        } else if (i == 4) {
+            return texture5;
+        } else if (i == 5) {
+            return texture6;
+        } else if (i == 6) {
+            return texture7;
+        } else if (i == 7) {
+            return texture8;
+        } else if (i == 8) {
+            return texture9;
+        } else if (i == 9) {
+            return texture10;
+        } else if (i == 10) {
+            return texture11;
+        } else if (i == 11) {
+            return texture12;
+        } else if (i == 12) {
+            return texture13;
+        } else if (i == 13) {
+            return texture14;
+        } else if (i == 14) {
+            return texture15;
+        } else if (i == 15) {
+            return texture16;
+        } else if (i == 16) {
+            return texture17;
+        } else if (i == 17) {
+            return texture18;
+        } else {
+            return i == 18 ? texture19 : texture1;
+        }
+    }
+}

@@ -1,0 +1,306 @@
+package danger.orespawn.entity;
+
+import java.util.List;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIAvoidEntity;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMate;
+import net.minecraft.entity.ai.EntityAIMoveIndoors;
+import net.minecraft.entity.ai.EntityAIPanic;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAITempt;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+
+import danger.orespawn.OreSpawnMain;
+import danger.orespawn.entity.ai.MyEntityAIAvoidEntity;
+import danger.orespawn.entity.ai.MyEntityAIFollowOwner;
+import danger.orespawn.entity.ai.MyEntityAIWanderALot;
+
+public class Chipmunk extends EntityCannonFodder {
+
+    private float moveSpeed = 0.38F;
+
+    public Chipmunk(World world) {
+        super(world);
+        this.setSize(0.35F, 0.35F);
+        this.moveSpeed = 0.38F;
+        this.fireResistance = 100;
+        this.getNavigator()
+            .setAvoidsWater(true);
+        this.setSitting(false);
+        this.experienceValue = 5;
+        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(1, new EntityAIMate(this, 1.0));
+        this.tasks.addTask(2, new MyEntityAIFollowOwner(this, 2.0F, 10.0F, 2.0F));
+        this.tasks.addTask(3, new MyEntityAIAvoidEntity(this, EntityMob.class, 8.0F, 1.0, 1.6F));
+        this.tasks.addTask(4, new EntityAITempt(this, 1.2F, Items.apple, false));
+        this.tasks.addTask(5, new EntityAIPanic(this, 1.5));
+        this.tasks.addTask(6, new EntityAIAvoidEntity(this, EntityPlayer.class, 8.0F, 1.0, 1.4F));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
+        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityLiving.class, 5.0F));
+        this.tasks.addTask(9, new MyEntityAIWanderALot(this, 10, 1.0));
+        this.tasks.addTask(10, new EntityAILookIdle(this));
+        this.tasks.addTask(11, new EntityAIMoveIndoors(this));
+    }
+
+    @Override
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+        this.getEntityAttribute(SharedMonsterAttributes.maxHealth)
+            .setBaseValue(this.mygetMaxHealth());
+        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed)
+            .setBaseValue(this.moveSpeed);
+        this.getAttributeMap()
+            .registerAttribute(SharedMonsterAttributes.attackDamage);
+        this.getEntityAttribute(SharedMonsterAttributes.attackDamage)
+            .setBaseValue(1.0);
+    }
+
+    @Override
+    protected void entityInit() {
+        super.entityInit();
+        this.setSitting(false);
+    }
+
+    @Override
+    public void onUpdate() {
+        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed)
+            .setBaseValue(this.moveSpeed);
+        super.onUpdate();
+    }
+
+    protected void fall(float distance) {
+        float i = MathHelper.ceiling_float_int(distance - 3.0F);
+        if (i > 0.0F) {
+            if (i > 3.0F) {
+                this.playSound("damage.fallbig", 1.0F, 1.0F);
+            } else {
+                this.playSound("damage.fallsmall", 1.0F, 1.0F);
+            }
+
+            if (i > 2.0F) {
+                i = 2.0F;
+            }
+
+            this.attackEntityFrom(DamageSource.fall, i);
+        }
+    }
+
+    protected void updateAITick() {
+        if (!this.isDead) {
+            if (this.worldObj.rand.nextInt(200) == 1) {
+                this.setRevengeTarget(null);
+            }
+
+            if (this.worldObj.rand.nextInt(250) == 0) {
+                this.heal(1.0F);
+            }
+
+            if (!this.worldObj.isRemote && this.worldObj.rand.nextInt(600) == 1) {
+                Block bid = this.worldObj.getBlock((int) this.posX, (int) this.posY - 1, (int) this.posZ);
+                if ((bid == Blocks.dirt || bid == Blocks.farmland) && this.worldObj.getGameRules()
+                    .getGameRuleBooleanValue("mobGriefing")) {
+                    this.worldObj.setBlock((int) this.posX, (int) this.posY - 1, (int) this.posZ, Blocks.air, 0, 2);
+                }
+            }
+
+            super.updateAITick();
+        }
+    }
+
+    public boolean isAIEnabled() {
+        return true;
+    }
+
+    public boolean canBreatheUnderwater() {
+        return false;
+    }
+
+    public int mygetMaxHealth() {
+        return 5;
+    }
+
+    public int getChipmunkHealth() {
+        return (int) this.getHealth();
+    }
+
+    @Override
+    public boolean interact(EntityPlayer player) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.stackSize <= 0) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+            currentItem = null;
+        }
+
+        if (super.interact(player)) {
+            return true;
+        } else if (currentItem != null && currentItem.getItem() == Items.apple
+            && player.getDistanceSqToEntity(this) < 16.0) {
+                if (!this.isTamed()) {
+                    if (!this.worldObj.isRemote) {
+                        if (this.rand.nextInt(2) == 0) {
+                            this.setTamed(true);
+                            this.func_152115_b(
+                                player.getUniqueID()
+                                    .toString());
+                            this.playTameEffect(true);
+                            this.worldObj.setEntityState(this, (byte) 7);
+                            this.heal(this.mygetMaxHealth() - this.getHealth());
+                        } else {
+                            this.playTameEffect(false);
+                            this.worldObj.setEntityState(this, (byte) 6);
+                        }
+                    }
+                } else if (this.func_152114_e(player)) {
+                    if (this.worldObj.isRemote) {
+                        this.playTameEffect(true);
+                        this.worldObj.setEntityState(this, (byte) 7);
+                    }
+
+                    if (this.mygetMaxHealth() > this.getHealth()) {
+                        this.heal(this.mygetMaxHealth() - this.getHealth());
+                    }
+                }
+
+                if (!player.capabilities.isCreativeMode) {
+                    currentItem.stackSize--;
+                    if (currentItem.stackSize <= 0) {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                    }
+                }
+
+                return true;
+            } else if (this.isTamed() && currentItem != null
+                && currentItem.getItem() == Item.getItemFromBlock(Blocks.deadbush)
+                && player.getDistanceSqToEntity(this) < 16.0
+                && this.func_152114_e(player)) {
+                    if (!this.worldObj.isRemote) {
+                        this.setTamed(false);
+                        this.func_152115_b("");
+                        this.playTameEffect(false);
+                        this.worldObj.setEntityState(this, (byte) 6);
+                    }
+
+                    if (!player.capabilities.isCreativeMode) {
+                        currentItem.stackSize--;
+                        if (currentItem.stackSize <= 0) {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                        }
+                    }
+
+                    return true;
+                } else if (this.isTamed() && currentItem != null
+                    && currentItem.getItem() == Items.name_tag
+                    && player.getDistanceSqToEntity(this) < 16.0
+                    && this.func_152114_e(player)) {
+                        this.setCustomNameTag(currentItem.getDisplayName());
+                        if (!player.capabilities.isCreativeMode) {
+                            currentItem.stackSize--;
+                            if (currentItem.stackSize <= 0) {
+                                player.inventory
+                                    .setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                            }
+                        }
+
+                        return true;
+                    } else
+                    if (this.isTamed() && this.func_152114_e(player) && player.getDistanceSqToEntity(this) < 16.0) {
+                        if (!this.isSitting()) {
+                            this.setSitting(true);
+                        } else {
+                            this.setSitting(false);
+                        }
+
+                        return true;
+                    } else {
+                        return false;
+                    }
+    }
+
+    protected String getLivingSound() {
+        return this.isSitting() ? null : null;
+    }
+
+    protected String getHurtSound() {
+        return "orespawn:scorpion_hit";
+    }
+
+    protected String getDeathSound() {
+        return "orespawn:cryo_death";
+    }
+
+    protected float getSoundVolume() {
+        return 0.4F;
+    }
+
+    protected Item getDropItem() {
+        return Items.wheat;
+    }
+
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int roll = 0;
+        if (this.isTamed()) {
+            roll = this.rand.nextInt(5);
+            roll += 2;
+
+            for (int i = 0; i < roll; i++) {
+                this.dropItem(Item.getItemFromBlock(Blocks.red_flower), 1);
+            }
+        } else {
+            super.dropFewItems(wasRecentlyHit, lootingLevel);
+        }
+    }
+
+    protected float getSoundPitch() {
+        return this.isChild() ? (this.rand.nextFloat() - this.rand.nextFloat()) * 0.1F + 1.5F
+            : (this.rand.nextFloat() - this.rand.nextFloat()) * 0.1F + 1.0F;
+    }
+
+    public boolean getCanSpawnHere() {
+        return this.posY < 50.0 ? false : this.findBuddies() <= 2;
+    }
+
+    private int findBuddies() {
+        List entities = this.worldObj.getEntitiesWithinAABB(Chipmunk.class, this.boundingBox.expand(20.0, 10.0, 20.0));
+        return entities.size();
+    }
+
+    protected boolean canDespawn() {
+        if (this.isChild()) {
+            this.func_110163_bv();
+            return false;
+        } else {
+            return this.isNoDespawnRequired() ? false : !this.isTamed();
+        }
+    }
+
+    @Override
+    public EntityAgeable createChild(EntityAgeable entityageable) {
+        return this.spawnBabyAnimal(entityageable);
+    }
+
+    public Chipmunk spawnBabyAnimal(EntityAgeable entityAgeable) {
+        return new Chipmunk(this.worldObj);
+    }
+
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.apple;
+    }
+
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
+    }
+}

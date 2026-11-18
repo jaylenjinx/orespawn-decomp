@@ -5,6 +5,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.common.network.IGuiHandler;
+import danger.orespawn.block.TileEntityCrystalFurnace;
+import danger.orespawn.client.gui.CrystalFurnaceGUI;
+import danger.orespawn.client.gui.CrystalWorkbenchGUI;
+import danger.orespawn.inventory.ContainerCrystalFurnace;
+import danger.orespawn.inventory.ContainerCrystalWorkbench;
 
 public class OreSpawnGUIHandler implements IGuiHandler {
 

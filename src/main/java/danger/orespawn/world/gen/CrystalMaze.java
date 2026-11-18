@@ -1,0 +1,357 @@
+package danger.orespawn.world.gen;
+
+import java.awt.Point;
+import java.util.Vector;
+
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+
+import danger.orespawn.OreSpawnMain;
+
+public class CrystalMaze {
+
+    public static final int WTOP = 1;
+    public static final int WRGT = 2;
+    public static final int WBOT = 4;
+    public static final int WLFT = 8;
+
+    public void buildCrystalMaze(World world, int x, int y, int z, Chunk chunk) {
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 16; j++) {
+                for (int k = 0; k < 3; k++) {
+                    OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, x + j, y + k, z + i, Blocks.air, 0);
+                }
+            }
+        }
+
+        this.makeMaze(world, x, y, z, 4, 4, 4, 1, chunk);
+        this.openCrystalMaze(world, x, y, z, 4, 4, 4, chunk);
+    }
+
+    private void openCrystalMaze(World world, int xx, int yy, int zz, int xw, int zw, int csz, Chunk chunk) {
+        for (int i = 0; i < zw * csz; i++) {
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx, yy, zz + i, Blocks.air, 0);
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx, yy + 1, zz + i, Blocks.air, 0);
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx, yy + 2, zz + i, Blocks.air, 0);
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + i, yy, zz, Blocks.air, 0);
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + i, yy + 1, zz, Blocks.air, 0);
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + i, yy + 2, zz, Blocks.air, 0);
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + zw * csz - 1, yy, zz + i, Blocks.air, 0);
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + zw * csz - 1, yy + 1, zz + i, Blocks.air, 0);
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + zw * csz - 1, yy + 2, zz + i, Blocks.air, 0);
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + i, yy, zz + zw * csz - 1, Blocks.air, 0);
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + i, yy + 1, zz + zw * csz - 1, Blocks.air, 0);
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + i, yy + 2, zz + zw * csz - 1, Blocks.air, 0);
+        }
+
+        for (int i = 0; i < zw * csz; i++) {
+            for (int j = 0; j < zw * csz; j++) {
+                OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + j, yy - 1, zz + i, Blocks.bedrock, 0);
+                OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + j, yy + 3, zz + i, Blocks.bedrock, 0);
+            }
+        }
+
+        for (int k = 0; k < 4; k++) {
+            int roll = world.rand.nextInt(zw * csz);
+            int j = world.rand.nextInt(zw * csz);
+            OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + j, yy + 3, zz + roll, OreSpawnMain.CrystalStone, 0);
+        }
+
+        int roll = world.rand.nextInt(zw * csz);
+        int j = world.rand.nextInt(zw * csz);
+        OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, xx + j, yy - 1, zz + roll, OreSpawnMain.CrystalStone, 0);
+    }
+
+    private void makeMaze(World world, int xx, int yy, int zz, int xw, int zw, int csz, int b, Chunk chunk) {
+        int gridw = xw;
+        int gridh = zw;
+        int cellsize = csz;
+        if (csz < 3) {
+            cellsize = 3;
+        }
+
+        int[][] cells = new int[xw][zw];
+        int full = 15;
+
+        for (int x = 0; x < gridw; x++) {
+            for (int y = 0; y < gridh; y++) {
+                cells[x][y] = full;
+            }
+        }
+
+        int left = 128;
+        int right = 32;
+
+        for (int y = 0; y < gridh; y++) {
+            cells[0][y] = cells[0][y] | left;
+            cells[gridw - 1][y] = cells[gridw - 1][y] | right;
+        }
+
+        int top = 16;
+        int bottom = 64;
+
+        for (int i = 0; i < gridw; i++) {
+            cells[i][0] = cells[i][0] | top;
+            cells[i][gridh - 1] = cells[i][gridh - 1] | bottom;
+        }
+
+        Vector outlist = new Vector(gridw * gridh);
+        Vector inlist = new Vector(10, 10);
+        Vector frontlist = new Vector(10, 10);
+
+        for (int i = 0; i < gridw; i++) {
+            for (int j = 0; j < gridh; j++) {
+                outlist.addElement(new Point(i, j));
+            }
+        }
+
+        Point current_cell = (Point) this.rndElement(outlist);
+        inlist.addElement(current_cell);
+        this.moveNbrs(current_cell, cells, outlist, frontlist);
+
+        while (!frontlist.isEmpty()) {
+            current_cell = (Point) this.rndElement(frontlist);
+            inlist.addElement(current_cell);
+            this.moveNbrs(current_cell, cells, outlist, frontlist);
+            int dir = this.findInNbr(current_cell, cells, inlist);
+            this.removeWall(current_cell, dir, cells);
+        }
+
+        current_cell = null;
+
+        for (int i = 0; i < gridw; i++) {
+            for (int j = 0; j < gridh; j++) {
+                int val = cells[i][j];
+                if ((val & 1) != 0) {
+                    this.drawSide(
+                        world,
+                        i * cellsize,
+                        j * cellsize,
+                        (i + 1) * cellsize,
+                        j * cellsize,
+                        xx,
+                        yy,
+                        zz,
+                        cellsize,
+                        gridh,
+                        gridw,
+                        b,
+                        chunk);
+                }
+
+                if ((val & 2) != 0) {
+                    this.drawSide(
+                        world,
+                        (i + 1) * cellsize - 1,
+                        j * cellsize,
+                        (i + 1) * cellsize - 1,
+                        (j + 1) * cellsize,
+                        xx,
+                        yy,
+                        zz,
+                        cellsize,
+                        gridh,
+                        gridw,
+                        b,
+                        chunk);
+                }
+
+                if ((val & 4) != 0) {
+                    this.drawSide(
+                        world,
+                        i * cellsize,
+                        (j + 1) * cellsize - 1,
+                        (i + 1) * cellsize,
+                        (j + 1) * cellsize - 1,
+                        xx,
+                        yy,
+                        zz,
+                        cellsize,
+                        gridh,
+                        gridw,
+                        b,
+                        chunk);
+                }
+
+                if ((val & 8) != 0) {
+                    this.drawSide(
+                        world,
+                        i * cellsize,
+                        j * cellsize,
+                        i * cellsize,
+                        (j + 1) * cellsize,
+                        xx,
+                        yy,
+                        zz,
+                        cellsize,
+                        gridh,
+                        gridw,
+                        b,
+                        chunk);
+                }
+            }
+        }
+    }
+
+    private void drawSide(World world, int fromx, int fromz, int tox, int toz, int x, int y, int z, int cellsize,
+        int gridh, int gridw, int bb, Chunk chunk) {
+        Block blk = Blocks.obsidian;
+        if (bb != 0) {
+            blk = Blocks.bedrock;
+        }
+
+        if (fromx > tox) {
+            int i = fromx;
+            fromx = tox;
+            tox = i;
+        }
+
+        if (fromz > toz) {
+            int i = fromz;
+            fromz = toz;
+            toz = i;
+        }
+
+        if (fromx == tox) {
+            int i = fromx;
+
+            for (int j = fromz; j <= toz; j++) {
+                if (j < cellsize * gridh) {
+                    OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, i + x, y, j + z, blk, 0);
+                    OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, i + x, y + 1, j + z, blk, 0);
+                    OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, i + x, y + 2, j + z, blk, 0);
+                }
+            }
+        } else {
+            int jx = fromz;
+
+            for (int i = fromx; i <= tox; i++) {
+                if (i < cellsize * gridw) {
+                    OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, i + x, y, jx + z, blk, 0);
+                    OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, i + x, y + 1, jx + z, blk, 0);
+                    OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, i + x, y + 2, jx + z, blk, 0);
+                }
+            }
+        }
+    }
+
+    private int findInNbr(Point p, int[][] cells, Vector inlist) {
+        int d = this.rnd(4) - 1;
+
+        for (int k = 0; k < 4; k++) {
+            switch (d) {
+                case 0:
+                    if ((cells[p.x][p.y] & 16) == 0 && inlist.indexOf(new Point(p.x, p.y - 1)) >= 0) {
+                        return 1;
+                    }
+                    break;
+                case 1:
+                    if ((cells[p.x][p.y] & 32) == 0 && inlist.indexOf(new Point(p.x + 1, p.y)) >= 0) {
+                        return 2;
+                    }
+                    break;
+                case 2:
+                    if ((cells[p.x][p.y] & 64) == 0 && inlist.indexOf(new Point(p.x, p.y + 1)) >= 0) {
+                        return 4;
+                    }
+                    break;
+                case 3:
+                    if ((cells[p.x][p.y] & 128) == 0 && inlist.indexOf(new Point(p.x - 1, p.y)) >= 0) {
+                        return 8;
+                    }
+            }
+
+            d = (d + 1) % 4;
+        }
+
+        return 0;
+    }
+
+    private void moveNbrs(Point p, int[][] cells, Vector outlist, Vector frontlist) {
+        if ((cells[p.x][p.y] & 16) == 0) {
+            Point s = new Point(p.x, p.y - 1);
+            this.movePoint(s, outlist, frontlist);
+        }
+
+        if ((cells[p.x][p.y] & 32) == 0) {
+            Point s = new Point(p.x + 1, p.y);
+            this.movePoint(s, outlist, frontlist);
+        }
+
+        if ((cells[p.x][p.y] & 64) == 0) {
+            Point s = new Point(p.x, p.y + 1);
+            this.movePoint(s, outlist, frontlist);
+        }
+
+        if ((cells[p.x][p.y] & 128) == 0) {
+            Point s = new Point(p.x - 1, p.y);
+            this.movePoint(s, outlist, frontlist);
+        }
+    }
+
+    private void movePoint(Point p, Vector v, Vector w) {
+        int i = v.indexOf(p);
+        if (i >= 0) {
+            v.removeElementAt(i);
+            w.addElement(p);
+        }
+    }
+
+    private void removeWall(Point p, int d, int[][] cells) {
+        cells[p.x][p.y] = cells[p.x][p.y] ^ d;
+        switch (d) {
+            case 1:
+                cells[p.x][p.y - 1] = cells[p.x][p.y - 1] ^ 4;
+                break;
+            case 2:
+                cells[p.x + 1][p.y] = cells[p.x + 1][p.y] ^ 8;
+            case 3:
+            case 5:
+            case 6:
+            case 7:
+            default:
+                break;
+            case 4:
+                cells[p.x][p.y + 1] = cells[p.x][p.y + 1] ^ 1;
+                break;
+            case 8:
+                cells[p.x - 1][p.y] = cells[p.x - 1][p.y] ^ 2;
+        }
+    }
+
+    private int rnd(int n) {
+        return (int) (Math.random() * n + 1.0);
+    }
+
+    private Object rndElement(Vector v) {
+        int i = this.rnd(v.size()) - 1;
+        Object s = v.elementAt(i);
+        v.removeElementAt(i);
+        return s;
+    }
+
+    private void clearArea(World world, int x, int y, int z, Chunk chunk) {
+        for (int i = 0; i < 60; i++) {
+            int hi = 5;
+            if (i >= 30) {
+                hi = 7;
+            }
+
+            for (int j = 0; j < hi; j++) {
+                for (int k = 0; k < 30; k++) {
+                    OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, x + i, y + j, z + k, Blocks.air, 0);
+                }
+            }
+        }
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 6; j++) {
+                for (int k = 0; k < 30; k++) {
+                    OreSpawnMain.setBlockIDWithMetadataInChunk(chunk, x - i, y + j, z + k, Blocks.air, 0);
+                }
+            }
+        }
+    }
+}

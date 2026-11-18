@@ -43,11 +43,315 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import danger.orespawn.block.AntBlock;
+import danger.orespawn.block.BlockAppleLeaves;
+import danger.orespawn.block.BlockButterflyPlant;
+import danger.orespawn.block.BlockCorn;
+import danger.orespawn.block.BlockCrystal;
+import danger.orespawn.block.BlockCrystalLeaves;
+import danger.orespawn.block.BlockCrystalPlant;
+import danger.orespawn.block.BlockCrystalTorch;
+import danger.orespawn.block.BlockCrystalTreeLog;
+import danger.orespawn.block.BlockDuctTape;
+import danger.orespawn.block.BlockDuplicatorLog;
+import danger.orespawn.block.BlockExperienceLeaves;
+import danger.orespawn.block.BlockExperiencePlant;
+import danger.orespawn.block.BlockExtremeTorch;
+import danger.orespawn.block.BlockFireflyPlant;
+import danger.orespawn.block.BlockLettuce;
+import danger.orespawn.block.BlockMosquitoPlant;
+import danger.orespawn.block.BlockMothPlant;
+import danger.orespawn.block.BlockPizza;
+import danger.orespawn.block.BlockQuinoa;
+import danger.orespawn.block.BlockRadish;
+import danger.orespawn.block.BlockRice;
+import danger.orespawn.block.BlockRuby;
+import danger.orespawn.block.BlockScaryLeaves;
+import danger.orespawn.block.BlockSkyTreeLog;
+import danger.orespawn.block.BlockStrawberry;
+import danger.orespawn.block.BlockTitanium;
+import danger.orespawn.block.BlockTomato;
+import danger.orespawn.block.BlockUranium;
+import danger.orespawn.block.CreeperRepellent;
+import danger.orespawn.block.CrystalAntBlock;
+import danger.orespawn.block.CrystalFurnace;
+import danger.orespawn.block.CrystalGrass;
+import danger.orespawn.block.CrystalWood;
+import danger.orespawn.block.CrystalWorkbench;
+import danger.orespawn.block.DungeonSpawnerBlock;
+import danger.orespawn.block.IslandBlock;
+import danger.orespawn.block.KingSpawnerBlock;
+import danger.orespawn.block.KrakenRepellent;
+import danger.orespawn.block.Lavafoam;
+import danger.orespawn.block.MoleDirtBlock;
+import danger.orespawn.block.MyBlockFlower;
+import danger.orespawn.block.OreAmethyst;
+import danger.orespawn.block.OreBasicStone;
+import danger.orespawn.block.OreCrystal;
+import danger.orespawn.block.OreCrystalCrystal;
+import danger.orespawn.block.OreGenericEgg;
+import danger.orespawn.block.OreRuby;
+import danger.orespawn.block.OreSalt;
+import danger.orespawn.block.OreTitanium;
+import danger.orespawn.block.OreUranium;
+import danger.orespawn.block.QueenSpawnerBlock;
+import danger.orespawn.block.RTPBlock;
+import danger.orespawn.block.TileEntityCrystalFurnace;
+import danger.orespawn.client.KeyHandler;
+import danger.orespawn.dispenser.DispenserBehaviorOreSpawnEgg;
+import danger.orespawn.dispenser.MyDispenserBehaviorAcid;
+import danger.orespawn.dispenser.MyDispenserBehaviorArrow;
+import danger.orespawn.dispenser.MyDispenserBehaviorDeadIrukandji;
+import danger.orespawn.dispenser.MyDispenserBehaviorIceball;
+import danger.orespawn.dispenser.MyDispenserBehaviorLaserball;
+import danger.orespawn.dispenser.MyDispenserBehaviorRock;
+import danger.orespawn.dispenser.MyDispenserBehaviorSunspotUrchin;
+import danger.orespawn.dispenser.MyDispenserBehaviorWDCharge;
+import danger.orespawn.entity.Alien;
+import danger.orespawn.entity.Alosaurus;
+import danger.orespawn.entity.AntRobot;
+import danger.orespawn.entity.AttackSquid;
+import danger.orespawn.entity.BandP;
+import danger.orespawn.entity.Baryonyx;
+import danger.orespawn.entity.Basilisk;
+import danger.orespawn.entity.Beaver;
+import danger.orespawn.entity.Bee;
+import danger.orespawn.entity.Boyfriend;
+import danger.orespawn.entity.Brutalfly;
+import danger.orespawn.entity.Camarasaurus;
+import danger.orespawn.entity.Cassowary;
+import danger.orespawn.entity.CaterKiller;
+import danger.orespawn.entity.CaveFisher;
+import danger.orespawn.entity.Cephadrome;
+import danger.orespawn.entity.Chipmunk;
+import danger.orespawn.entity.CliffRacer;
+import danger.orespawn.entity.CloudShark;
+import danger.orespawn.entity.Cockateil;
+import danger.orespawn.entity.Coin;
+import danger.orespawn.entity.Crab;
+import danger.orespawn.entity.CreepingHorror;
+import danger.orespawn.entity.Cricket;
+import danger.orespawn.entity.Cryolophosaurus;
+import danger.orespawn.entity.CrystalCow;
+import danger.orespawn.entity.Dragon;
+import danger.orespawn.entity.Dragonfly;
+import danger.orespawn.entity.DungeonBeast;
+import danger.orespawn.entity.EasterBunny;
+import danger.orespawn.entity.Elevator;
+import danger.orespawn.entity.EmperorScorpion;
+import danger.orespawn.entity.EnchantedCow;
+import danger.orespawn.entity.EnderKnight;
+import danger.orespawn.entity.EnderReaper;
+import danger.orespawn.entity.EntityAnt;
+import danger.orespawn.entity.EntityButterfly;
+import danger.orespawn.entity.EntityLunaMoth;
+import danger.orespawn.entity.EntityMosquito;
+import danger.orespawn.entity.EntityRainbowAnt;
+import danger.orespawn.entity.EntityRedAnt;
+import danger.orespawn.entity.EntityUnstableAnt;
+import danger.orespawn.entity.Fairy;
+import danger.orespawn.entity.Firefly;
+import danger.orespawn.entity.Flounder;
+import danger.orespawn.entity.Frog;
+import danger.orespawn.entity.GammaMetroid;
+import danger.orespawn.entity.Gazelle;
+import danger.orespawn.entity.Ghost;
+import danger.orespawn.entity.GhostSkelly;
+import danger.orespawn.entity.GiantRobot;
+import danger.orespawn.entity.Girlfriend;
+import danger.orespawn.entity.Godzilla;
+import danger.orespawn.entity.GodzillaHead;
+import danger.orespawn.entity.GoldCow;
+import danger.orespawn.entity.GoldFish;
+import danger.orespawn.entity.Hammerhead;
+import danger.orespawn.entity.HerculesBeetle;
+import danger.orespawn.entity.Hydrolisc;
+import danger.orespawn.entity.Irukandji;
+import danger.orespawn.entity.Island;
+import danger.orespawn.entity.IslandToo;
+import danger.orespawn.entity.KingHead;
+import danger.orespawn.entity.Kraken;
+import danger.orespawn.entity.Kyuubi;
+import danger.orespawn.entity.LeafMonster;
+import danger.orespawn.entity.Leon;
+import danger.orespawn.entity.Lizard;
+import danger.orespawn.entity.LurkingTerror;
+import danger.orespawn.entity.Mantis;
+import danger.orespawn.entity.Molenoid;
+import danger.orespawn.entity.Mothra;
+import danger.orespawn.entity.Nastysaurus;
+import danger.orespawn.entity.Ostrich;
+import danger.orespawn.entity.Peacock;
+import danger.orespawn.entity.PitchBlack;
+import danger.orespawn.entity.Pointysaurus;
+import danger.orespawn.entity.PurplePower;
+import danger.orespawn.entity.QueenHead;
+import danger.orespawn.entity.Rat;
+import danger.orespawn.entity.RedCow;
+import danger.orespawn.entity.Robot1;
+import danger.orespawn.entity.Robot2;
+import danger.orespawn.entity.Robot3;
+import danger.orespawn.entity.Robot4;
+import danger.orespawn.entity.Robot5;
+import danger.orespawn.entity.RockBase;
+import danger.orespawn.entity.Rotator;
+import danger.orespawn.entity.RubberDucky;
+import danger.orespawn.entity.RubyBird;
+import danger.orespawn.entity.Scorpion;
+import danger.orespawn.entity.SeaMonster;
+import danger.orespawn.entity.SeaViper;
+import danger.orespawn.entity.Skate;
+import danger.orespawn.entity.SpiderDriver;
+import danger.orespawn.entity.SpiderRobot;
+import danger.orespawn.entity.SpitBug;
+import danger.orespawn.entity.Spyro;
+import danger.orespawn.entity.StinkBug;
+import danger.orespawn.entity.Stinky;
+import danger.orespawn.entity.TRex;
+import danger.orespawn.entity.Termite;
+import danger.orespawn.entity.TerribleTerror;
+import danger.orespawn.entity.TheKing;
+import danger.orespawn.entity.ThePrince;
+import danger.orespawn.entity.ThePrinceAdult;
+import danger.orespawn.entity.ThePrinceTeen;
+import danger.orespawn.entity.ThePrincess;
+import danger.orespawn.entity.TheQueen;
+import danger.orespawn.entity.Triffid;
+import danger.orespawn.entity.TrooperBug;
+import danger.orespawn.entity.Tshirt;
+import danger.orespawn.entity.Urchin;
+import danger.orespawn.entity.VelocityRaptor;
+import danger.orespawn.entity.Vortex;
+import danger.orespawn.entity.WaterDragon;
+import danger.orespawn.entity.Whale;
+import danger.orespawn.entity.WormLarge;
+import danger.orespawn.entity.WormMedium;
+import danger.orespawn.entity.WormSmall;
+import danger.orespawn.entity.projectile.Acid;
+import danger.orespawn.entity.projectile.BerthaHit;
+import danger.orespawn.entity.projectile.DeadIrukandji;
+import danger.orespawn.entity.projectile.EntityCage;
+import danger.orespawn.entity.projectile.EntityThrownRock;
+import danger.orespawn.entity.projectile.IceBall;
+import danger.orespawn.entity.projectile.InkSack;
+import danger.orespawn.entity.projectile.IrukandjiArrow;
+import danger.orespawn.entity.projectile.LaserBall;
+import danger.orespawn.entity.projectile.Shoes;
+import danger.orespawn.entity.projectile.SunspotUrchin;
+import danger.orespawn.entity.projectile.UltimateArrow;
+import danger.orespawn.entity.projectile.UltimateFishHook;
+import danger.orespawn.entity.projectile.WaterBall;
+import danger.orespawn.item.AmethystAxe;
+import danger.orespawn.item.AmethystHoe;
+import danger.orespawn.item.AmethystPickaxe;
+import danger.orespawn.item.AmethystShovel;
+import danger.orespawn.item.AmethystSword;
+import danger.orespawn.item.Bertha;
+import danger.orespawn.item.BigHammer;
+import danger.orespawn.item.CritterCage;
+import danger.orespawn.item.CrystalAxe;
+import danger.orespawn.item.CrystalHoe;
+import danger.orespawn.item.CrystalPickaxe;
+import danger.orespawn.item.CrystalShovel;
+import danger.orespawn.item.CrystalSword;
+import danger.orespawn.item.EmeraldAxe;
+import danger.orespawn.item.EmeraldHoe;
+import danger.orespawn.item.EmeraldPickaxe;
+import danger.orespawn.item.EmeraldShovel;
+import danger.orespawn.item.EmeraldSword;
+import danger.orespawn.item.ExperienceCatcher;
+import danger.orespawn.item.ExperienceSword;
+import danger.orespawn.item.FairySword;
+import danger.orespawn.item.IngotTitanium;
+import danger.orespawn.item.IngotUranium;
+import danger.orespawn.item.InstantGarden;
+import danger.orespawn.item.InstantShelter;
+import danger.orespawn.item.ItemAcid;
+import danger.orespawn.item.ItemAppleSeed;
+import danger.orespawn.item.ItemButterflySeed;
+import danger.orespawn.item.ItemCornCob;
+import danger.orespawn.item.ItemCreeperLauncher;
+import danger.orespawn.item.ItemCrystalSticks;
+import danger.orespawn.item.ItemDuctTape;
+import danger.orespawn.item.ItemElevator;
+import danger.orespawn.item.ItemExperienceTreeSeed;
+import danger.orespawn.item.ItemFireFish;
+import danger.orespawn.item.ItemFireflySeed;
+import danger.orespawn.item.ItemGenericFish;
+import danger.orespawn.item.ItemIceBall;
+import danger.orespawn.item.ItemIrukandji;
+import danger.orespawn.item.ItemIrukandjiArrow;
+import danger.orespawn.item.ItemLaserBall;
+import danger.orespawn.item.ItemLavaEel;
+import danger.orespawn.item.ItemLettuce;
+import danger.orespawn.item.ItemMagicApple;
+import danger.orespawn.item.ItemMinersDream;
+import danger.orespawn.item.ItemMosquitoSeed;
+import danger.orespawn.item.ItemMothSeed;
+import danger.orespawn.item.ItemNetherLost;
+import danger.orespawn.item.ItemOreSpawnArmor;
+import danger.orespawn.item.ItemPizza;
+import danger.orespawn.item.ItemPopcorn;
+import danger.orespawn.item.ItemRadish;
+import danger.orespawn.item.ItemRandomDungeon;
+import danger.orespawn.item.ItemRayGun;
+import danger.orespawn.item.ItemRock;
+import danger.orespawn.item.ItemSalt;
+import danger.orespawn.item.ItemShoes;
+import danger.orespawn.item.ItemSifter;
+import danger.orespawn.item.ItemSparkFish;
+import danger.orespawn.item.ItemSpawnEgg;
+import danger.orespawn.item.ItemSpiderRobotKit;
+import danger.orespawn.item.ItemSquidZooka;
+import danger.orespawn.item.ItemStrawberry;
+import danger.orespawn.item.ItemStrawberrySeed;
+import danger.orespawn.item.ItemSunFish;
+import danger.orespawn.item.ItemSunspotUrchin;
+import danger.orespawn.item.ItemThunderStaff;
+import danger.orespawn.item.ItemTomato;
+import danger.orespawn.item.ItemWaterBall;
+import danger.orespawn.item.ItemWrench;
+import danger.orespawn.item.ItemZooKeeper;
+import danger.orespawn.item.MantisClaw;
+import danger.orespawn.item.NightmareSword;
+import danger.orespawn.item.PoisonSword;
+import danger.orespawn.item.RatSword;
+import danger.orespawn.item.RubyAxe;
+import danger.orespawn.item.RubyHoe;
+import danger.orespawn.item.RubyPickaxe;
+import danger.orespawn.item.RubyShovel;
+import danger.orespawn.item.RubySword;
+import danger.orespawn.item.SkateBow;
+import danger.orespawn.item.StepAccross;
+import danger.orespawn.item.StepDown;
+import danger.orespawn.item.StepUp;
+import danger.orespawn.item.UltimateAxe;
+import danger.orespawn.item.UltimateBow;
+import danger.orespawn.item.UltimateFishingRod;
+import danger.orespawn.item.UltimateHoe;
+import danger.orespawn.item.UltimatePickaxe;
+import danger.orespawn.item.UltimateShovel;
+import danger.orespawn.item.UltimateSword;
+import danger.orespawn.item.ZooCage;
+import danger.orespawn.world.dimension.WorldProviderOreSpawn;
+import danger.orespawn.world.dimension.WorldProviderOreSpawn2;
+import danger.orespawn.world.dimension.WorldProviderOreSpawn3;
+import danger.orespawn.world.dimension.WorldProviderOreSpawn4;
+import danger.orespawn.world.dimension.WorldProviderOreSpawn5;
+import danger.orespawn.world.dimension.WorldProviderOreSpawn6;
+import danger.orespawn.world.gen.BasiliskMaze;
+import danger.orespawn.world.gen.ChunkOreGenerator;
+import danger.orespawn.world.gen.GenericDungeon;
+import danger.orespawn.world.gen.OreSpawnWorld;
+import danger.orespawn.world.gen.RubyBirdDungeon;
+import danger.orespawn.world.gen.Trees;
 
 @Mod(modid = "OreSpawn", name = "OreSpawn", version = "1.7.10.20.3")
 public class OreSpawnMain {
 
-    @SidedProxy(clientSide = "danger.orespawn.ClientProxyOreSpawn", serverSide = "danger.orespawn.CommonProxyOreSpawn")
+    @SidedProxy(
+        clientSide = "danger.orespawn.client.ClientProxyOreSpawn",
+        serverSide = "danger.orespawn.CommonProxyOreSpawn")
     public static CommonProxyOreSpawn proxy;
     @Instance("OreSpawn")
     public static OreSpawnMain instance;
@@ -425,7 +729,7 @@ public class OreSpawnMain {
     static ToolMaterial toolQUEENBATTLE;
     static WeaponStats ultimate_stats = null;
     static WeaponStats nightmare_stats = null;
-    static WeaponStats bertha_stats = null;
+    public static WeaponStats bertha_stats = null;
     static WeaponStats crystalwood_stats = null;
     static WeaponStats crystalstone_stats = null;
     static WeaponStats crystalpink_stats = null;
@@ -433,11 +737,11 @@ public class OreSpawnMain {
     static WeaponStats ruby_stats = null;
     static WeaponStats amethyst_stats = null;
     static WeaponStats emerald_stats = null;
-    static WeaponStats royal_stats = null;
-    static WeaponStats hammy_stats = null;
+    public static WeaponStats royal_stats = null;
+    public static WeaponStats hammy_stats = null;
     static WeaponStats battleaxe_stats = null;
     static WeaponStats queenbattleaxe_stats = null;
-    static WeaponStats chainsaw_stats = null;
+    public static WeaponStats chainsaw_stats = null;
     public static Item MyCrystalWoodSword;
     public static Item MyCrystalWoodPickaxe;
     public static Item MyCrystalWoodShovel;
@@ -534,19 +838,19 @@ public class OreSpawnMain {
     public static Item MyStepDown;
     public static Item MyStepAccross;
     static ArmorMaterial armorULTIMATE;
-    static ArmorMaterial armorMOBZILLA;
-    static ArmorMaterial armorLAVAEEL;
-    static ArmorMaterial armorMOTHSCALE;
-    static ArmorMaterial armorEMERALD;
-    static ArmorMaterial armorEXPERIENCE;
-    static ArmorMaterial armorRUBY;
-    static ArmorMaterial armorAMETHYST;
-    static ArmorMaterial armorPINK;
-    static ArmorMaterial armorTIGERSEYE;
-    static ArmorMaterial armorPEACOCK;
-    static ArmorMaterial armorROYAL;
-    static ArmorMaterial armorLAPIS;
-    static ArmorMaterial armorQUEEN;
+    public static ArmorMaterial armorMOBZILLA;
+    public static ArmorMaterial armorLAVAEEL;
+    public static ArmorMaterial armorMOTHSCALE;
+    public static ArmorMaterial armorEMERALD;
+    public static ArmorMaterial armorEXPERIENCE;
+    public static ArmorMaterial armorRUBY;
+    public static ArmorMaterial armorAMETHYST;
+    public static ArmorMaterial armorPINK;
+    public static ArmorMaterial armorTIGERSEYE;
+    public static ArmorMaterial armorPEACOCK;
+    public static ArmorMaterial armorROYAL;
+    public static ArmorMaterial armorLAPIS;
+    public static ArmorMaterial armorQUEEN;
     public static ItemOreSpawnArmor UltimateHelmet;
     public static ItemOreSpawnArmor UltimateBody;
     public static ItemOreSpawnArmor UltimateLegs;
@@ -9437,28 +9741,28 @@ public class OreSpawnMain {
         return pointedAt;
     }
 
-    public static boolean setBlockFast(World world, int par1, int par2, int par3, Block par4, int par5, int par6) {
-        if (par1 < -30000000 || par3 < -30000000 || par1 >= 30000000 || par3 >= 30000000) {
+    public static boolean setBlockFast(World world, int x, int y, int z, Block block, int n, int n2) {
+        if (x < -30000000 || z < -30000000 || x >= 30000000 || z >= 30000000) {
             return false;
-        } else if (par2 < 0) {
+        } else if (y < 0) {
             return false;
-        } else if (par2 >= 256) {
+        } else if (y >= 256) {
             return false;
         } else {
-            Chunk chunk = world.getChunkFromChunkCoords(par1 >> 4, par3 >> 4);
+            Chunk chunk = world.getChunkFromChunkCoords(x >> 4, z >> 4);
             Block k1 = Blocks.air;
-            if ((par6 & 1) != 0) {
-                k1 = chunk.getBlock(par1 & 15, par2, par3 & 15);
+            if ((n2 & 1) != 0) {
+                k1 = chunk.getBlock(x & 15, y, z & 15);
             }
 
-            boolean flag = setBlockIDWithMetadataFast(chunk, par1 & 15, par2, par3 & 15, par4, par5);
+            boolean flag = setBlockIDWithMetadataFast(chunk, x & 15, y, z & 15, block, n);
             if (flag) {
-                if ((par6 & 2) != 0 && (!world.isRemote || (par6 & 4) == 0)) {
-                    world.markBlockForUpdate(par1, par2, par3);
+                if ((n2 & 2) != 0 && (!world.isRemote || (n2 & 4) == 0)) {
+                    world.markBlockForUpdate(x, y, z);
                 }
 
-                if (!world.isRemote && (par6 & 1) != 0) {
-                    world.notifyBlockChange(par1, par2, par3, k1);
+                if (!world.isRemote && (n2 & 1) != 0) {
+                    world.notifyBlockChange(x, y, z, k1);
                 }
             }
 
@@ -9466,105 +9770,104 @@ public class OreSpawnMain {
         }
     }
 
-    public static boolean setBlockSuperFast(World world, int par1, int par2, int par3, Block par4, int par5, int par6,
+    public static boolean setBlockSuperFast(World world, int x, int y, int z, Block block, int n, int n2,
         Chunk refChunk) {
-        if (par1 < -30000000 || par3 < -30000000 || par1 >= 30000000 || par3 >= 30000000) {
+        if (x < -30000000 || z < -30000000 || x >= 30000000 || z >= 30000000) {
             return false;
-        } else if (par2 < 0) {
+        } else if (y < 0) {
             return false;
-        } else if (par2 >= 256) {
+        } else if (y >= 256) {
             return false;
         } else {
-            Chunk chunk = world.getChunkFromChunkCoords(par1 >> 4, par3 >> 4);
+            Chunk chunk = world.getChunkFromChunkCoords(x >> 4, z >> 4);
             boolean flag = true;
             if (chunk != refChunk) {
                 Block k1 = Blocks.air;
-                if ((par6 & 1) != 0) {
-                    k1 = chunk.getBlock(par1 & 15, par2, par3 & 15);
+                if ((n2 & 1) != 0) {
+                    k1 = chunk.getBlock(x & 15, y, z & 15);
                 }
 
-                flag = setBlockIDWithMetadataFast(chunk, par1 & 15, par2, par3 & 15, par4, par5);
+                flag = setBlockIDWithMetadataFast(chunk, x & 15, y, z & 15, block, n);
                 if (flag) {
-                    if ((par6 & 2) != 0 && (!world.isRemote || (par6 & 4) == 0)) {
-                        world.markBlockForUpdate(par1, par2, par3);
+                    if ((n2 & 2) != 0 && (!world.isRemote || (n2 & 4) == 0)) {
+                        world.markBlockForUpdate(x, y, z);
                     }
 
-                    if (!world.isRemote && (par6 & 1) != 0) {
-                        world.notifyBlockChange(par1, par2, par3, k1);
+                    if (!world.isRemote && (n2 & 1) != 0) {
+                        world.notifyBlockChange(x, y, z, k1);
                     }
                 }
             } else {
-                setBlockIDWithMetadataFast(chunk, par1 & 15, par2, par3 & 15, par4, par5);
+                setBlockIDWithMetadataFast(chunk, x & 15, y, z & 15, block, n);
             }
 
             return flag;
         }
     }
 
-    public static boolean setBlockIDWithMetadataFast(Chunk chunk, int par1, int par2, int par3, Block par4, int par5) {
-        if (par1 < -30000000 || par3 < -30000000 || par1 >= 30000000 || par3 >= 30000000) {
+    public static boolean setBlockIDWithMetadataFast(Chunk chunk, int n, int n2, int n3, Block block, int n4) {
+        if (n < -30000000 || n3 < -30000000 || n >= 30000000 || n3 >= 30000000) {
             return false;
-        } else if (par2 >= 0 && par2 <= 255) {
+        } else if (n2 >= 0 && n2 <= 255) {
             ExtendedBlockStorage[] mystorage = chunk.getBlockStorageArray();
-            ExtendedBlockStorage extendedblockstorage = mystorage[par2 >> 4];
+            ExtendedBlockStorage extendedblockstorage = mystorage[n2 >> 4];
             if (extendedblockstorage == null) {
-                if (par4 == Blocks.air) {
+                if (block == Blocks.air) {
                     return false;
                 }
 
-                extendedblockstorage = mystorage[par2 >> 4] = new ExtendedBlockStorage(
-                    par2 >> 4 << 4,
+                extendedblockstorage = mystorage[n2 >> 4] = new ExtendedBlockStorage(
+                    n2 >> 4 << 4,
                     !chunk.worldObj.provider.hasNoSky);
                 chunk.setStorageArrays(mystorage);
             }
 
-            extendedblockstorage.func_150818_a(par1, par2 & 15, par3, par4);
-            extendedblockstorage.setExtBlockMetadata(par1, par2 & 15, par3, par5);
+            extendedblockstorage.func_150818_a(n, n2 & 15, n3, block);
+            extendedblockstorage.setExtBlockMetadata(n, n2 & 15, n3, n4);
             return true;
         } else {
             return false;
         }
     }
 
-    public static Block getBlockIDInChunk(Chunk chunk, int par1, int par2, int par3) {
-        if (par1 >= -30000000 && par3 >= -30000000 && par1 < 30000000 && par3 < 30000000) {
-            if (par1 >> 4 != chunk.xPosition) {
+    public static Block getBlockIDInChunk(Chunk chunk, int n, int y, int n2) {
+        if (n >= -30000000 && n2 >= -30000000 && n < 30000000 && n2 < 30000000) {
+            if (n >> 4 != chunk.xPosition) {
                 return Blocks.air;
-            } else if (par3 >> 4 != chunk.zPosition) {
+            } else if (n2 >> 4 != chunk.zPosition) {
                 return Blocks.air;
             } else {
-                return par2 >= 0 && par2 <= 255 ? chunk.getBlock(par1 & 15, par2, par3 & 15) : Blocks.air;
+                return y >= 0 && y <= 255 ? chunk.getBlock(n & 15, y, n2 & 15) : Blocks.air;
             }
         } else {
             return Blocks.air;
         }
     }
 
-    public static boolean setBlockIDWithMetadataInChunk(Chunk chunk, int par1, int par2, int par3, Block par4,
-        int par5) {
-        if (par1 >= -30000000 && par3 >= -30000000 && par1 < 30000000 && par3 < 30000000) {
-            if (par1 >> 4 != chunk.xPosition) {
+    public static boolean setBlockIDWithMetadataInChunk(Chunk chunk, int n, int n2, int n3, Block block, int n4) {
+        if (n >= -30000000 && n3 >= -30000000 && n < 30000000 && n3 < 30000000) {
+            if (n >> 4 != chunk.xPosition) {
                 return false;
-            } else if (par3 >> 4 != chunk.zPosition) {
+            } else if (n3 >> 4 != chunk.zPosition) {
                 return false;
-            } else if (par2 >= 0 && par2 <= 255) {
+            } else if (n2 >= 0 && n2 <= 255) {
                 ExtendedBlockStorage[] mystorage = chunk.getBlockStorageArray();
-                ExtendedBlockStorage extendedblockstorage = mystorage[par2 >> 4];
-                par1 &= 15;
-                par3 &= 15;
+                ExtendedBlockStorage extendedblockstorage = mystorage[n2 >> 4];
+                n &= 15;
+                n3 &= 15;
                 if (extendedblockstorage == null) {
-                    if (par4 == Blocks.air || par4 == null) {
+                    if (block == Blocks.air || block == null) {
                         return false;
                     }
 
-                    extendedblockstorage = mystorage[par2 >> 4] = new ExtendedBlockStorage(
-                        par2 >> 4 << 4,
+                    extendedblockstorage = mystorage[n2 >> 4] = new ExtendedBlockStorage(
+                        n2 >> 4 << 4,
                         !chunk.worldObj.provider.hasNoSky);
                     chunk.setStorageArrays(mystorage);
                 }
 
-                extendedblockstorage.func_150818_a(par1, par2 & 15, par3, par4);
-                extendedblockstorage.setExtBlockMetadata(par1, par2 & 15, par3, par5);
+                extendedblockstorage.func_150818_a(n, n2 & 15, n3, block);
+                extendedblockstorage.setExtBlockMetadata(n, n2 & 15, n3, n4);
                 return true;
             } else {
                 return false;

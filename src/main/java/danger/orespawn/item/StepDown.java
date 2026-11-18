@@ -1,0 +1,133 @@
+package danger.orespawn.item;
+
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import danger.orespawn.OreSpawnMain;
+
+public class StepDown extends Item {
+
+    public StepDown(int i) {
+        this.maxStackSize = 16;
+        this.setCreativeTab(CreativeTabs.tabTools);
+    }
+
+    public boolean onItemUse(ItemStack stack, EntityPlayer Player, World world, int cposx, int cposy, int cposz,
+        int side, float hitX, float hitY, float hitZ) {
+        int deltax = 0;
+        int deltaz = 0;
+        int length = 33;
+        int x = cposx;
+        int y = cposy + 1;
+        int z = cposz;
+        float f = Player.rotationYawHead;
+        f += 22.5F;
+        f %= 360.0F;
+        f /= 45.0F;
+        switch ((int) f) {
+            case 0:
+                deltax = 0;
+                deltaz = 1;
+                break;
+            case 1:
+                deltax = -1;
+                deltaz = 1;
+                break;
+            case 2:
+                deltax = -1;
+                deltaz = 0;
+                break;
+            case 3:
+                deltax = -1;
+                deltaz = -1;
+                break;
+            case 4:
+                deltax = 0;
+                deltaz = -1;
+                break;
+            case 5:
+                deltax = 1;
+                deltaz = -1;
+                break;
+            case 6:
+                deltax = 1;
+                deltaz = 0;
+                break;
+            case 7:
+                deltax = 1;
+                deltaz = 1;
+        }
+
+        if (deltax == 0 && deltaz == 0) {
+            return false;
+        } else {
+            Player.worldObj.playSoundAtEntity(Player, "random.explode", 1.0F, 1.5F);
+            if (world.isRemote) {
+                for (int i = 0; i < 6; i++) {
+                    world.spawnParticle(
+                        "largesmoke",
+                        x + world.rand.nextFloat() - world.rand.nextFloat(),
+                        y + world.rand.nextFloat(),
+                        z + world.rand.nextFloat() - world.rand.nextFloat(),
+                        0.0,
+                        0.0,
+                        0.0);
+                    world.spawnParticle(
+                        "largeexplode",
+                        x + world.rand.nextFloat() - world.rand.nextFloat(),
+                        y + world.rand.nextFloat(),
+                        z + world.rand.nextFloat() - world.rand.nextFloat(),
+                        0.0,
+                        0.0,
+                        0.0);
+                    world.spawnParticle(
+                        "reddust",
+                        x + world.rand.nextFloat() - world.rand.nextFloat(),
+                        y + world.rand.nextFloat(),
+                        z + world.rand.nextFloat() - world.rand.nextFloat(),
+                        0.0,
+                        0.0,
+                        0.0);
+                }
+
+                return true;
+            } else {
+                for (int k = 1; k < length; k++) {
+                    Block bid = world.getBlock(x + k * deltax, y - k - 1, z + k * deltaz);
+                    if (bid != Blocks.air) {
+                        break;
+                    }
+
+                    world.setBlock(x + k * deltax, y - k - 1, z + k * deltaz, Blocks.cobblestone, 0, 2);
+                    if ((k - 1) % 8 == 0) {
+                        bid = world.getBlock(x + k * deltax, y - k, z + k * deltaz);
+                        if (bid == Blocks.air) {
+                            world.setBlock(x + k * deltax, y - k, z + k * deltaz, OreSpawnMain.ExtremeTorch, 0, 2);
+                        }
+                    }
+                }
+
+                if (!Player.capabilities.isCreativeMode) {
+                    stack.stackSize--;
+                }
+
+                return true;
+            }
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister iconRegister) {
+        this.itemIcon = iconRegister.registerIcon(
+            "OreSpawn:" + this.getUnlocalizedName()
+                .substring(5));
+    }
+}

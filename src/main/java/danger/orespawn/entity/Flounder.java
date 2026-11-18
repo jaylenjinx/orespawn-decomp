@@ -1,0 +1,291 @@
+package danger.orespawn.entity;
+
+import java.util.List;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIAvoidEntity;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMate;
+import net.minecraft.entity.ai.EntityAIPanic;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
+import danger.orespawn.OreSpawnMain;
+import danger.orespawn.entity.ai.MyEntityAIWander;
+
+public class Flounder extends EntityAnimal {
+
+    private float moveSpeed = 0.25F;
+    private int closest = 99999;
+    private int tx = 0;
+    private int ty = 0;
+    private int tz = 0;
+
+    public Flounder(World world) {
+        super(world);
+        this.setSize(0.55F, 0.25F);
+        this.moveSpeed = 0.25F;
+        this.fireResistance = 15;
+        this.experienceValue = 5;
+        this.getNavigator()
+            .setAvoidsWater(false);
+        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(1, new EntityAIMate(this, 1.0));
+        this.tasks.addTask(3, new EntityAIAvoidEntity(this, EntityPlayer.class, 8.0F, 1.0, 1.4F));
+        this.tasks.addTask(4, new EntityAIPanic(this, 1.5));
+        this.tasks.addTask(5, new EntityAIWatchClosest(this, EntityPlayer.class, 12.0F));
+        this.tasks.addTask(6, new MyEntityAIWander(this, 1.0F));
+        this.tasks.addTask(7, new EntityAILookIdle(this));
+    }
+
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+        this.getEntityAttribute(SharedMonsterAttributes.maxHealth)
+            .setBaseValue(this.mygetMaxHealth());
+        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed)
+            .setBaseValue(this.moveSpeed);
+        this.getAttributeMap()
+            .registerAttribute(SharedMonsterAttributes.attackDamage);
+        this.getEntityAttribute(SharedMonsterAttributes.attackDamage)
+            .setBaseValue(0.0);
+    }
+
+    protected void entityInit() {
+        super.entityInit();
+    }
+
+    public void onUpdate() {
+        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed)
+            .setBaseValue(this.moveSpeed);
+        super.onUpdate();
+    }
+
+    public boolean isAIEnabled() {
+        return true;
+    }
+
+    public boolean canBreatheUnderwater() {
+        return true;
+    }
+
+    public int mygetMaxHealth() {
+        return 5;
+    }
+
+    protected String getLivingSound() {
+        return "splash";
+    }
+
+    protected String getHurtSound() {
+        return "little_splat";
+    }
+
+    protected String getDeathSound() {
+        return "orespawn:ratdead";
+    }
+
+    protected float getSoundVolume() {
+        return 0.4F;
+    }
+
+    protected Item getDropItem() {
+        return Items.fish;
+    }
+
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingLevel) {
+        int roll = 0;
+        roll = this.rand.nextInt(2);
+        roll++;
+
+        for (int i = 0; i < roll; i++) {
+            this.dropItem(Items.fish, 1);
+        }
+    }
+
+    private boolean scan_it(int x, int y, int z, int dx, int dy, int dz) {
+        int found = 0;
+
+        for (int i = -dy; i <= dy; i++) {
+            for (int j = -dz; j <= dz; j++) {
+                Block bid = this.worldObj.getBlock(x + dx, y + i, z + j);
+                if (bid == Blocks.water || bid == Blocks.flowing_water) {
+                    int d = dx * dx + j * j + i * i;
+                    if (d < this.closest) {
+                        this.closest = d;
+                        this.tx = x + dx;
+                        this.ty = y + i;
+                        this.tz = z + j;
+                        found++;
+                    }
+                }
+
+                bid = this.worldObj.getBlock(x - dx, y + i, z + j);
+                if (bid == Blocks.water || bid == Blocks.flowing_water) {
+                    int d = dx * dx + j * j + i * i;
+                    if (d < this.closest) {
+                        this.closest = d;
+                        this.tx = x - dx;
+                        this.ty = y + i;
+                        this.tz = z + j;
+                        found++;
+                    }
+                }
+            }
+        }
+
+        for (int i = -dx; i <= dx; i++) {
+            for (int j = -dz; j <= dz; j++) {
+                Block bidx = this.worldObj.getBlock(x + i, y + dy, z + j);
+                if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
+                    int d = dy * dy + j * j + i * i;
+                    if (d < this.closest) {
+                        this.closest = d;
+                        this.tx = x + i;
+                        this.ty = y + dy;
+                        this.tz = z + j;
+                        found++;
+                    }
+                }
+
+                bidx = this.worldObj.getBlock(x + i, y - dy, z + j);
+                if (bidx == Blocks.water || bidx == Blocks.flowing_water) {
+                    int d = dy * dy + j * j + i * i;
+                    if (d < this.closest) {
+                        this.closest = d;
+                        this.tx = x + i;
+                        this.ty = y - dy;
+                        this.tz = z + j;
+                        found++;
+                    }
+                }
+            }
+        }
+
+        for (int i = -dx; i <= dx; i++) {
+            for (int j = -dy; j <= dy; j++) {
+                Block bidxx = this.worldObj.getBlock(x + i, y + j, z + dz);
+                if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
+                    int d = dz * dz + j * j + i * i;
+                    if (d < this.closest) {
+                        this.closest = d;
+                        this.tx = x + i;
+                        this.ty = y + j;
+                        this.tz = z + dz;
+                        found++;
+                    }
+                }
+
+                bidxx = this.worldObj.getBlock(x + i, y + j, z - dz);
+                if (bidxx == Blocks.water || bidxx == Blocks.flowing_water) {
+                    int d = dz * dz + j * j + i * i;
+                    if (d < this.closest) {
+                        this.closest = d;
+                        this.tx = x + i;
+                        this.ty = y + j;
+                        this.tz = z - dz;
+                        found++;
+                    }
+                }
+            }
+        }
+
+        return found != 0;
+    }
+
+    protected void updateAITick() {
+        super.updateAITick();
+        if (!this.isDead) {
+            if (this.worldObj.rand.nextInt(200) == 1) {
+                this.setRevengeTarget(null);
+            }
+
+            if (!this.isInWater() && this.worldObj.rand.nextInt(20) == 0) {
+                this.closest = 99999;
+                this.tx = this.ty = this.tz = 0;
+
+                for (int i = 1; i < 11; i++) {
+                    int j = i;
+                    if (i > 4) {
+                        j = 4;
+                    }
+
+                    if (this.scan_it((int) this.posX, (int) this.posY - 1, (int) this.posZ, i, j, i)) {
+                        break;
+                    }
+
+                    if (i >= 5) {
+                        i++;
+                    }
+                }
+
+                if (this.closest < 99999) {
+                    this.getNavigator()
+                        .tryMoveToXYZ(this.tx, this.ty - 1, this.tz, 1.0);
+                } else {
+                    if (this.worldObj.rand.nextInt(25) == 1) {
+                        this.heal(-1.0F);
+                    }
+
+                    if (this.getHealth() <= 0.0F) {
+                        this.setDead();
+                        return;
+                    }
+                }
+            }
+
+            if (this.isInWater() && this.worldObj.rand.nextInt(50) == 0) {
+                this.playSound("splash", 1.0F, this.worldObj.rand.nextFloat() * 0.2F + 0.9F);
+                this.heal(1.0F);
+            }
+        }
+    }
+
+    private int findBuddies() {
+        List entities = this.worldObj.getEntitiesWithinAABB(Flounder.class, this.boundingBox.expand(16.0, 8.0, 16.0));
+        return entities.size();
+    }
+
+    public boolean getCanSpawnHere() {
+        if (this.posY < 50.0) {
+            return false;
+        } else if (!this.worldObj.isDaytime()) {
+            return false;
+        } else {
+            return this.worldObj.rand.nextInt(20) != 1 ? false : this.findBuddies() <= 10;
+        }
+    }
+
+    protected boolean canDespawn() {
+        if (this.isChild()) {
+            this.func_110163_bv();
+            return false;
+        } else {
+            return !this.isNoDespawnRequired();
+        }
+    }
+
+    public EntityAgeable createChild(EntityAgeable entityageable) {
+        return this.spawnBabyAnimal(entityageable);
+    }
+
+    public Flounder spawnBabyAnimal(EntityAgeable entityAgeable) {
+        return new Flounder(this.worldObj);
+    }
+
+    public boolean isWheat(ItemStack stack) {
+        return stack != null && stack.getItem() == Items.fish;
+    }
+
+    public boolean isBreedingItem(ItemStack stack) {
+        return stack.getItem() == OreSpawnMain.MyCrystalApple;
+    }
+}
