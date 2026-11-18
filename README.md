@@ -25,15 +25,17 @@ textures, models and sounds are in `src/main/resources/assets/orespawn`.
 
 ## Requirements
 
-- **JDK 21** to run Gradle (the mod still compiles to Java 8 bytecode via Jabel; Gradle
-  downloads the toolchain it needs).
+- **JDK 25** to run Gradle (`gradle/gradle-daemon-jvm.properties` requires it; the mod still compiles
+  to Java 8 bytecode via Jabel, and Gradle downloads the other toolchains it needs).
 - IntelliJ IDEA (Community is fine).
 
 ## IntelliJ IDEA setup
 
 1. **File → Open…** and pick this folder (open the folder, not `build.gradle.kts`). Trust the project.
-2. **Settings → Build, Execution, Deployment → Build Tools → Gradle**: set **Gradle JVM** to a JDK 21.
-3. **File → Project Structure → Project**: SDK = the same JDK 21, language level 8.
+2. **Settings → Build, Execution, Deployment → Build Tools → Gradle**: set **Gradle JVM** to a JDK 25
+   (or "Daemon JVM criteria" if your IntelliJ offers it). JDK 21 or older fails with
+   "Dependency requires at least JVM runtime version 25".
+3. **File → Project Structure → Project**: SDK = the same JDK 25, language level 8.
 4. Let the Gradle sync finish (first time takes several minutes: it downloads and decompiles
    Minecraft). The sync generates run configurations: `1.7.10 Client`, `1.7.10 Server`, and the
    modern-Java variants.
