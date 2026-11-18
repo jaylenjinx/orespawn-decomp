@@ -5,6 +5,38 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityVillager;
 
+import danger.orespawn.entity.Boyfriend;
+import danger.orespawn.entity.Cephadrome;
+import danger.orespawn.entity.Cockateil;
+import danger.orespawn.entity.Cricket;
+import danger.orespawn.entity.Dragon;
+import danger.orespawn.entity.Dragonfly;
+import danger.orespawn.entity.Elevator;
+import danger.orespawn.entity.EntityAnt;
+import danger.orespawn.entity.EntityButterfly;
+import danger.orespawn.entity.EntityMosquito;
+import danger.orespawn.entity.Firefly;
+import danger.orespawn.entity.GammaMetroid;
+import danger.orespawn.entity.Ghost;
+import danger.orespawn.entity.GhostSkelly;
+import danger.orespawn.entity.Girlfriend;
+import danger.orespawn.entity.KingHead;
+import danger.orespawn.entity.Leon;
+import danger.orespawn.entity.Mothra;
+import danger.orespawn.entity.PurplePower;
+import danger.orespawn.entity.QueenHead;
+import danger.orespawn.entity.RockBase;
+import danger.orespawn.entity.Spyro;
+import danger.orespawn.entity.Stinky;
+import danger.orespawn.entity.Termite;
+import danger.orespawn.entity.TheKing;
+import danger.orespawn.entity.ThePrince;
+import danger.orespawn.entity.ThePrinceAdult;
+import danger.orespawn.entity.ThePrinceTeen;
+import danger.orespawn.entity.ThePrincess;
+import danger.orespawn.entity.TheQueen;
+import danger.orespawn.entity.WaterDragon;
+
 public class MyUtils {
 
     public static boolean isRoyalty(Entity e) {

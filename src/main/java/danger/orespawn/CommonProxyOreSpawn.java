@@ -3,6 +3,8 @@ package danger.orespawn;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
+import danger.orespawn.network.RiderControlMessage;
+import danger.orespawn.network.RiderControlMessageHandler;
 
 public class CommonProxyOreSpawn {
 

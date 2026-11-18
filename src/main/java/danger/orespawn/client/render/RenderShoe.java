@@ -1,0 +1,18 @@
+package danger.orespawn.client.render;
+
+import net.minecraft.entity.Entity;
+
+import danger.orespawn.entity.projectile.Shoes;
+
+public class RenderShoe extends RenderSpinner {
+
+    @Override
+    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
+        if (par1Entity instanceof Shoes) {
+            Shoes var2x = (Shoes) par1Entity;
+            this.spinItemIconIndex = var2x.getShoeId();
+        }
+
+        super.doRender(par1Entity, par2, par4, par6, par8, par9);
+    }
+}
