@@ -102,3 +102,9 @@ addon.late.local.gradle.kts
 *.ipr
 *.iws
 layout.json
+
+# Decompilation workspace (original/deobf jars, logs)
+.decomp/
+
+# Personal assistant rules
+CLAUDE.local.md
